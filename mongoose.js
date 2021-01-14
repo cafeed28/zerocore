@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const accountModel = mongoose.model('accounts',
+mongoose.model('accounts',
     new Schema({
         accountID: Number,
         userName: String,
@@ -11,8 +11,9 @@ const accountModel = mongoose.model('accounts',
     })
 );
 
-const userModel = mongoose.model('users',
+mongoose.model('users',
     new Schema({
+        userName: String,
         accountID: Number,
         coins: Number,
         userCoins: Number,
@@ -21,7 +22,10 @@ const userModel = mongoose.model('users',
         orbs: Number,
         special: Number,
         demons: Number,
-        creatorPoints: Number,
+        creatorPoints: {
+            type: Number,
+            default: 0
+        },
 
         chest1Time: Number,
         chest2Time: Number,
@@ -44,8 +48,7 @@ const userModel = mongoose.model('users',
         accExplosion: Number,
 
         youtube: String,
-        twitter: String,
-        twitch: String,
+        twitter: String, // поменяю на discord когда выйдет blackTea от партура
 
         IP: String,
         lastPlayed: String,
@@ -53,16 +56,28 @@ const userModel = mongoose.model('users',
     })
 );
 
-const postModel = mongoose.model('posts',
+mongoose.model('posts',
     new Schema({
         userName: String,
-        comment: String,
+        post: String,
         accountID: String,
-        uploadDate: String
+        uploadDate: Number,
+        likes: {
+            type: Number,
+            default: 0
+        },
+        isSpam: {
+            type: Number,
+            default: 0
+        },
+        postID: {
+            type: Number,
+            default: 0
+        }
     })
 );
 
-const blockModel = mongoose.model('blocks',
+mongoose.model('blocks',
     new Schema({
         blockedID: Number,
         blockerID: Number

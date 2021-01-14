@@ -9,7 +9,7 @@ module.exports = {
         const checkUser = await server.accounts.findOne({ userName: body.userName });
 
         if (checkUser) {
-            fc.error(`Аккаунт ${body.userName} уже существует`);
+            fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
             return '-2';
         } else {
             const ID = (await server.accounts.countDocuments()) + 1;

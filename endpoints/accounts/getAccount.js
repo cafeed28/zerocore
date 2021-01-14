@@ -9,7 +9,7 @@ module.exports = {
         const account = await server.accounts.findOne({ userName: body.userName });
 
         if (!account) {
-            fc.error(`Аккаунта ${body.userName} не существует`);
+            fc.error(`Вход в аккаунт ${body.userName} не выполнен: аккаунта не существует`);
             return '-1';
         } else {
             if (bcrypt.compareSync(body.password, account.password)) {

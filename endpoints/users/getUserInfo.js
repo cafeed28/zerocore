@@ -1,7 +1,8 @@
 const fc = require('fancy-console');
 const bcrypt = require('bcrypt');
-const { remove } = require('../lib/exploitPatch');
-const { check } = require('../lib/gjpcheck');
+const { remove } = require('../../lib/exploitPatch');
+const { check } = require('../../lib/gjpcheck');
+const utils = require('../../lib/utils');
 
 module.exports = {
     path: 'getGJUserInfo20.php',
@@ -39,21 +40,39 @@ module.exports = {
 
         // friendRequests, messages, friends
 
-        // ":18:".$msgstate.":31:".$friendstate.":44:".$accinfo["twitter"].":45:".$accinfo["twitch"].":29:1:49:".$badge . $appendix
+        fc.success(`Получение статистики аккаунта ${body.targetAccountID} выполнено`);
 
-        return `1:${user.userName}:2:${targetAccountID}:13:${user.coins}:17:${user.userCoins}:10:${user.color1}:11:${user.color2}:3:${user.stars}:46:${user.diamonds}:4:${user.demons}:8:${user.creatorPoints}:18:0:19:0:50:0:20:${user.youtube}:21:${user.accIcon}:22:${user.accShip}:23:${user.accBall}:24:${user.accBird}:25:${user.accDart}:26:${user.accRobot}:28:${user.accGlow}:43:${user.accSpider}:47:${user.accExplosion}:30:${user.stars + 1}:16:${targetAccountID}:31:0:44:${user.twitter}:45:${user.twitch}:29:1:49:0`;
-
-        // if (!account) {
-        //     fc.error(`Аккаунта ${body.userName} не существует`);
-        //     return '-1';
-        // } else {
-        //     if (bcrypt.compareSync(body.password, account.password)) {
-        //         fc.success(`Вход в аккаунт ${body.userName} выполнен`);
-        //         return `${account.accountID},${account.accountID}`;
-        //     } else {
-        //         fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`);
-        //         return '-12';
-        //     }
-        // }
+        return utils.jsonToRobtop([{
+            '1': user.userName,
+            '2': targetAccountID,
+            '3': user.stars,
+            '4': user.demons,
+            '8': user.creatorPoints,
+            '10': user.color1,
+            '11': user.color2,
+            '13': user.coins,
+            '16': targetAccountID,
+            '17': user.userCoins,
+            '18': '0', // msgState
+            '19': '0', // reqsState
+            '20': user.youtube || '',
+            '21': user.accIcon,
+            '22': user.accShip,
+            '23': user.accBall,
+            '24': user.accBird,
+            '25': user.accDart,
+            '26': user.accRobot,
+            '28': user.accGlow,
+            '29': '1', // спасибо кволтон за комментирование кода, че это такое
+            '30': user.stars + 1,
+            '31': '0', // friendReqState
+            '43': user.accSpider,
+            '44': user.twitter || '',
+            '45': '', // twitch, когда выйдет blackTea от партура, удалю
+            '46': user.diamonds,
+            '47': user.accExplosion,
+            '49': user.badge,
+            '50': '0' // commentState
+        }]);
     }
 };

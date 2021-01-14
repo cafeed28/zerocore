@@ -1,14 +1,13 @@
 const fc = require('fancy-console');
-const { remove } = require('../lib/exploitPatch');
-const { check } = require('../lib/gjpcheck');
+const { remove } = require('../../lib/exploitPatch');
+const { check } = require('../../lib/gjpcheck');
 
 module.exports = {
-    path: 'updateGJUserScore.php',
-    aliases: ['updateGJUserScore', 'updateGJUserScore22.php', 'updateGJUserScore'],
+    path: 'updateGJUserScore22.php',
+    aliases: ['updateGJUserScore22'],
     requiredKeys: ['userName', 'secret', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp'],
     async execute(req, res, body, server) {
         const userName = remove(body.userName).replace(/[^A-Za-z0-9 ]/, '');
-        const secret = remove(body.secret);
         const stars = remove(body.stars);
         const demons = remove(body.demons);
         const icon = remove(body.icon);
@@ -32,27 +31,33 @@ module.exports = {
         const accExplosion = remove(body.accExplosion) || 0;
 
         if (!body.udid && !body.accountID) {
-            fc.error(`Обновление статистики аккаунта ${body.userName} не выполнено: udid и accountID отсутствуют`);
+            fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid и accountID отсутствуют`);
             return '-1';
         }
 
         if (body.udid) {
             if (!isNaN(remove('udid'))) {
-                fc.error(`Обновление статистики аккаунта ${body.userName} не выполнено: udid - числовой`);
+                fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid - числовой`);
                 return '-1';
             }
         }
 
         const id = remove(body.accountID);
 
+        if (!await server.accounts.findOne({ accountID: id })) {
+            fc.success(`Обновление статистики пользователя ${body.userName} не выполнено: аккаунта не существует`);
+            return '-1';
+        }
+
         if (!check(remove(body.gjp), id)) {
-            fc.error(`Обновление статистики аккаунта ${body.userName} не выполнено: неверный gjp`);
+            fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: неверный gjp`);
             return '-1';
         }
 
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         await server.users.updateOne({ accountID: id }, {
+            userName: userName,
             coins: coins,
             userCoins: userCoins,
             stars: stars,
@@ -79,7 +84,7 @@ module.exports = {
             lastPlayed: new Date().getTime(),
         }, { upsert: true });
 
-        fc.success(`Обновление статистики аккаунта ${body.userName} выполнено`);
+        fc.success(`Обновление статистики пользователя ${body.userName} выполнено`);
         return id;
     }
 };

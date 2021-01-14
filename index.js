@@ -1,5 +1,4 @@
 const fc = require('fancy-console');
-const fs = require('fs');
 const urlparser = require('url');
 const utils = require('./lib/utils');
 
@@ -16,7 +15,10 @@ function find(map, fn) {
     return undefined;
 }
 
-const endpointFiles = fs.readdirSync('./endpoints').filter(file => file.endsWith('.js') || file.endsWith('.ts'));
+console.log('Подключенные модули:\n');
+
+const endpointFiles = require('fs-readdir-recursive')('./endpoints').filter(file => file.endsWith('.js'));
+
 for (const file of endpointFiles) {
     const endpoint = require(`./endpoints/${file}`);
     endpoints.set(endpoint.path, endpoint);
@@ -71,7 +73,7 @@ app.use(async(req, res, next) => {
         const result = await endpoint.execute(req, res, body, mongoose.models);
         res.send(result);
     } catch (e) {
-        fc.error(e);
+        fc.error(e.stack);
         res.send('-1\n' + e);
     }
     next();
@@ -88,4 +90,4 @@ mongoose.connect('mongodb://localhost:27017/zerocore', { useNewUrlParser: true, 
     return fc.error('MongoDB Error:\n', err);
 });
 
-app.listen(80, () => fc.success('zeroCore запустился и работает на 80 порту'));
+app.listen(80, () => fc.success('\nzeroCore запустился и работает на 80 порту'));

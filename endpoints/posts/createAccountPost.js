@@ -1,29 +1,27 @@
 const fc = require('fancy-console');
 const bcrypt = require('bcrypt');
-const { remove } = require('../lib/exploitPatch');
-const { GJPCheck } = require('../lib/gjpcheck');
+const { remove } = require('../../lib/exploitPatch');
+const { check } = require('../../lib/gjpcheck');
 
 module.exports = {
-    path: 'uploadGJAccComment.php',
-    aliases: ['uploadGJAccComment'],
-    requiredKeys: ['gjp', 'userName', 'comment', 'accountID'],
+    path: 'uploadGJAccComment20.php',
+    aliases: ['uploadGJAccComment20'],
+    requiredKeys: ['gjp', 'userName', 'comment', 'accountID', 'secret'],
     async execute(req, res, body, server) {
         const gjp = remove(body.gjp);
         const userName = remove(body.userName);
         const comment = remove(body.comment);
         const accountID = remove(body.accountID);
 
-        const gjpCheck = GJPCheck.check(gjp, accountID);
-
-        console.log(body.comment);
+        const gjpCheck = check(gjp, accountID);
 
         if (gjpCheck) {
             const post = new server.posts({
+                userName: userName,
+                post: comment,
                 accountID: accountID,
-                userName: body.userName,
-                password: bcrypt.hashSync(body.password, 10),
-                email: body.email,
-                secret: body.secret
+                uploadDate: Date.now(),
+                postID: (await server.posts.countDocuments()) + 1
             });
             post.save();
 
