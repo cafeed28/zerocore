@@ -77,6 +77,27 @@ mongoose.model('posts',
     })
 );
 
+mongoose.model('comments',
+    new Schema({
+        userName: String,
+        comment: String,
+        accountID: String,
+        uploadDate: Number,
+        likes: {
+            type: Number,
+            default: 0
+        },
+        isSpam: {
+            type: Number,
+            default: 0
+        },
+        commentID: {
+            type: Number,
+            default: 0
+        }
+    })
+);
+
 mongoose.model('blocks',
     new Schema({
         blockedID: Number,

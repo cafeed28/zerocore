@@ -22,7 +22,7 @@ module.exports = {
             // ну раз робтоп не сделал понятные ответы, напишу комментарий я
             // 2~post~3~accountID~4~likes~5~idk~7~isSpam~9~dateAgo~6~postID|#commentCount:commentPage:idk
 
-            posts.map(post => {
+            Array.from(posts).reverse().map(post => {
                 let dateAgo = moment(post.uploadDate).fromNow(true);
 
                 postsString += `2~${post.post}~3~${post.accountID}~4~${post.likes}~5~0~7~${post.isSpam}~9~${dateAgo}~6~${post.postID}|`;

@@ -54,7 +54,7 @@ app.use(async(req, res, next) => {
 
     if (!endpoint) {
         fc.error(`endpoint по адресу ${url} не найден`);
-        return res.send(url + ' endpoint not found');
+        return res.send('-1\n' + url + ' endpoint not found');
     }
 
     const checkBody = utils.checkKeys(req.body, endpoint.requiredKeys);
