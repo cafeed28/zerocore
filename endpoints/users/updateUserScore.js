@@ -1,5 +1,4 @@
 const fc = require('fancy-console');
-const { remove } = require('../../lib/exploitPatch');
 const { check } = require('../../lib/gjpcheck');
 
 module.exports = {
@@ -7,28 +6,28 @@ module.exports = {
     aliases: ['updateGJUserScore22'],
     requiredKeys: ['userName', 'secret', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp'],
     async execute(req, res, body, server) {
-        const userName = remove(body.userName).replace(/[^A-Za-z0-9 ]/, '');
-        const stars = remove(body.stars);
-        const demons = remove(body.demons);
-        const icon = remove(body.icon);
-        const color1 = remove(body.color1);
-        const color2 = remove(body.color2);
+        const userName = body.userName.replace(/[^A-Za-z0-9 ]/, '');
+        const stars = body.stars;
+        const demons = body.demons;
+        const icon = body.icon;
+        const color1 = body.color1;
+        const color2 = body.color2;
 
-        const coins = remove(body.coins) || 0;
-        const userCoins = remove(body.userCoins) || 0;
-        const diamonds = remove(body.diamonds) || 0;
-        const special = remove(body.special) || 0;
+        const coins = body.coins || 0;
+        const userCoins = body.userCoins || 0;
+        const diamonds = body.diamonds || 0;
+        const special = body.special || 0;
 
-        const iconType = remove(body.iconType) || 0;
-        const accIcon = remove(body.accIcon) || 0;
-        const accShip = remove(body.accShip) || 0;
-        const accBall = remove(body.accBall) || 0;
-        const accBird = remove(body.accBird) || 0;
-        const accDart = remove(body.accDart) || 0;
-        const accRobot = remove(body.accRobot) || 0;
-        const accSpider = remove(body.accSpider) || 0;
-        const accGlow = remove(body.accGlow) || 0;
-        const accExplosion = remove(body.accExplosion) || 0;
+        const iconType = body.iconType || 0;
+        const accIcon = body.accIcon || 0;
+        const accShip = body.accShip || 0;
+        const accBall = body.accBall || 0;
+        const accBird = body.accBird || 0;
+        const accDart = body.accDart || 0;
+        const accRobot = body.accRobot || 0;
+        const accSpider = body.accSpider || 0;
+        const accGlow = body.accGlow || 0;
+        const accExplosion = body.accExplosion || 0;
 
         if (!body.udid && !body.accountID) {
             fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid и accountID отсутствуют`);
@@ -36,20 +35,20 @@ module.exports = {
         }
 
         if (body.udid) {
-            if (!isNaN(remove('udid'))) {
+            if (!isNaN(body.udid)) {
                 fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid - числовой`);
                 return '-1';
             }
         }
 
-        const id = remove(body.accountID);
+        const id = body.accountID;
 
         if (!await server.accounts.findOne({ accountID: id })) {
             fc.success(`Обновление статистики пользователя ${body.userName} не выполнено: аккаунта не существует`);
             return '-1';
         }
 
-        if (!check(remove(body.gjp), id)) {
+        if (!check(body.gjp, id)) {
             fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: неверный gjp`);
             return '-1';
         }

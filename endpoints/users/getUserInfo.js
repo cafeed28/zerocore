@@ -1,17 +1,16 @@
 const fc = require('fancy-console');
 const bcrypt = require('bcrypt');
-const { remove } = require('../../lib/exploitPatch');
 const { check } = require('../../lib/gjpcheck');
 const utils = require('../../lib/utils');
 
-module.exports = {
+odule.exports = {
     path: 'getGJUserInfo20.php',
     aliases: ['getGJUserInfo20'],
     requiredKeys: ['gjp', 'targetAccountID'],
     async execute(req, res, body, server) {
-        const gjp = remove(body.gjp);
-        const targetAccountID = remove(body.targetAccountID);
-        const myAccountID = remove(body.accountID) || 0;
+        const gjp = body.gjp;
+        const targetAccountID = body.targetAccountID;
+        const myAccountID = body.accountID || 0;
 
         if (myAccountID == 0) {
             if (!check(gjp, myAccountID)) {

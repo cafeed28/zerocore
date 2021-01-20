@@ -1,6 +1,5 @@
 const fc = require('fancy-console');
 const bcrypt = require('bcrypt');
-const { remove } = require('../../lib/exploitPatch');
 const { check } = require('../../lib/gjpcheck');
 
 module.exports = {
