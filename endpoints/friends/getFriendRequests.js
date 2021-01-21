@@ -27,7 +27,7 @@ module.exports = {
             // робтоп я тебя ненавижу...
 
             await Promise.all(requests.map(async(request) => {
-                let dateAgo = moment(post.uploadDate).fromNow(true);
+                let dateAgo = moment(request.uploadDate).fromNow(true);
 
                 const user = await server.users.findOne({
                     accountID: getSent == 1 ? request.toAccountID : request.fromAccountID
