@@ -31,4 +31,4 @@ module.exports = {
 
         return postsString + `#${posts.length}:${page}:10`;
     }
-};
+}

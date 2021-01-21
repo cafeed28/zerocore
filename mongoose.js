@@ -105,6 +105,14 @@ mongoose.model('blocks',
     })
 );
 
+mongoose.model('friendrequests',
+    new Schema({
+        fromAccountID: Number,
+        toAccountID: Number,
+        message: String
+    })
+);
+
 module.exports = {
     mongoose: mongoose
 }

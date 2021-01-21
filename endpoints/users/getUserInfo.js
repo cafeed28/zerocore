@@ -73,4 +73,4 @@ module.exports = {
             '50': '0' // commentState
         }]);
     }
-};
+}

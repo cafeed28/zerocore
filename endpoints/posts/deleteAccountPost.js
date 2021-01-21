@@ -9,9 +9,7 @@ module.exports = {
         const gjp = body.gjp;
         const accountID = body.accountID;
 
-        const gjpCheck = check(gjp, accountID);
-
-        if (gjpCheck) {
+        if (check(gjp, accountID)) {
             const post = await server.posts.deleteOne({
                 postID: body.commentID,
             });
@@ -29,4 +27,4 @@ module.exports = {
             return '-1';
         }
     }
-};
+}

@@ -11,9 +11,8 @@ module.exports = {
         const type = body.type;
         const itemID = body.itemID;
 
-        const gjpCheck = check(gjp, accountID);
 
-        if (gjpCheck) {
+        if (check(gjp, accountID)) {
             let item;
 
             if (type == 1) {
@@ -46,4 +45,4 @@ module.exports = {
             return '-1';
         }
     }
-};
+}

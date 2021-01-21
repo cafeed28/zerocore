@@ -40,4 +40,4 @@ module.exports = {
 
         return usersString.slice(0, -1) + `#${users.length}:${page}:10`;
     }
-};
+}

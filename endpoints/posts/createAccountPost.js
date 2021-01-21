@@ -11,9 +11,7 @@ module.exports = {
         const comment = body.comment;
         const accountID = body.accountID;
 
-        const gjpCheck = check(gjp, accountID);
-
-        if (gjpCheck) {
+        if (check(gjp, accountID)) {
             const post = new server.posts({
                 userName: userName,
                 post: comment,
@@ -30,4 +28,4 @@ module.exports = {
             return '-1';
         }
     }
-};
+}

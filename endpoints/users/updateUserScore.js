@@ -86,4 +86,4 @@ module.exports = {
         fc.success(`Обновление статистики пользователя ${body.userName} выполнено`);
         return id;
     }
-};
+}
