@@ -84,6 +84,7 @@ app.all('/', (req, res, next) => {
     next();
 });
 
+mongoose.set('useFindAndModify', false);
 mongoose.connect('mongodb://localhost:27017/zerocore', { useNewUrlParser: true, useUnifiedTopology: true }).then(async(client) => {
     global.server = client.models;
 }).catch((err) => {

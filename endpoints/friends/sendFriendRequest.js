@@ -12,13 +12,14 @@ module.exports = {
         const message = body.comment;
 
         if (check(gjp, accountID)) {
-            const item = new server.friendrequests({
+            const request = new server.friendrequests({
+                requestID: (await server.friendrequests.countDocuments()) + 1,
                 fromAccountID: accountID,
                 toAccountID: toAccountID,
                 message: message
             });
 
-            item.save();
+            request.save();
 
             fc.success(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} отправлен`);
             return '1';

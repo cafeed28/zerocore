@@ -107,6 +107,11 @@ mongoose.model('blocks',
 
 mongoose.model('friendrequests',
     new Schema({
+        requestID: Number,
+        isUnread: {
+            type: Number,
+            default: 1
+        },
         fromAccountID: Number,
         toAccountID: Number,
         message: String

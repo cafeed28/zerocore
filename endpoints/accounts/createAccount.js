@@ -12,10 +12,8 @@ module.exports = {
             fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
             return '-2';
         } else {
-            const ID = (await server.accounts.countDocuments()) + 1;
-
             const account = new server.accounts({
-                accountID: ID,
+                accountID: (await server.accounts.countDocuments()) + 1,
                 userName: body.userName,
                 password: bcrypt.hashSync(body.password, 10),
                 email: body.email,
