@@ -1,9 +1,8 @@
 const fc = require('fancy-console');
-const bcrypt = require('bcrypt');
 const { check } = require('../../lib/gjpcheck');
 const utils = require('../../lib/utils');
 
-odule.exports = {
+module.exports = {
     path: 'getGJUserInfo20.php',
     aliases: ['getGJUserInfo20'],
     requiredKeys: ['gjp', 'targetAccountID'],

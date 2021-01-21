@@ -1,5 +1,4 @@
 const fc = require('fancy-console');
-const bcrypt = require('bcrypt');
 const moment = require('moment');
 
 module.exports = {
