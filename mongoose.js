@@ -118,6 +118,22 @@ mongoose.model('friendrequests',
     })
 );
 
+mongoose.model('friends',
+    new Schema({
+        ID: Number,
+        accountID1: Number,
+        accountID2: Number,
+        isUnread1: {
+            type: Number,
+            default: 1
+        },
+        isUnread2: {
+            type: Number,
+            default: 1
+        }
+    })
+);
+
 module.exports = {
     mongoose: mongoose
 }

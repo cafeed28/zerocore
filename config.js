@@ -1,4 +1,4 @@
 module.exports = {
-    version: '0.0.8-dev',
+    version: '0.0.9-dev',
     secret: 'secret'
 }
