@@ -1,6 +1,6 @@
 const fc = require('fancy-console');
 const moment = require('moment');
-const utils = require('../../lib/utils');
+const { jsonToRobtop } = require('../../lib/utils');
 
 module.exports = {
     path: 'getGJFriendRequests20.php',
@@ -33,7 +33,7 @@ module.exports = {
                     accountID: getSent == 1 ? request.toAccountID : request.fromAccountID
                 });
 
-                requestsString += utils.jsonToRobtop([{
+                requestsString += jsonToRobtop([{
                     '1': user.userName,
                     '2': user.accountID,
                     '3': user.accIcon,

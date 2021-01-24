@@ -14,13 +14,13 @@ module.exports = {
         if (check(gjp, accountID)) {
             if (isSender == 0) {
                 await server.friendrequests.deleteOne({
-                    fromAccountID: accountID,
-                    toAccountID: toAccountID
+                    fromAccountID: toAccountID,
+                    toAccountID: accountID
                 });
             } else if (isSender == 1) {
                 await server.friendrequests.deleteOne({
-                    fromAccountID: toAccountID,
-                    toAccountID: accountID
+                    fromAccountID: accountID,
+                    toAccountID: toAccountID
                 });
             } else {
                 fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: необработанное исключение`);

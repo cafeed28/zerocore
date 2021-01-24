@@ -1,5 +1,5 @@
 const fc = require('fancy-console');
-const utils = require('../../lib/utils');
+const { jsonToRobtop } = require('../../lib/utils');
 
 module.exports = {
     path: 'getGJUsers20.php',
@@ -17,7 +17,7 @@ module.exports = {
             return '-1';
         } else {
             users.map(user => {
-                usersString += utils.jsonToRobtop([{
+                usersString += jsonToRobtop([{
                     '1': user.userName,
                     '2': user.accountID,
                     '3': user.stars,
@@ -35,8 +35,6 @@ module.exports = {
             });
         }
         fc.success(`Получение пользователей выполнено`);
-
-        console.log(usersString.slice(0, -1) + `#${users.length}:${page}:10`);
 
         return usersString.slice(0, -1) + `#${users.length}:${page}:10`;
     }

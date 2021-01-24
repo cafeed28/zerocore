@@ -37,14 +37,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(async(req, res, next) => {
     let url = urlparser.parse(req.url).pathname;
-    if (url.charAt(0) == "/") url = url.substr(1);
-    if (url.charAt(url.length - 1) == "/") url = url.substr(0, url.length - 1);
+    if (url.charAt(0) == "/") url = url.substring(1);
+    if (url.charAt(url.length - 1) == "/") url = url.substring(0, url.length - 1);
 
-    if (url.startsWith(path)) url = url.substr(path.length);
+    if (url.startsWith(path)) url = url.substring(path.length);
 
     if (url == 'favicon.ico') return next();
-
-    console.log(url);
 
     console.log(`\n[${req.method.toUpperCase()}]`, url);
     console.log(`Body:\n`, req.body);

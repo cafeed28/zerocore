@@ -12,6 +12,14 @@ module.exports = {
         const message = body.comment;
 
         if (check(gjp, accountID)) {
+            const user = await server.users.find({ accountID: toAccountID });
+            const blocked = await server.blocks.find({ accountID1: toAccountID, accountID2: accountID });
+
+            if (user.frS == 1 || blocked.length > 0) {
+                fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не отправлен: ${accountID} заблокирован ${toAccountID}`);
+                return '-1';
+            }
+
             const request = new server.friendrequests({
                 requestID: (await server.friendrequests.countDocuments()) + 1,
                 fromAccountID: accountID,

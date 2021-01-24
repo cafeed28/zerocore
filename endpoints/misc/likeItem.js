@@ -23,7 +23,7 @@ module.exports = {
             } else if (type == 3) {
                 item = await server.posts.findOne({ postID: itemID });
             } else {
-                fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: странный тип`);
+                fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: неизвестный тип`);
                 return '-1';
             }
             if (!item) {

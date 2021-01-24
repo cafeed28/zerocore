@@ -1,6 +1,6 @@
 const fc = require('fancy-console');
 const { check } = require('../../lib/gjpcheck');
-const utils = require('../../lib/utils');
+const { jsonToRobtop } = require('../../lib/utils');
 
 module.exports = {
     path: 'getGJUserInfo20.php',
@@ -9,26 +9,26 @@ module.exports = {
     async execute(req, res, body, server) {
         const gjp = body.gjp;
         const targetAccountID = body.targetAccountID;
-        const myAccountID = body.accountID || 0;
+        const accountID = body.accountID || 0;
 
-        if (myAccountID == 0) {
-            if (!check(gjp, myAccountID)) {
-                fc.error(`Получение статистики аккаунта ${body.targetAccountID} не выполнено: неверный gjp`);
+        if (accountID == 0) {
+            if (!check(gjp, accountID)) {
+                fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: неверный gjp`);
                 return '-1';
             }
         }
 
-        const blocked = await server.blocks.findOne({ blockedID: myAccountID, blockerID: targetAccountID });
+        const blocked = await server.blocks.findOne({ accountID1: targetAccountID, accountID2: accountID });
 
         if (blocked) {
-            fc.error(`Получение статистики аккаунта ${body.targetAccountID} не выполнено: пользователь заблокировал вас`);
+            fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: пользователь заблокировал вас`);
             return '-1';
         }
 
         const user = await server.users.findOne({ accountID: body.targetAccountID });
 
         if (!user) {
-            fc.error(`Получение статистики аккаунта ${body.targetAccountID} не выполнено: пользователь не найден`);
+            fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: пользователь не найден`);
             return '-1';
         }
 
@@ -38,9 +38,9 @@ module.exports = {
 
         // friendRequests, messages, friends
 
-        fc.success(`Получение статистики аккаунта ${body.targetAccountID} выполнено`);
+        fc.success(`Получение статистики пользователя ${body.targetAccountID} выполнено`);
 
-        return utils.jsonToRobtop([{
+        return jsonToRobtop([{
             '1': user.userName,
             '2': targetAccountID,
             '3': user.stars,

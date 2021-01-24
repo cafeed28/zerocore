@@ -47,8 +47,30 @@ mongoose.model('users',
         accGlow: Number,
         accExplosion: Number,
 
-        youtube: String,
-        twitter: String, // поменяю на discord когда выйдет blackTea от партура
+        mS: {
+            type: Number,
+            default: 0
+        },
+        frS: {
+            type: Number,
+            default: 0
+        },
+        cS: {
+            type: Number,
+            default: 0
+        },
+        youtube: {
+            type: String,
+            default: ''
+        },
+        twitter: {
+            type: String,
+            default: ''
+        },
+        twitch: {
+            type: String,
+            default: ''
+        }, // поменяю на discord когда выйдет blackTea от партура
 
         IP: String,
         lastPlayed: String,
@@ -100,8 +122,8 @@ mongoose.model('comments',
 
 mongoose.model('blocks',
     new Schema({
-        blockedID: Number,
-        blockerID: Number
+        accountID1: Number,
+        accountID2: Number
     })
 );
 
