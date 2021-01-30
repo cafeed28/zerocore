@@ -68,8 +68,7 @@ module.exports = {
             usersString = usersString.slice(0, -1);
             songsString = songsString.slice(0, -3);
 
-            let hash = await genMulti(levelsMultiString);
-            console.log(hash);
+            let hash = await genMulti(levelsMultiString)
             if (!hash) {
                 fc.success(`Получение уровней не выполнено: hash = false`);
                 return '-1';
