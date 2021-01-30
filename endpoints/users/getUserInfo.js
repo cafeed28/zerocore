@@ -11,7 +11,7 @@ module.exports = {
         const targetAccountID = body.targetAccountID;
         const accountID = body.accountID || 0;
 
-        if (accountID == 0) {
+        if (accountID == 0 || gjp == 0) {
             if (!check(gjp, accountID)) {
                 fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: неверный gjp`);
                 return '-1';
