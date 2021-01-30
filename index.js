@@ -1,8 +1,11 @@
 const fc = require('fancy-console');
-const urlparser = require('url');
 const utils = require('./lib/utils');
 
-const path = 'zerocoredatabase/';
+const urlparser = require('url');
+const { StatusCodes } = require('http-status-codes');
+
+let { basePath } = require('./config');
+basePath += '/';
 
 const endpoints = new Map();
 
@@ -31,6 +34,7 @@ const { mongoose } = require('./mongoose');
 
 const app = require('express')();
 const bodyParser = require('body-parser');
+const { Http2ServerResponse } = require('http2');
 
 app.use(bodyParser.raw());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,11 +44,12 @@ app.use(async(req, res, next) => {
     if (url.charAt(0) == "/") url = url.substring(1);
     if (url.charAt(url.length - 1) == "/") url = url.substring(0, url.length - 1);
 
-    if (url.startsWith(path)) url = url.substring(path.length);
+    if (url.startsWith(basePath)) url = url.substring(basePath.length);
 
     if (url == 'favicon.ico') return next();
 
     console.log(`\n[${req.method.toUpperCase()}]`, url);
+    console.log(`\nContent-type: ${req.headers['content-type']}`, url);
     console.log(`Body:\n`, req.body);
 
     const endpoint = endpoints.get(url) ||
@@ -52,7 +57,7 @@ app.use(async(req, res, next) => {
 
     if (!endpoint) {
         fc.error(`endpoint по адресу ${url} не найден`);
-        return res.send('-1\n' + url + ' endpoint not found');
+        return res.sendStatus(StatusCodes.NOT_FOUND);
     }
 
     const checkBody = utils.checkKeys(req.body, endpoint.requiredKeys);
@@ -72,13 +77,8 @@ app.use(async(req, res, next) => {
         res.send(result);
     } catch (e) {
         fc.error(e.stack);
-        res.send('-1\n' + e);
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
-    next();
-});
-
-app.all('/', (req, res, next) => {
-    res.send('zeroCore работает');
     next();
 });
 

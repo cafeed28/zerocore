@@ -105,3 +105,10 @@ dist
 
 # Deprecated .js files
 *.deprecated.js
+
+# Data
+data/levels/*
+data/saves/*
+
+# start.bat
+start.bat

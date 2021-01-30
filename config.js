@@ -1,4 +1,5 @@
 module.exports = {
     version: '0.1.0-dev',
-    secret: 'secret'
+    secret: 'secret',
+    basePath: 'zeroserver'
 }

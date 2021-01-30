@@ -36,7 +36,7 @@ module.exports = {
 
         if (body.udid) {
             if (!isNaN(body.udid)) {
-                fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid - числовой`);
+                fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid числовой`);
                 return '-1';
             }
         }

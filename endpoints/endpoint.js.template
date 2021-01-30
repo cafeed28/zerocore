@@ -1,0 +1,10 @@
+const fc = require('fancy-console');
+
+module.exports = {
+    path: 'path.php',
+    aliases: ['path'],
+    requiredKeys: ['key', 'key2'],
+    async execute(req, res, body, server) {
+        return '1';
+    }
+}
