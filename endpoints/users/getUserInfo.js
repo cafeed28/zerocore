@@ -5,9 +5,9 @@ const { jsonToRobtop } = require('../../lib/utils');
 module.exports = {
     path: 'getGJUserInfo20.php',
     aliases: ['getGJUserInfo20'],
-    requiredKeys: ['gjp', 'targetAccountID'],
+    requiredKeys: ['targetAccountID'],
     async execute(req, res, body, server) {
-        const gjp = body.gjp;
+        const gjp = body.gjp || 0;
         const targetAccountID = body.targetAccountID;
         const accountID = body.accountID || 0;
 

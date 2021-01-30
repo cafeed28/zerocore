@@ -40,7 +40,7 @@ module.exports = {
                     '10': level.downloads,
                     '12': level.audioTrack,
                     '13': '21',
-                    '14': '35',
+                    '14': level.likes,
                     '15': level.levelLength,
                     '17': level.starDemon,
                     '18': level.starStars,
