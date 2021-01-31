@@ -11,7 +11,6 @@ module.exports = {
         const type = body.type;
         const itemID = body.itemID;
 
-
         if (check(gjp, accountID)) {
             let item;
 
@@ -36,8 +35,6 @@ module.exports = {
             else likes--;
 
             await item.update({ likes: likes });
-
-            item.save();
 
             fc.success(`Лайк на предмет типа ${type} с ID ${itemID} поставлен`);
             return '1';

@@ -24,7 +24,9 @@ module.exports = {
                 levelsMultiString += level.levelID + ',';
 
                 if (level.songID != 0) {
-                    songsString += await getSongString(level.songID) + '~:~';
+                    const song = await getSongString(level.songID);
+                    if (song) songsString += song + '~:~';
+                    console.log(song);
                 }
 
                 usersString += await getUserString(level.accountID) + '|';
@@ -33,7 +35,7 @@ module.exports = {
                     '1': level.levelID,
                     '2': level.levelName,
                     '3': level.levelDesc,
-                    '5': level.version,
+                    '5': level.version || 0,
                     '6': level.accountID,
                     '8': '10',
                     '9': level.starDifficulty,
@@ -70,13 +72,14 @@ module.exports = {
 
             let hash = await genMulti(levelsMultiString);
             if (!hash) {
-                fc.success(`Получение уровней не выполнено: hash = false`);
+                fc.success(`Получение уровней не выполнено: hash пустой`);
                 return '-1';
             }
 
             fc.success(`Получение уровней выполнено`);
 
             const result = `${levelsString}#${usersString}#${songsString}#${levels.length}:${page * 10}:10#${hash}`;
+            console.log(result);
             return result;
         }
     }

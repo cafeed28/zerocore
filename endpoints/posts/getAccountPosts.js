@@ -17,11 +17,10 @@ module.exports = {
             fc.error(`Посты аккаунта ${accountID} не получены: посты не найдены`);
             return '-1';
         } else {
-            // робтоп я тебя ненавижу...
-
             Array.from(posts).reverse().map(post => {
                 let dateAgo = moment(post.uploadDate).fromNow(true);
 
+                // робтоп я тебя ненавижу...
                 postsString += `2~${post.post}~3~${post.accountID}~4~${post.likes}~5~0~7~${post.isSpam}~9~${dateAgo}~6~${post.postID}|`;
             });
             fc.success(`Посты аккаунта ${accountID} получены`);

@@ -165,6 +165,10 @@ mongoose.model('levels',
             type: Number,
             default: 0
         },
+        levelVersion: {
+            type: Number,
+            default: 0
+        },
         levelDesc: {
             type: String,
             default: ''
@@ -176,7 +180,10 @@ mongoose.model('levels',
         password: Number,
         original: Number,
         twoPlayer: Number,
-        songID: Number,
+        songID: {
+            type: Number,
+            default: 0
+        },
         objects: Number,
         coins: Number,
         starCoins: {
@@ -230,13 +237,12 @@ mongoose.model('levels',
 
 mongoose.model('songs',
     new Schema({
-        ID: Number,
+        songID: Number,
         name: String,
         authorID: Number,
         authorName: String,
         size: Number,
-        isDisabled: Number,
-        download: Number
+        download: String
     })
 );
 
