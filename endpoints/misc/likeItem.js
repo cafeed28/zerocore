@@ -16,8 +16,7 @@ module.exports = {
             let item;
 
             if (type == 1) {
-                // item = await server.levels.findOne({ postID: itemID });
-                return '-1';
+                item = await server.levels.findOne({ levelID: itemID });
             } else if (type == 2) {
                 item = await server.comments.findOne({ postID: itemID });
             } else if (type == 3) {
@@ -26,10 +25,12 @@ module.exports = {
                 fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: неизвестный тип`);
                 return '-1';
             }
+
             if (!item) {
                 fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: предмет не найден`);
                 return '-1';
             }
+
             let likes = item.likes;
             if (body.like == 1) likes++;
             else likes--;

@@ -1,6 +1,6 @@
 const fc = require('fancy-console');
 const fs = require('fs').promises;
-const { cipher } = require('../../lib/xor');
+const xor = require('../../lib/xor');
 const { jsonToRobtop, genSolo, genSolo2 } = require('../../lib/utils');
 const zlib = require('zlib');
 
@@ -38,7 +38,7 @@ module.exports = {
         let xorPass = pass;
         // if(checkModPerms('freeCopy')) pass = 1
         if (pass != 0) {
-            xorPass = Buffer.from(cipher(pass, 26364)).toString('base64');
+            xorPass = Buffer.from(xor.cipher(pass, 26364)).toString('base64');
         }
 
         if (levelString.substr(0, 3) == 'kS1') {

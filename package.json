@@ -19,7 +19,8 @@
         "log-timestamp": "^0.3.0",
         "moment": "^2.29.1",
         "mongodb": "^3.6.3",
-        "mongoose": "^5.11.10"
+        "mongoose": "^5.11.10",
+        "request": "^2.88.2"
     },
     "devDependencies": {
         "@types/node": "^14.14.20"

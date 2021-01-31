@@ -9,7 +9,7 @@ module.exports = {
     async execute(req, res, body, server) {
         const gjp = body.gjp || 0;
         const targetAccountID = body.targetAccountID;
-        const accountID = body.accountID || 0;
+        const accountID = body.accountID;
 
         if (accountID == 0 || gjp != 0) {
             if (!check(gjp, accountID)) {

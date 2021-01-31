@@ -49,7 +49,7 @@ app.use(async(req, res, next) => {
     if (url == 'favicon.ico') return next();
 
     console.log(`\n[${req.method.toUpperCase()}]`, url);
-    console.log(`\nContent-type: ${req.headers['content-type']}`, url);
+    console.log(`\nContent-type: ${req.headers['content-type']}, IP: ${req.headers['x-real-ip'] || req.connection.remoteAddress}`, url);
     console.log(`Body:\n`, req.body);
 
     const endpoint = endpoints.get(url) ||
