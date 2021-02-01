@@ -4,7 +4,7 @@ const utils = require('./lib/utils');
 const urlparser = require('url');
 const { StatusCodes } = require('http-status-codes');
 
-let { basePath } = require('./config');
+let { basePath, bannedIps, port } = require('./config');
 basePath += '/';
 
 const endpoints = new Map();
@@ -34,12 +34,18 @@ const { mongoose } = require('./mongoose');
 
 const app = require('express')();
 const bodyParser = require('body-parser');
-const { Http2ServerResponse } = require('http2');
 
 app.use(bodyParser.raw());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(async(req, res, next) => {
+    const ip = req.ip.substring(7);
+    if (bannedIps.find(i => i == ip)) {
+        console.log(`${ip} banned`);
+        res.status(444);
+        return next();
+    }
+
     let url = urlparser.parse(req.url).pathname;
     if (url.charAt(0) == "/") url = url.substring(1);
     if (url.charAt(url.length - 1) == "/") url = url.substring(0, url.length - 1);
@@ -49,7 +55,7 @@ app.use(async(req, res, next) => {
     if (url == 'favicon.ico') return next();
 
     console.log(`\n[${req.method.toUpperCase()}]`, url);
-    console.log(`\nContent-type: ${req.headers['content-type']}, IP: ${req.headers['x-real-ip'] || req.connection.remoteAddress}`, url);
+    console.log(`\nContent-type: ${req.headers['content-type']}, IP: ${ip}`, url);
     console.log(`Body:\n`, req.body);
 
     const endpoint = endpoints.get(url) ||
@@ -89,4 +95,4 @@ mongoose.connect('mongodb://localhost:27017/zerocore', { useNewUrlParser: true, 
     return fc.error('MongoDB Error:\n', err);
 });
 
-app.listen(80, () => fc.success('\nzeroCore запустился и работает на 80 порту'));
+app.listen(port, () => fc.success('\nzeroCore запустился и работает на 80 порту'));

@@ -1,5 +1,5 @@
 const fc = require('fancy-console');
-const { jsonToRobtop, getUserString, getSongString, genMulti } = require('../../lib/utils');
+const { jsonToRobtop, getUserString, getSongString, genMulti, robtopToJson } = require('../../lib/utils');
 
 module.exports = {
     path: 'getGJLevels21.php',
@@ -13,23 +13,63 @@ module.exports = {
         let usersString = '';
         let songsString = '';
 
-        // const levels = await server.levels.find({ levelName: new RegExp(body.str, 'i') });
-        const levels = await server.levels.find();
+        let params = { levelName: new RegExp(body.str, 'i') };
+        if (body.featured == 1) params.starFeatured = 1;
+        if (body.original == 1) params.original = 0;
+        if (body.epic == 1) params.epic = 1;
+
+        if (body.uncompleted == 1 && body.completedLevels) {
+            let completed = body.completedLevels.replace(/[^0-9,]/g, '').split(',');
+            params.levelID = { $nin: completed };
+        }
+        if (body.onlyCompleted == 1 && body.completedLevels) {
+            let completed = body.completedLevels.replace(/[^0-9,]/g, '').split(',');
+            params.levelID = { $in: completed };
+        }
+
+        if (body.coins == 1) {
+            params.starCoins = 1;
+            params.coins = 0;
+        }
+
+        if (body.song) {
+            if (!body.customSong) {
+                params.audioTrack = parseInt(body.song) - 1;
+                params.songID = 0;
+            } else {
+                params.songID = parseInt(body.song);
+            }
+        }
+
+        if (body.twoPlayer == 1) params.twoPlayer = 1;
+        if (body.star) params.starStars != 0;
+        if (body.noStar) params.starStars = 0;
+
+        // gauntlet
+
+        if (body.len && body.len != '-') {
+            params.levelLength = { $in: body.len.split(',') };
+        }
+
+        const levels = await server.levels.find(params).skip(page * 10).limit(10);
+        const levelsCount = await server.levels.countDocuments(params);
 
         if (!levels.length) {
             fc.error(`Получение уровней не выполнено: уровни не найдены`);
             return '-1';
         } else {
-            await Promise.all(levels.map(async(level) => {
+            for (const level of levels) {
+                if (level.unlisted == 1) continue;
+
                 levelsMultiString += level.levelID + ',';
 
                 if (level.songID != 0) {
                     const song = await getSongString(level.songID);
                     if (song) songsString += song + '~:~';
-                    console.log(song);
                 }
 
-                usersString += await getUserString(level.accountID) + '|';
+                const user = await getUserString(level.accountID)
+                usersString += user + '|';
 
                 const levelString = jsonToRobtop([{
                     '1': level.levelID,
@@ -63,7 +103,7 @@ module.exports = {
                 }]) + '|';
 
                 levelsString += levelString;
-            }));
+            }
 
             levelsString = levelsString.slice(0, -1);
             levelsMultiString = levelsMultiString.slice(0, -1);
@@ -78,8 +118,8 @@ module.exports = {
 
             fc.success(`Получение уровней выполнено`);
 
-            const result = `${levelsString}#${usersString}#${songsString}#${levels.length}:${page * 10}:10#${hash}`;
-            console.log(result);
+            const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
+            console.log(result.split('#'));
             return result;
         }
     }

@@ -3,7 +3,7 @@ const fc = require('fancy-console');
 module.exports = {
     path: 'api/uploadSong',
     aliases: [],
-    requiredKeys: ['songName', 'authorName', 'download', 'apiKey'],
+    requiredKeys: ['songName', 'authorName', 'download'],
     async execute(req, res, body, server) {
         const checkSong = await server.songs.findOne({
             name: body.songName.toLowerCase(),

@@ -99,7 +99,6 @@ module.exports = {
         response += someString;
 
         fc.success(`Скачивание уровня ${levelID} выполнено`);
-        console.log(response.split('#'));
         return response;
     }
 }
