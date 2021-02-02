@@ -17,10 +17,10 @@ module.exports = {
             });
 
             fc.success(`Пользователь ${accountID} разблокировал пользователя ${toAccountID}`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Пользователь ${accountID} не разблокировал пользователя ${toAccountID}: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

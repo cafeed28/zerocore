@@ -10,14 +10,14 @@ module.exports = {
 
         if (!account) {
             fc.error(`Вход в аккаунт ${body.userName} не выполнен: аккаунта не существует`);
-            return '-1';
+            return res.send('-1');
         } else {
             if (bcrypt.compareSync(body.password, account.password)) {
                 fc.success(`Вход в аккаунт ${body.userName} выполнен`);
-                return `${account.accountID},${account.accountID}`;
+                return res.send(`${account.accountID},${account.accountID}`);
             } else {
                 fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`);
-                return '-12';
+                return res.send('-12');
             }
         }
     }

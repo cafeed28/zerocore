@@ -25,10 +25,10 @@ module.exports = {
             friend.save();
 
             fc.success(`Запрос в друзья ${requestID} принят`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Запрос в друзья ${requestID} не принят: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

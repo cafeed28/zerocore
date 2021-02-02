@@ -28,10 +28,10 @@ module.exports = {
             });
 
             fc.success(`Настройки пользователя ${accountID} обновлены`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Настройки пользователя ${accountID} не обновлены: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

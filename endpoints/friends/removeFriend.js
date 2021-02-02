@@ -15,10 +15,10 @@ module.exports = {
             await server.friends.findOneAndDelete({ accountID2: accountID, accountID1: targetAccountID });
 
             fc.success(`${targetAccountID} удален из друзей ${accountID}`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`${targetAccountID} не удален из друзей ${accountID}: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

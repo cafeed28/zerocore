@@ -56,7 +56,7 @@ module.exports = {
 
         if (!levels.length) {
             fc.error(`Получение уровней не выполнено: уровни не найдены`);
-            return '-1';
+            return res.send('-1');
         } else {
             for (const level of levels) {
                 if (level.unlisted == 1) continue;
@@ -113,14 +113,13 @@ module.exports = {
             let hash = await genMulti(levelsMultiString);
             if (!hash) {
                 fc.success(`Получение уровней не выполнено: hash пустой`);
-                return '-1';
+                return res.send('-1');
             }
 
             fc.success(`Получение уровней выполнено`);
 
             const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
-            console.log(result.split('#'));
-            return result;
+            return res.send(result);
         }
     }
 }

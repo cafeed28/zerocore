@@ -31,13 +31,13 @@ module.exports = {
 
         if (!body.udid && !body.accountID) {
             fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid и accountID отсутствуют`);
-            return '-1';
+            return res.send('-1');
         }
 
         if (body.udid) {
             if (!isNaN(body.udid)) {
                 fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: udid числовой`);
-                return '-1';
+                return res.send('-1');
             }
         }
 
@@ -45,12 +45,12 @@ module.exports = {
 
         if (!await server.accounts.findOne({ accountID: id })) {
             fc.success(`Обновление статистики пользователя ${body.userName} не выполнено: аккаунта не существует`);
-            return '-1';
+            return res.send('-1');
         }
 
         if (!check(body.gjp, id)) {
             fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: неверный gjp`);
-            return '-1';
+            return res.send('-1');
         }
 
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -84,6 +84,6 @@ module.exports = {
         }, { upsert: true });
 
         fc.success(`Обновление статистики пользователя ${body.userName} выполнено`);
-        return id;
+        return res.send(id);
     }
 }

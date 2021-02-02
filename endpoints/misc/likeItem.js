@@ -22,25 +22,25 @@ module.exports = {
                 item = await server.posts.findOne({ postID: itemID });
             } else {
                 fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: неизвестный тип`);
-                return '-1';
+                return res.send('-1');
             }
 
             if (!item) {
                 fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: предмет не найден`);
-                return '-1';
+                return res.send('-1');
             }
 
             let likes = item.likes;
             if (body.like == 1) likes++;
             else likes--;
 
-            await item.update({ likes: likes });
+            await item.updateOne({ likes: likes });
 
             fc.success(`Лайк на предмет типа ${type} с ID ${itemID} поставлен`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

@@ -12,7 +12,7 @@ module.exports = {
 
         if (!song && songID > 5000000) {
             fc.error(`Получение информации музыки ${songID} не удалось: кастомная музыка не найдена`);
-            return '-1';
+            return res.send('-1');
         } else if (song) {
             let download = song.download;
             if (download.includes(':')) {
@@ -22,7 +22,7 @@ module.exports = {
             result = `1~|~${song.songID}~|~2~|~${song.name}~|~3~|~${song.authorID}~|~4~|~${song.authorName}~|~5~|~${song.size}~|~6~|~~|~10~|~${download}~|~7~|~~|~8~|~0`;
 
             fc.success(`Получение информации музыки ${songID} удалось`);
-            return result;
+            return res.send(result);
         }
 
         let songString = '';
@@ -36,10 +36,10 @@ module.exports = {
 
         if (bRes.data == '-2' || bRes.data == '-1' || bRes.data == '') {
             fc.error(`Получение информации музыки ${songID} не удалось: музыка не найдена`);
-            return '-1';
+            return res.send('-1');
         }
 
         fc.success(`Получение информации музыки ${songID} удалось`);
-        return songString;
+        return res.send(songString);
     }
 }

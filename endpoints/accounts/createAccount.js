@@ -10,7 +10,7 @@ module.exports = {
 
         if (checkUser) {
             fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
-            return '-2';
+            return res.send('-2');
         } else {
             const account = new server.accounts({
                 accountID: (await server.accounts.countDocuments()) + 1,
@@ -23,7 +23,7 @@ module.exports = {
             account.save();
 
             fc.success(`Аккаунт ${body.userName} создан`);
-            return '1';
+            return res.send('1');
         }
     }
 }

@@ -22,7 +22,7 @@ module.exports = {
 
         if (!requests) {
             fc.error(`Запросы в друзья аккаунту ${accountID} не получены: запросы не найдены`);
-            return '-1';
+            return res.send('-1');
         } else {
             // робтоп я тебя ненавижу...
 
@@ -51,7 +51,7 @@ module.exports = {
             }));
             fc.success(`Запросы в друзья аккаунту ${accountID} получены`);
 
-            return requestsString + `#${requests.length}:${page * 10}:10`;
+            return res.send(requestsString + `#${requests.length}:${page * 10}:10`);
         }
     }
 }

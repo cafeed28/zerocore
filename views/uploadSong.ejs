@@ -1,0 +1,61 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>ZeroCore Tools: Upload Song</title>
+</head>
+
+<body>
+	<label for="song_name">Song Name</label>
+	<input type="text" id="songName">
+	<br>
+	<label for="author_name">Song Author</label>
+	<input type="text" id="authorName">
+	<br>
+	<label for="song_url">Song URL</label>
+	<input type="text" id="download">
+	<br>
+
+	<button onclick="send()" id="send">Send</button>
+
+	<span id="status"></span>
+
+	<script>
+		function send() {
+			const http = new XMLHttpRequest();
+			const url = '../../api/songs/upload';
+
+			const songName = document.getElementById('songName').value;
+			const authorName = document.getElementById('authorName').value;
+			const download = document.getElementById('download').value;
+			const status = document.getElementById('status');
+
+			console.log(songName);
+			console.log(authorName);
+			console.log(download);
+
+			let params = new URLSearchParams();
+			params.append('songName', songName);
+			params.append('authorName', authorName);
+			params.append('download', download);
+
+			http.open('POST', url, true);
+			http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			http.send(params);
+
+			http.onload = () => {
+				const res = JSON.parse(http.response);
+				if(res.status == 'error') {
+					if(res.code == 'alreadyUploaded') {
+						status.innerText = `Song already uploaded, ID: ${res.value}`;
+					}
+					if(res.code == 'invalidUrl') {
+						status.innerText = `Song URL is invalid`;
+					}
+				}
+			}
+		}
+	</script>
+</body>
+
+</html>

@@ -5,6 +5,6 @@ module.exports = {
     aliases: ['path'],
     requiredKeys: ['key', 'key2'],
     async execute(req, res, body, server) {
-        return '1';
+        return res.send('1');
     }
 }

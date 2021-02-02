@@ -17,7 +17,7 @@ module.exports = {
 
             if (user.frS == 1 || blocked.length > 0) {
                 fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не отправлен: ${accountID} заблокирован ${toAccountID}`);
-                return '-1';
+                return res.send('-1');
             }
 
             const request = new server.friendrequests({
@@ -30,10 +30,10 @@ module.exports = {
             request.save();
 
             fc.success(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} отправлен`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не отправлен: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

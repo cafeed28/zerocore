@@ -22,10 +22,10 @@ module.exports = {
             post.save();
 
             fc.success(`Пост на аккаунте ${body.userName} создан`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Пост на аккаунте ${body.userName} не создан: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

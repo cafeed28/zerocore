@@ -29,10 +29,10 @@ module.exports = {
             });
 
             fc.success(`Пользователь ${accountID} заблокировал пользователя ${toAccountID}`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Пользователь ${accountID} не заблокировал пользователя ${toAccountID}: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

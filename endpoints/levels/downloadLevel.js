@@ -15,7 +15,7 @@ module.exports = {
 
         if (!level) {
             fc.error(`Скачивание уровня ${levelID} не выполнено: уровень не найден в бд`);
-            return '-1';
+            return res.send('-1');
         }
 
         let levelString = '';
@@ -24,12 +24,12 @@ module.exports = {
         } catch (e) {
             fc.error(e);
             fc.error(`Скачивание уровня ${levelID} не выполнено: файл уровня не найден`);
-            return '-1';
+            return res.send('-1');
         }
 
         if (!levelString) {
             fc.error(`Скачивание уровня ${levelID} не выполнено: файл уровня не найден`);
-            return '-1';
+            return res.send('-1');
         }
 
         await server.levels.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
@@ -99,6 +99,6 @@ module.exports = {
         response += someString;
 
         fc.success(`Скачивание уровня ${levelID} выполнено`);
-        return response;
+        return res.send(response);
     }
 }

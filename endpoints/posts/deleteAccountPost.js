@@ -16,15 +16,15 @@ module.exports = {
             console.log(post);
             if (post.deletedCount == 0) {
                 fc.error(`Пост с аккаунта ${body.accountID} не удален: пост не найден`);
-                return '-1';
+                return res.send('-1');
             } else {
                 fc.success(`Пост с аккаунта ${body.accountID} удален`);
-                return '1';
+                return res.send('1');
             }
 
         } else {
             fc.error(`Пост с аккаунта ${body.accountID} не удален: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

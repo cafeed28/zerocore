@@ -24,14 +24,14 @@ module.exports = {
                 });
             } else {
                 fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: необработанное исключение`);
-                return '-1';
+                return res.send('-1');
             }
 
             fc.success(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} удален`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

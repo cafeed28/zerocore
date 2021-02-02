@@ -5,6 +5,6 @@ module.exports = {
     aliases: ['index', 'index'],
     requiredKeys: [],
     async execute(req, res, body, server) {
-        return 'zeroCore запущен';
+        res.render('index');
     }
 }

@@ -14,7 +14,7 @@ module.exports = {
         if (accountID == 0 || gjp != 0) {
             if (!check(gjp, accountID)) {
                 fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: неверный gjp`);
-                return '-1';
+                return res.send('-1');
             }
         }
 
@@ -22,14 +22,14 @@ module.exports = {
 
         if (blocked) {
             fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: пользователь заблокировал вас`);
-            return '-1';
+            return res.send('-1');
         }
 
         const user = await server.users.findOne({ accountID: body.targetAccountID });
 
         if (!user) {
             fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: пользователь не найден`);
-            return '-1';
+            return res.send('-1');
         }
 
         // badge
@@ -40,7 +40,7 @@ module.exports = {
 
         fc.success(`Получение статистики пользователя ${body.targetAccountID} выполнено`);
 
-        return jsonToRobtop([{
+        return res.send(jsonToRobtop([{
             '1': user.userName,
             '2': targetAccountID,
             '3': user.stars,
@@ -71,6 +71,6 @@ module.exports = {
             '47': user.accExplosion,
             '49': user.badge,
             '50': '0' // commentState
-        }]);
+        }]));
     }
 }

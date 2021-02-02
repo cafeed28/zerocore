@@ -34,7 +34,7 @@ module.exports = {
         if (check(gjp, accountID)) {
             if (!levelString || !levelName) {
                 fc.error(`Уровень на аккаунте ${body.userName} не опубликован: имя или уровень пустой`);
-                return '-1';
+                return res.send('-1');
             }
             console.log('levelID: ' + levelID);
 
@@ -44,7 +44,7 @@ module.exports = {
                 let level = await server.levels.findOne({ levelID: levelID });
                 if (level && level.accountID != accountID) {
                     fc.error(`Уровень на аккаунте ${body.userName} не опубликован: уровень ${levelID} уже есть от другого автора`);
-                    return '-1';
+                    return res.send('-1');
                 }
             }
 
@@ -75,14 +75,14 @@ module.exports = {
                 await fs.writeFile(`data/levels/${levelID}`, levelString);
             } catch (e) {
                 fc.error(`Уровень на аккаунте ${body.userName} не опубликован: неизвестная ошибка\n${e.stack}`);
-                return '-1';
+                return res.send('-1');
             }
 
             fc.success(`Уровень на аккаунте ${body.userName} опубликован`);
-            return `${levelID}`;
+            return res.send(`${levelID}`);
         } else {
             fc.error(`Уровень на аккаунте ${body.userName} не опубликован: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

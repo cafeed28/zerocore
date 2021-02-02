@@ -32,7 +32,7 @@ module.exports = {
 
             if (list.length == 0) {
                 fc.error(`Получение списка пользователей типа ${type} не удалось: список пуст`);
-                return '-2';
+                return res.send('-2');
             }
 
             let users = [];
@@ -71,10 +71,10 @@ module.exports = {
             console.log(usersString);
 
             fc.success(`Получение списка пользователей типа ${type} удалось`);
-            return usersString;
+            return res.send(usersString);
         } else {
             fc.error(`Получение списка пользователей типа ${type} не удалось: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

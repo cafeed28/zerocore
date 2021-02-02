@@ -16,10 +16,10 @@ module.exports = {
             }, { isUnread: 0 });
 
             fc.success(`Запрос в друзья ${requestID} прочитан`);
-            return '1';
+            return res.send('1');
         } else {
             fc.error(`Запрос в друзья ${requestID} не прочитан: ошибка авторизации`);
-            return '-1';
+            return res.send('-1');
         }
     }
 }

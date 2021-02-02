@@ -14,7 +14,7 @@ module.exports = {
 
         if (!users.length) {
             fc.error(`Получение пользователей не выполнено: пользователи не найдены`);
-            return '-1';
+            return res.send('-1');
         } else {
             users.map(user => {
                 usersString += jsonToRobtop([{
@@ -36,6 +36,6 @@ module.exports = {
         }
         fc.success(`Получение пользователей выполнено`);
 
-        return usersString.slice(0, -1) + `#${users.length}:${page}:10`;
+        return res.send(usersString.slice(0, -1) + `#${users.length}:${page}:10`);
     }
 }

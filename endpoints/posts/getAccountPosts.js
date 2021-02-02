@@ -15,7 +15,7 @@ module.exports = {
 
         if (!posts) {
             fc.error(`Посты аккаунта ${accountID} не получены: посты не найдены`);
-            return '-1';
+            return res.send('-1');
         } else {
             Array.from(posts).reverse().map(post => {
                 let dateAgo = moment(post.uploadDate).fromNow(true);
@@ -25,7 +25,7 @@ module.exports = {
             });
             fc.success(`Посты аккаунта ${accountID} получены`);
 
-            return postsString + `#${posts.length}:${page}:10`;
+            return res.send(postsString + `#${posts.length}:${page}:10`);
         }
     }
 }
