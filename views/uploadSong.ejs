@@ -45,6 +45,7 @@
 
 			http.onload = () => {
 				const res = JSON.parse(http.response);
+				console.log(res);
 				if(res.status == 'error') {
 					if(res.code == 'alreadyUploaded') {
 						status.innerText = `Song already uploaded, ID: ${res.value}`;
@@ -52,6 +53,9 @@
 					if(res.code == 'invalidUrl') {
 						status.innerText = `Song URL is invalid`;
 					}
+				}
+				else if(res.status == 'success') {
+					status.innerText = `Song uploaded, ID: ${res.value}`;
 				}
 			}
 		}

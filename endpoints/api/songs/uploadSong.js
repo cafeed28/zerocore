@@ -10,14 +10,6 @@ module.exports = {
 		const authorName = translitCyrillic(body.authorName);
 		const download = body.download;
 
-		if (download == '' || !await verifySongUrl(download)) {
-			fc.error(`Музыка ${authorName} - ${songName} не опубликована: неверный URL`);
-			return res.json({
-				'status': 'error',
-				'code': 'invalidUrl'
-			});
-		}
-
 		if (songName == '' || authorName == '') {
 			fc.error(`Музыка ${authorName} - ${songName} не опубликована: пустое имя автора или музыки`);
 			return res.json({
@@ -27,15 +19,13 @@ module.exports = {
 		}
 
 		const checkSong = await server.songs.findOne({
-			name: new RegExp(songName, 'i'),
-			authorName: new RegExp(authorName, 'i')
+			$or: [
+				{ name: new RegExp(songName, 'i') },
+				{ authorName: new RegExp(authorName, 'i') }
+			]
 		});
 
-		const checkSongDownload = await server.songs.findOne({
-			download: download
-		});
-
-		if (checkSong || checkSongDownload) {
+		if (checkSong) {
 			fc.error(`Музыка ${authorName} - ${songName} не опубликована: такая музыка уже есть`);
 			return res.json({
 				'status': 'error',
@@ -43,6 +33,14 @@ module.exports = {
 				'value': checkSong.songID
 			});
 		} else {
+			if (download == '' || !await verifySongUrl(download)) {
+				fc.error(`Музыка ${authorName} - ${songName} не опубликована: неверный URL`);
+				return res.json({
+					'status': 'error',
+					'code': 'invalidUrl'
+				});
+			}
+
 			const song = new server.songs({
 				songID: (await server.songs.countDocuments()) + 5000000 + 1,
 				name: songName,
