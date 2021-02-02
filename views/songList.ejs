@@ -1,0 +1,46 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>ZeroCore Tools: Song List</title>
+</head>
+
+<body>
+	<span id="status"></span>
+
+	<div id="songs">
+		<td>Song ID | </td>
+		<td> Song Author - Song Name</td>
+		<td> | Listen or download</td>
+	</div>
+
+	<script>
+		const status = document.getElementById('status');
+		const songs = document.getElementById('songs');
+		status.innerText = `Loading...`;
+
+		const http = new XMLHttpRequest();
+		const url = '../../api/songs/list';
+
+		http.open('POST', url, true);
+		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		http.send();
+
+		http.onload = () => {
+			const res = JSON.parse(http.response);
+			if (res.status == 'error') {
+				status.innerText = `Unhandled exception`;
+			}
+			else if (res.status == 'success') {
+				res.value.map(song => {
+					let songHTML = document.createElement('tr');
+					songHTML.innerHTML = `<td>${song.songID} | </td><td> ${song.authorName} - ${song.name}</td><td><a href="${song.download}"> | Listen or download</a></td>`;
+					songs.appendChild(songHTML);
+				});
+				status.innerText = ``;
+			}
+		}
+	</script>
+</body>
+
+</html>

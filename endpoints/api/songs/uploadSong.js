@@ -14,23 +14,25 @@ module.exports = {
 			fc.error(`Музыка ${authorName} - ${songName} не опубликована: пустое имя автора или музыки`);
 			return res.json({
 				'status': 'error',
-				'code': 'invalidSongOrAuthorName'
+				'code': 'emptySongOrAuthorName'
 			});
 		}
 
 		const checkSong = await server.songs.findOne({
-			$or: [
-				{ name: new RegExp(songName, 'i') },
-				{ authorName: new RegExp(authorName, 'i') }
-			]
+			name: new RegExp(songName, 'i'),
+			authorName: new RegExp(authorName, 'i')
 		});
 
-		if (checkSong) {
+		const checkUrl = await server.songs.findOne({
+			download: download
+		});
+
+		if (checkSong || checkUrl) {
 			fc.error(`Музыка ${authorName} - ${songName} не опубликована: такая музыка уже есть`);
 			return res.json({
 				'status': 'error',
 				'code': 'alreadyUploaded',
-				'value': checkSong.songID
+				'value': checkSong ? checkSong.songID : checkUrl.songID
 			});
 		} else {
 			if (download == '' || !await verifySongUrl(download)) {

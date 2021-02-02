@@ -6,6 +6,8 @@
 </head>
 
 <body>
+	<h1>ТОЛЬКО ПРЯМЫЕ ССЫЛКИ!!! | ONLY DIRECT LINKS!!!</h1>
+
 	<label for="song_name">Song Name</label>
 	<input type="text" id="songName">
 	<br>
@@ -22,13 +24,15 @@
 
 	<script>
 		function send() {
+			const status = document.getElementById('status');
+			status.innerText = `Loading...`;
+
 			const http = new XMLHttpRequest();
 			const url = '../../api/songs/upload';
 
 			const songName = document.getElementById('songName').value;
 			const authorName = document.getElementById('authorName').value;
 			const download = document.getElementById('download').value;
-			const status = document.getElementById('status');
 
 			console.log(songName);
 			console.log(authorName);
@@ -45,16 +49,18 @@
 
 			http.onload = () => {
 				const res = JSON.parse(http.response);
-				console.log(res);
-				if(res.status == 'error') {
-					if(res.code == 'alreadyUploaded') {
+				if (res.status == 'error') {
+					if (res.code == 'alreadyUploaded') {
 						status.innerText = `Song already uploaded, ID: ${res.value}`;
 					}
-					if(res.code == 'invalidUrl') {
+					if (res.code == 'invalidUrl') {
 						status.innerText = `Song URL is invalid`;
 					}
+					if (res.code == 'emptySongOrAuthorName') {
+						status.innerText = `Song name and Author name required`;
+					}
 				}
-				else if(res.status == 'success') {
+				else if (res.status == 'success') {
 					status.innerText = `Song uploaded, ID: ${res.value}`;
 				}
 			}
