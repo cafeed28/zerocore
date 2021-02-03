@@ -109,6 +109,5 @@ dist
 # Data
 data/levels/*
 data/saves/*
-
-# start.bat
 start.bat
+config.js
