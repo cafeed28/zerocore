@@ -1,14 +1,15 @@
 {
 	"name": "zerocore-mongo",
 	"version": "0.1.2-dev",
-	"description": "",
+	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.js",
 	"scripts": {
 		"start": "node index",
+		"install": "npm install & mkdir data & mkdir data/levels & mkdir data/saves",
 		"cmd": "start cmd /C start.bat"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "cafeed28",
 	"license": "ISC",
 	"dependencies": {
 		"axios": "^0.21.1",
@@ -21,8 +22,7 @@
 		"moment": "^2.29.1",
 		"mongodb": "^3.6.3",
 		"mongoose": "^5.11.10",
-		"node-gzip": "^1.1.2",
-		"zlib": "^1.0.5"
+		"node-gzip": "^1.1.2"
 	},
 	"devDependencies": {
 		"@types/node": "^14.14.20"
