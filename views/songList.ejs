@@ -6,13 +6,24 @@
 </head>
 
 <body>
+	<style>
+		table {
+			border-collapse: collapse;
+		}
+
+		table td {
+			border: 2px solid black;
+			margin: 4px
+		}
+	</style>
+
 	<span id="status"></span>
 
-	<div id="songs">
-		<td>Song ID | </td>
-		<td> Song Author - Song Name</td>
-		<td> | Listen or download</td>
-	</div>
+	<table id="songs" style="padding: 8px;">
+		<td>Song ID</td>
+		<td>Song Author - Song Name</td>
+		<td>Listen or download</td>
+	</table>
 
 	<script>
 		const status = document.getElementById('status');
@@ -34,7 +45,7 @@
 			else if (res.status == 'success') {
 				res.value.map(song => {
 					let songHTML = document.createElement('tr');
-					songHTML.innerHTML = `<td>${song.songID} | </td><td> ${song.authorName} - ${song.name}</td><td><a href="${song.download}"> | Listen or download</a></td>`;
+					songHTML.innerHTML = `<td>${song.songID}</td><td> ${song.authorName} - ${song.name}</td><td><a href="${song.download}">Listen or download</a></td>`;
 					songs.appendChild(songHTML);
 				});
 				status.innerText = ``;

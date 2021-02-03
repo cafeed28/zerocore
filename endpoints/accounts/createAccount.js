@@ -2,28 +2,28 @@ const fc = require('fancy-console');
 const bcrypt = require('bcrypt');
 
 module.exports = {
-    path: 'accounts/registerGJAccount.php',
-    aliases: ['accounts/registerGJAccount'],
-    requiredKeys: ['userName', 'password', 'email', 'secret'],
-    async execute(req, res, body, server) {
-        const checkUser = await server.accounts.findOne({ userName: body.userName });
+	path: 'accounts/registerGJAccount.php',
+	aliases: ['accounts/registerGJAccount'],
+	requiredKeys: ['userName', 'password', 'email', 'secret'],
+	async execute(req, res, body, server) {
+		const checkUser = await server.accounts.findOne({ userName: body.userName });
 
-        if (checkUser) {
-            fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
-            return res.send('-2');
-        } else {
-            const account = new server.accounts({
-                accountID: (await server.accounts.countDocuments()) + 1,
-                userName: body.userName,
-                password: bcrypt.hashSync(body.password, 10),
-                email: body.email,
-                secret: body.secret
-            });
+		if (checkUser) {
+			fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
+			return res.send('-2');
+		} else {
+			const account = new server.accounts({
+				accountID: (await server.accounts.countDocuments()) + 1,
+				userName: body.userName,
+				password: await bcrypt.hash(body.password, 10),
+				email: body.email,
+				secret: body.secret
+			});
 
-            account.save();
+			account.save();
 
-            fc.success(`Аккаунт ${body.userName} создан`);
-            return res.send('1');
-        }
-    }
+			fc.success(`Аккаунт ${body.userName} создан`);
+			return res.send('1');
+		}
+	}
 }

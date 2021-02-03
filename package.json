@@ -1,31 +1,30 @@
 {
-    "name": "zerocore-mongo",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index",
-        "cmd": "start cmd /C start.bat"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^0.21.1",
-        "bcrypt": "^5.0.0",
-        "ejs": "^3.1.5",
-        "express": "^4.17.1",
-        "fancy-console": "^0.1.7",
-        "fs-readdir-recursive": "^1.1.0",
-        "http-status-codes": "^2.1.4",
-        "log-timestamp": "^0.3.0",
-        "moment": "^2.29.1",
-        "mongodb": "^3.6.3",
-        "mongoose": "^5.11.10",
-        "request": "^2.88.2",
-        "request-promise-native": "^1.0.9"
-    },
-    "devDependencies": {
-        "@types/node": "^14.14.20"
-    }
+	"name": "zerocore-mongo",
+	"version": "0.1.2-dev",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index",
+		"cmd": "start cmd /C start.bat"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"bcrypt": "^5.0.0",
+		"ejs": "^3.1.5",
+		"express": "^4.17.1",
+		"fancy-console": "^0.1.7",
+		"fs-readdir-recursive": "^1.1.0",
+		"http-status-codes": "^2.1.4",
+		"moment": "^2.29.1",
+		"mongodb": "^3.6.3",
+		"mongoose": "^5.11.10",
+		"node-gzip": "^1.1.2",
+		"zlib": "^1.0.5"
+	},
+	"devDependencies": {
+		"@types/node": "^14.14.20"
+	}
 }

@@ -26,6 +26,10 @@ mongoose.model('users',
 			type: Number,
 			default: 0
 		},
+		completedLevels: {
+			type: Number,
+			default: 0
+		},
 
 		chest1Time: Number,
 		chest2Time: Number,
