@@ -1,37 +1,37 @@
 const fc = require('fancy-console');
-const { check } = require('../../lib/gjpcheck');
+const { check } = require('../../lib/gjp');
 
 module.exports = {
-    path: 'deleteGJFriendRequests20.php',
-    aliases: ['deleteGJFriendRequests20'],
-    requiredKeys: ['gjp', 'accountID', 'targetAccountID', 'isSender', 'secret'],
-    async execute(req, res, body, server) {
-        const gjp = body.gjp;
-        const accountID = body.accountID;
-        const toAccountID = body.targetAccountID;
-        const isSender = body.isSender;
+	path: 'deleteGJFriendRequests20.php',
+	aliases: ['deleteGJFriendRequests20'],
+	requiredKeys: ['gjp', 'accountID', 'targetAccountID', 'isSender', 'secret'],
+	async execute(req, res, body, server) {
+		const gjp = body.gjp;
+		const accountID = body.accountID;
+		const toAccountID = body.targetAccountID;
+		const isSender = body.isSender;
 
-        if (check(gjp, accountID)) {
-            if (isSender == 0) {
-                await server.friendrequests.deleteOne({
-                    fromAccountID: toAccountID,
-                    toAccountID: accountID
-                });
-            } else if (isSender == 1) {
-                await server.friendrequests.deleteOne({
-                    fromAccountID: accountID,
-                    toAccountID: toAccountID
-                });
-            } else {
-                fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: необработанное исключение`);
-                return res.send('-1');
-            }
+		if (check(gjp, accountID)) {
+			if (isSender == 0) {
+				await server.friendrequests.deleteOne({
+					fromAccountID: toAccountID,
+					toAccountID: accountID
+				});
+			} else if (isSender == 1) {
+				await server.friendrequests.deleteOne({
+					fromAccountID: accountID,
+					toAccountID: toAccountID
+				});
+			} else {
+				fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: необработанное исключение`);
+				return res.send('-1');
+			}
 
-            fc.success(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} удален`);
-            return res.send('1');
-        } else {
-            fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: ошибка авторизации`);
-            return res.send('-1');
-        }
-    }
+			fc.success(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} удален`);
+			return res.send('1');
+		} else {
+			fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не удален: ошибка авторизации`);
+			return res.send('-1');
+		}
+	}
 }

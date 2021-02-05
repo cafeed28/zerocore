@@ -1,5 +1,5 @@
 const fc = require('fancy-console');
-const { check } = require('../../lib/gjpcheck');
+const { check } = require('../../lib/gjp');
 
 const fs = require('fs').promises;
 
