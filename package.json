@@ -1,6 +1,6 @@
 {
 	"name": "zerocore-mongo",
-	"version": "0.1.3-dev",
+	"version": "0.1.4-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.js",
 	"scripts": {

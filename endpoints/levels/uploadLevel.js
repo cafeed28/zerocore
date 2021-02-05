@@ -39,7 +39,7 @@ module.exports = {
 			console.log('levelID: ' + levelID);
 
 			if (levelID == 0) {
-				levelID = (await server.levels.find()).sort({ _id: -1 }).limit(1).levelID + 1;
+				levelID = (await server.levels.find().sort({ _id: -1 }).limit(1)).levelID + 1;
 			} else {
 				let level = await server.levels.findOne({ levelID: levelID });
 				if (level && level.accountID != accountID) {
