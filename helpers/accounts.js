@@ -14,7 +14,7 @@ module.exports = {
 				return reject(status.alreadyExists);
 			} else {
 				const account = new collection({
-					accountID: (await collection.countDocuments()) + 1,
+					accountID: (await collection.find()).sort({ _id: -1 }).limit(1).accountID + 1,
 					userName: userName,
 					password: await bcrypt.hash(password, 10),
 					email: email

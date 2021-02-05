@@ -44,7 +44,7 @@ module.exports = {
 			}
 
 			const song = new server.songs({
-				songID: (await server.songs.countDocuments()) + 5000000 + 1,
+				songID: (await server.songs.find()).sort({ _id: -1 }).limit(1).songID + 5000000 + 1,
 				name: songName,
 				authorID: 9,
 				authorName: authorName,
