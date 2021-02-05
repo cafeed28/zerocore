@@ -27,16 +27,18 @@ module.exports = {
 	},
 
 	async loginAccount(userName, password, collection) {
-		const account = await collection.findOne({ userName: userName });
+		return new Promise(async (resolve, reject) => {
+			const account = await collection.findOne({ userName: userName });
 
-		if (!account) {
-			return reject(status.dosentExists);
-		} else {
-			if (await bcrypt.compare(password, account.password)) {
-				return resolve(`${account.accountID},${account.accountID}`);
+			if (!account) {
+				return reject(status.dosentExists);
 			} else {
-				return reject(status.incorrectPassword);
+				if (await bcrypt.compare(password, account.password)) {
+					return resolve(`${account.accountID},${account.accountID}`);
+				} else {
+					return reject(status.incorrectPassword);
+				}
 			}
-		}
+		});
 	}
 }
