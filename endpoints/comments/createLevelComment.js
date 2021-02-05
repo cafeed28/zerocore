@@ -21,7 +21,7 @@ module.exports = {
 				accountID: accountID,
 				percent: percent,
 				uploadDate: Date.now(),
-				commentID: (await server.comments.find().sort({ _id: -1 }).limit(1)).commentID + 1
+				commentID: (await server.comments.find().sort({ _id: -1 }).limit(1))[0].commentID + 1
 			});
 			comment.save();
 

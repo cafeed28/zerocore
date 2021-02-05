@@ -17,7 +17,7 @@ module.exports = {
 			});
 
 			const friend = new server.friends({
-				ID: (await server.friends.find().sort({ _id: -1 }).limit(1)).ID + 1,
+				ID: (await server.friends.find().sort({ _id: -1 }).limit(1))[0].ID + 1,
 				accountID1: accountID,
 				accountID2: toAccountID
 			});

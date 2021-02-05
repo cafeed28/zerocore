@@ -17,7 +17,7 @@ module.exports = {
 				post: comment,
 				accountID: accountID,
 				uploadDate: Date.now(),
-				postID: (await server.posts.find().sort({ _id: -1 }).limit(1)).postID + 1
+				postID: (await server.posts.find().sort({ _id: -1 }).limit(1))[0].postID + 1
 			});
 			post.save();
 
