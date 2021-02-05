@@ -32,12 +32,14 @@ module.exports = {
 			return res.send('-1');
 		}
 
-		// badge
+		const userRole = await server.roles.findOne({ roleID: user.roleID });
+
 		// reqState, msgState, commentState (че)
 
 		let appendix;
 
 		let friendState = 0;
+		if (userRole) var badgeLevel = userRole.badgeLevel;
 
 		if (accountID == targetAccountID) {
 			let newFriendRequests = await server.friendrequests.countDocuments({ toAccountID: accountID });
@@ -113,7 +115,7 @@ module.exports = {
 			'45': '', // twitch, когда выйдет blackTea от партура, удалю
 			'46': user.diamonds,
 			'47': user.accExplosion,
-			'49': user.badge,
+			'49': badgeLevel,
 			'50': '0' // commentState
 		}]) + appendix);
 	}

@@ -79,13 +79,9 @@ mongoose.model('users',
 		IP: String,
 		lastPlayed: String,
 		isBanned: Boolean,
-		modLevel: {
+		role: {
 			type: Number,
 			default: 0
-		},
-		textColor: {
-			type: String,
-			default: '255,255,255'
 		}
 	})
 );
@@ -107,6 +103,61 @@ mongoose.model('posts',
 		postID: {
 			type: Number,
 			default: 0
+		}
+	})
+);
+
+mongoose.model('roles',
+	new Schema({
+		roleName: String,
+		roleID: Number,
+
+		freeCopy: {
+			type: Number,
+			default: 0
+		},
+		rateLevel: {
+			type: Number,
+			default: 0
+		},
+		rateLevelStar: {
+			type: Number,
+			default: 0
+		},
+		rateLevelStarFeatured: {
+			type: Number,
+			default: 0
+		},
+		rateLevelStarEpic: {
+			type: Number,
+			default: 0
+		},
+		rateLevelStarDemon: {
+			type: Number,
+			default: 0
+		},
+
+		moveLevelAcc: {
+			type: Number,
+			default: 0
+		},
+		changeLevelDesc: {
+			type: Number,
+			default: 0
+		},
+
+		badgeLevel: {
+			type: Number,
+			default: 0
+		},
+
+		commentColor: {
+			type: String,
+			default: '255,255,255'
+		},
+		prefix: {
+			type: String,
+			default: ''
 		}
 	})
 );
