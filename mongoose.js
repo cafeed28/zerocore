@@ -79,6 +79,14 @@ mongoose.model('users',
 		IP: String,
 		lastPlayed: String,
 		isBanned: Boolean,
+		modLevel: {
+			type: Number,
+			default: 0
+		},
+		textColor: {
+			type: String,
+			default: '255,255,255'
+		}
 	})
 );
 
@@ -107,7 +115,9 @@ mongoose.model('comments',
 	new Schema({
 		userName: String,
 		comment: String,
-		accountID: String,
+		accountID: Number,
+		levelID: Number,
+		percent: Number,
 		uploadDate: Number,
 		likes: {
 			type: Number,

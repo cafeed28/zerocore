@@ -71,8 +71,8 @@ module.exports = {
 			'15': level.levelLength,
 			'30': level.original,
 			'31': '1',
-			'28': 'send this to cafeed28: кафiф#5693',
-			'29': 'send this to cafeed28: кафiф#5693',
+			'28': '100',
+			'29': '500',
 			'35': level.songID,
 			'36': level.extraString,
 			'37': level.coins,
@@ -98,7 +98,6 @@ module.exports = {
 		response += genSolo2(someString) + '#';
 		response += someString;
 
-		fc.success(`Скачивание уровня ${levelID} выполнено`);
 		return res.send(response);
 	}
 }

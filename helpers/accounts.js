@@ -8,7 +8,7 @@ module.exports = {
 
 	async createAccount(userName, password, email, collection) {
 		return new Promise(async (resolve, reject) => {
-			const checkAccount = await collection.findOne({ userName: body.userName });
+			const checkAccount = await collection.findOne({ userName: userName });
 
 			if (checkAccount) {
 				return reject(status.alreadyExists);
@@ -27,12 +27,12 @@ module.exports = {
 	},
 
 	async loginAccount(userName, password, collection) {
-		const account = await collection.findOne({ userName: body.userName });
+		const account = await collection.findOne({ userName: userName });
 
 		if (!account) {
 			return reject(status.dosentExists);
 		} else {
-			if (await bcrypt.compare(body.password, account.password)) {
+			if (await bcrypt.compare(password, account.password)) {
 				return resolve(`${account.accountID},${account.accountID}`);
 			} else {
 				return reject(status.incorrectPassword);
