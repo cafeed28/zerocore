@@ -131,6 +131,7 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 	let songsString = '';
 
 	let params: any = {};
+	let orderBy: any = {};
 
 	if (!parseInt(body.str)) params.levelName = new RegExp(body.str, 'i');
 	else params.levelID = body.str; // search by ID
@@ -146,6 +147,31 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 	if (body.onlyCompleted == 1 && body.completedLevels) {
 		let completed = body.completedLevels.replace(/[^0-9,]/g, '').split(',');
 		params.levelID = { $in: completed };
+	}
+
+	if (body.type == 0 || body.type == 15) { // 15 in gdw, idk for what
+		orderBy = { likes: 1 };
+		if (body.str) {
+			if (!isNaN(body.str)) {
+				params = { levelID: body.str };
+			}
+		}
+	}
+	else if (body.type == 1) {
+		orderBy = { downloads: 1 };
+	}
+	else if (body.type == 2) {
+		orderBy = { likes: 1 };
+	}
+	else if (body.type == 3) {
+		orderBy = { uploadDate: { $lt: Date.now() - (7 * 24 * 60 * 60) } };
+	}
+	else if (body.type == 4) {
+		orderBy = { levelID: -1 };
+	}
+	else if (body.type == 5) {
+		params.accountID = body.str;
+		orderBy = { levelID: -1 };
 	}
 
 	if (body.coins == 1) {
@@ -174,7 +200,7 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 
 	console.log(params);
 
-	const levels = await Mongoose.levels.find(params).skip(page * 10).limit(10);
+	const levels = await Mongoose.levels.find(params).sort(orderBy).skip(page * 10).limit(10);
 	const levelsCount = await Mongoose.levels.countDocuments(params);
 
 	if (!levels.length) {
@@ -239,9 +265,10 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 			return res.send('-1');
 		}
 
-		fc.success(`Получение уровней выполнено`);
-
 		const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
+		console.log(result);
+
+		fc.success(`Получение уровней выполнено`);
 		return res.send(result);
 	}
 });
