@@ -31,12 +31,12 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 		return res.send('-1');
 	}
 
-	let levelString = '';
+	let levelString: any = '';
 	try {
-		levelString = (await fs.fileAsync(`data/levels/${levelID}`)).toString();
+		levelString = await fs.readAsync(`../data/levels/${levelID}`, 'utf8');
 	} catch (e) {
 		fc.error(e);
-		fc.error(`Скачивание уровня ${levelID} не выполнено: файл уровня не найден`);
+		fc.error(`Скачивание уровня ${levelID} не выполнено: ошибка скачивания`);
 		return res.send('-1');
 	}
 
@@ -84,8 +84,8 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 		'15': level.levelLength,
 		'30': level.original,
 		'31': '1',
-		'28': 'prikol',
-		'29': 'fakrobtop',
+		'28': '500',
+		'29': '300',
 		'35': level.songID,
 		'36': level.extraString,
 		'37': level.coins,
