@@ -17,11 +17,11 @@ export default class XOR {
 		return cipher;
 	}
 
-	public static encrypt(password: String, key: String) {
+	public static encrypt(password: String, key: Number) {
 		return Buffer.from(this.cipher(password, key)).toString('base64').replace(/\//g, '_').replace(/\+/g, '-');
 	}
 
-	public static decrypt(gjp: String, key: String) {
+	public static decrypt(gjp: String, key: Number) {
 		return this.cipher(Buffer.from(gjp.replace(/_/g, '/').replace(/-/g, '+'), 'base64').toString(), key);
 	}
 }
