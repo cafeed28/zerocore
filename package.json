@@ -4,11 +4,34 @@
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index",
+		"start": "cd dist & node index",
 		"setup": "npm install & mkdir data & mkdir data/levels & mkdir data/saves",
 		"cmd": "start cmd /C start.bat"
 	},
 	"keywords": [],
 	"author": "cafeed28",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"bcrypt": "^5.0.0",
+		"body-parser": "^1.19.0",
+		"colors": "^1.4.0",
+		"express": "^4.17.1",
+		"fancy-console": "^0.1.7",
+		"fs-jetpack": "^4.1.0",
+		"moment": "^2.29.1",
+		"mongodb": "^3.6.4",
+		"mongoose": "^5.11.15",
+		"morgan": "^1.10.0",
+		"node-gzip": "^1.1.2",
+		"serve-favicon": "^2.5.0"
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^3.0.0",
+		"@types/express": "^4.17.11",
+		"@types/morgan": "^1.9.2",
+		"@types/node": "^14.14.25",
+		"@types/node-gzip": "^1.1.0",
+		"@types/serve-favicon": "^2.5.2"
+	}
 }
