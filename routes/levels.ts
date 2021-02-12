@@ -84,8 +84,8 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 		'15': level.levelLength,
 		'30': level.original,
 		'31': '1',
-		'28': 'send this to cafeed28: кафiф#5693',
-		'29': 'send this to cafeed28: кафiф#5693',
+		'28': 'prikol',
+		'29': 'fakrobtop',
 		'35': level.songID,
 		'36': level.extraString,
 		'37': level.coins,
@@ -266,7 +266,7 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 		}
 
 		const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
-		console.log(result);
+		// console.log(result);
 
 		fc.success(`Получение уровней выполнено`);
 		return res.send(result);
