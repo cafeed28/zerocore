@@ -1,8 +1,10 @@
 import fc from 'fancy-console';
+import config from '../config';
 import fs from 'fs-jetpack';
 
 import bcrypt from 'bcrypt';
 import express from 'express';
+import axios from 'axios';
 import zlib from 'node-gzip';
 
 import Mongoose from '../helpers/Mongoose';
@@ -283,7 +285,7 @@ router.post('/uploadGJLevel(21)?(.php)?', async (req, res) => {
 
 	const gjp = body.gjp || 0;
 	const accountID = body.accountID;
-	const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	const ip = req.ip;
 
 	let levelID = body.levelID;
 	const levelName = body.levelName;
@@ -350,6 +352,26 @@ router.post('/uploadGJLevel(21)?(.php)?', async (req, res) => {
 			fc.error(`Уровень на аккаунте ${body.userName} не опубликован: неизвестная ошибка\n${e.stack}`);
 			return res.send('-1');
 		}
+
+		axios.post(config.webhook, {
+			"content": null,
+			"embeds": [
+				{
+					"title": "Uploaded Level",
+					"color": 5814783,
+					"fields": [
+						{
+							"name": `${body.userName} uploaded a level ${levelID}`,
+							"value": `Song: ${songID}`
+						}
+					],
+					"footer": {
+						"text": "ZeroCore Webhook"
+					},
+					"timestamp": new Date().toISOString()
+				}
+			]
+		});
 
 		fc.success(`Уровень на аккаунте ${body.userName} опубликован`);
 		return res.send(`${levelID}`);

@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 		return next();
 	}
 
-	console.log(`\n[${req.method}] ${ip} ${req.url}\nBody:\n`);
+	console.log(`\n[${req.method}] ${ip} ${req.url}\nBody:`);
 	console.log(req.body);
 	next();
 });

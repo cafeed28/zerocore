@@ -1,7 +1,9 @@
 import fc from 'fancy-console';
+import config from '../config';
 
 import bcrypt from 'bcrypt';
 import express from 'express';
+import axios from 'axios';
 
 import Mongoose from '../helpers/Mongoose';
 import Express from '../helpers/Express';
@@ -226,7 +228,7 @@ router.post('/updateGJUserScore(22)?(.php)?', async (req, res) => {
 		return res.send('-1');
 	}
 
-	const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+	const ip = req.ip;
 
 	await Mongoose.users.updateOne({ accountID: id }, {
 		userName: userName,
@@ -255,6 +257,26 @@ router.post('/updateGJUserScore(22)?(.php)?', async (req, res) => {
 		IP: ip,
 		lastPlayed: new Date().getTime(),
 	}, { upsert: true });
+
+	axios.post(config.webhook, {
+		"content": null,
+		"embeds": [
+			{
+				"title": "Updated Stats",
+				"color": 5814783,
+				"fields": [
+					{
+						"name": `${body.userName} updated a stats`,
+						"value": `${stars} stars | ${diamonds} diamonds | ${coins} coins | ${userCoins} user coins | ${demons} demons`
+					}
+				],
+				"footer": {
+					"text": "ZeroCore Webhook"
+				},
+				"timestamp": new Date().toISOString()
+			}
+		]
+	});
 
 	fc.success(`Обновление статистики пользователя ${body.userName} выполнено`);
 	return res.send(id);
