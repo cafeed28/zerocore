@@ -1,6 +1,6 @@
 export default {
 	'secret': 'secret',
-	'basePath': 'zeroserver',
+	'basePath': 'zerocore',
 	'mongodbAddress': 'mongodb://localhost:27017/zerocore',
 	'port': 80,
 	'bannedIps': [

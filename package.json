@@ -5,8 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "cd dist & node index",
-		"setup": "npm install & mkdir data & mkdir data/levels & mkdir data/saves",
-		"cmd": "start cmd /C start.bat"
+		"setup": "npm install & mkdir data & mkdir data/levels & mkdir data/saves"
 	},
 	"keywords": [],
 	"author": "cafeed28",
