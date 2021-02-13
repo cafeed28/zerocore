@@ -1,7 +1,10 @@
 import fc from 'fancy-console';
-
+import config from '../config';
 import bcrypt from 'bcrypt';
+
 import express from 'express';
+import axios from 'axios';
+
 import moment from 'moment';
 
 import Mongoose from '../helpers/Mongoose';
@@ -35,6 +38,26 @@ router.post('/uploadGJAccComment(20)?(.php)?', async (req, res) => {
 		});
 		post.save();
 
+		axios.post(config.webhook, {
+			"content": null,
+			"embeds": [
+				{
+					"title": "Created Post",
+					"color": 5814783,
+					"fields": [
+						{
+							"name": `${userName}`,
+							"value": `${Buffer.from(comment, 'base64').toString('utf8')}`
+						}
+					],
+					"footer": {
+						"text": "ZeroCore Webhook"
+					},
+					"timestamp": new Date().toISOString()
+				}
+			]
+		});
+
 		fc.success(`Пост на аккаунте ${body.userName} создан`);
 		return res.send('1');
 	} else {
@@ -53,16 +76,37 @@ router.post('/deleteGJAccComment(20)?(.php)?', async (req, res) => {
 
 	const gjp = body.gjp;
 	const accountID = body.accountID;
+	const postID = body.commentID;
 
 	if (GJCrypto.gjpCheck(gjp, accountID)) {
 		const post = await Mongoose.posts.deleteOne({
-			postID: body.commentID,
+			postID: postID,
 		});
-		console.log(post);
+
 		if (post.deletedCount == 0) {
 			fc.error(`Пост с аккаунта ${body.accountID} не удален: пост не найден`);
 			return res.send('-1');
 		} else {
+			axios.post(config.webhook, {
+				"content": null,
+				"embeds": [
+					{
+						"title": "Deleted Post",
+						"color": 5814783,
+						"fields": [
+							{
+								"name": `Account ID: ${accountID}`,
+								"value": `Post ID: ${postID}`
+							}
+						],
+						"footer": {
+							"text": "ZeroCore Webhook"
+						},
+						"timestamp": new Date().toISOString()
+					}
+				]
+			});
+
 			fc.success(`Пост с аккаунта ${body.accountID} удален`);
 			return res.send('1');
 		}

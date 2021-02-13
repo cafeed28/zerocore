@@ -1,6 +1,8 @@
 import fc from 'fancy-console';
+import config from '../../config';
 
 import express from 'express';
+import axios from 'axios';
 
 import Mongoose from '../../helpers/Mongoose';
 import Express from '../../helpers/Express';
@@ -84,6 +86,26 @@ router.post('/api/songs', async (req, res) => {
 		});
 
 		song.save();
+
+		axios.post(config.webhook, {
+			"content": null,
+			"embeds": [
+				{
+					"title": "Song Uploaded",
+					"color": 5814783,
+					"fields": [
+						{
+							"name": `${authorName} - ${songName}`,
+							"value": `${song.songID}`
+						}
+					],
+					"footer": {
+						"text": "ZeroCore Webhook"
+					},
+					"timestamp": new Date().toISOString()
+				}
+			]
+		});
 
 		fc.success(`Музыка ${authorName} - ${songName} опубликована`);
 		return res.json({

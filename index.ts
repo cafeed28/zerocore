@@ -12,8 +12,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Логгер и игнор забаненных IP
 app.use((req, res, next) => {
-	console.log(`[${req.method}] ${req.url}\nBody:\n`);
+	let ip = req.ip.slice(7);
+	if (config.bannedIps.includes(ip)) {
+		console.log(`${ip} banned lol`);
+		return next();
+	}
+
+	console.log(`\n[${req.method}] ${ip} ${req.url}\nBody:\n`);
 	console.log(req.body);
 	next();
 });
