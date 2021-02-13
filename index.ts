@@ -1,4 +1,5 @@
 import fs from 'fs-jetpack';
+import config from './config';
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -17,7 +18,7 @@ app.use(express.static('./www')); // статический файлсервер
 const routes = fs.find('routes', { recursive: true, matching: ['*.js'] });
 for (const route of routes) {
 	const routeImport = require('.\\' + route);
-	app.use('/zeroserver', routeImport.router);
+	app.use(`/${config.basePath}`, routeImport.router);
 }
 
 // Обработка 404

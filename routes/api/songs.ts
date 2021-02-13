@@ -30,6 +30,7 @@ router.get('/api/songs', async (req, res) => {
 	});
 });
 
+
 router.post('/api/songs', async (req, res) => {
 	const requredKeys = ['songName', 'authorName', 'download'];
 	const body = req.body;
@@ -92,6 +93,11 @@ router.post('/api/songs', async (req, res) => {
 			'value': song.songID
 		});
 	}
+});
+
+router.get('/api/:id', async (req, res) => {
+	const body = req.body;
+	let songList: any[] = [];
 });
 
 export { router };

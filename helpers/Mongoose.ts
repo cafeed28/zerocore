@@ -1,4 +1,5 @@
 import fc from 'fancy-console';
+import config from '../config';
 
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
@@ -315,7 +316,7 @@ mongoose.model('songs',
 
 mongoose.set('useFindAndModify', false);
 try {
-	mongoose.connect('mongodb://localhost:27017/zerocore', { useNewUrlParser: true, useUnifiedTopology: true });
+	mongoose.connect(config.mongodbAddress, { useNewUrlParser: true, useUnifiedTopology: true });
 }
 catch (err) {
 	fc.error('MongoDB Error:\n', err);

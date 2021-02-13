@@ -110,6 +110,6 @@ dist
 data/levels/*
 data/saves/*
 start.bat
-config.json
+config.ts
 
 .vscode/
