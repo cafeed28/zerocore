@@ -1,9 +1,10 @@
 import fs from 'fs-jetpack';
+import fc from 'fancy-console';
 import config from './config';
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
+import { connect } from './helpers/Mongoose';
 
 const app = express();
 
@@ -11,11 +12,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(morgan(':remote-addr :remote-user :method :url :status - :response-time ms')); // лог всех ошибок
-app.use(express.static('./www')); // статический файлсервер
+app.use((req, res, next) => {
+	console.log(`[${req.method}] ${req.url}\nBody:\n`);
+	console.log(req.body);
+	next();
+});
 
 // Использование транспортов
-const routes = fs.find('routes', { recursive: true, matching: ['*.js'] });
+const routes = fs.find('./routes', { recursive: true, matching: ['*.ts'] });
 for (const route of routes) {
 	const routeImport = require('.\\' + route);
 	app.use(`/${config.basePath}`, routeImport.router);
@@ -37,6 +41,8 @@ app.use((err: any, req: any, res: any, next: any) => {
 	return;
 });
 
-app.listen(80, () => {
-	console.log('ZeroCore started and listening on port 80');
+app.listen(80, async () => {
+	console.log('Connecting to MongoDB...');
+	await connect();
+	fc.success('ZeroCore started and listening on port 80');
 });

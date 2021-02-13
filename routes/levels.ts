@@ -33,7 +33,7 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 
 	let levelString: any = '';
 	try {
-		levelString = await fs.readAsync(`../data/levels/${levelID}`, 'utf8');
+		levelString = await fs.readAsync(`data/levels/${levelID}`, 'utf8');
 	} catch (e) {
 		fc.error(e);
 		fc.error(`Скачивание уровня ${levelID} не выполнено: ошибка скачивания`);

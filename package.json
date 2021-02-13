@@ -1,10 +1,10 @@
 {
 	"name": "zerocore",
-	"version": "0.1.5-dev",
+	"version": "0.1.6-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.js",
 	"scripts": {
-		"start": "cd dist & node index",
+		"start": "ts-node index",
 		"setup": "npm install & mkdir data & mkdir data/levels & mkdir data/saves"
 	},
 	"keywords": [],

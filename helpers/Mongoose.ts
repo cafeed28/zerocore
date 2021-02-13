@@ -314,14 +314,25 @@ mongoose.model('songs',
 	})
 );
 
-mongoose.set('useFindAndModify', false);
-try {
-	mongoose.connect(config.mongodbAddress, { useNewUrlParser: true, useUnifiedTopology: true });
+const connect = async () => {
+	await mongoose.connect(config.mongodbAddress, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useFindAndModify: false
+	});
 }
-catch (err) {
-	fc.error('MongoDB Error:\n', err);
-};
 
 const models = mongoose.models;
+const connection = mongoose.connection;
+
+connection.on('error', (err) => {
+	fc.error('MongoDB Connection error:', err.message);
+	process.exit();
+});
+
+connection.once('open', () => {
+	fc.success('MongoDB connected');
+});
 
 export default models;
+export { connect };

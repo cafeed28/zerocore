@@ -1,6 +1,5 @@
 import fc from 'fancy-console';
 
-import bcrypt from 'bcrypt';
 import express from 'express';
 
 import Mongoose from '../../helpers/Mongoose';
@@ -11,7 +10,6 @@ import APIHelpers from '../../helpers/API';
 const router = express.Router();
 
 router.get('/api/songs', async (req, res) => {
-	const body = req.body;
 	let songList: any[] = [];
 
 	const songs = await Mongoose.songs.find();
