@@ -53,7 +53,7 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 	let xorPass = pass;
 	// if(checkModPerms('freeCopy')) pass = 1
 	if (pass != 0) {
-		xorPass = Buffer.from(XOR.cipher(pass, 26364)).toString('base64');
+		xorPass = Buffer.from(XOR.cipher(pass.toString(), 26364)).toString('base64');
 	}
 
 	if (levelString.substr(0, 3) == 'kS1') {
@@ -76,28 +76,28 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 		'12': level.audioTrack,
 		'13': '21',
 		'14': level.likes,
+		'15': level.levelLength,
 		'17': level.starDemon,
-		'43': level.starDemonDiff,
-		'25': level.starAuto,
 		'18': level.starStars,
 		'19': level.starFeatured,
-		'42': level.starEpic,
-		'45': level.objects,
-		'15': level.levelLength,
-		'30': level.original,
-		'31': '1',
+		'25': level.starAuto,
+		'27': xorPass,
 		'28': '500',
 		'29': '300',
+		'30': level.original,
+		'31': '1',
 		'35': level.songID,
 		'36': level.extraString,
 		'37': level.coins,
 		'38': level.starCoins,
 		'39': level.requestedStars,
+		'40': level.ldm,
+		'42': level.starEpic,
+		'43': level.starDemonDiff,
+		'45': level.objects,
 		'46': '1',
 		'47': '2',
 		'48': '1',
-		'40': level.ldm,
-		'27': xorPass,
 	}]);
 
 	response += `#${GJCrypto.genSolo(levelString)}#`;
@@ -114,6 +114,7 @@ router.post('/downloadGJLevel(22)?(.php)?', async (req, res) => {
 	response += someString;
 
 	fc.success(`Скачивание уровня ${levelID} выполнено`);
+	// console.log(response);
 	return res.send(response);
 });
 
@@ -268,7 +269,7 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 		}
 
 		const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
-		// console.log(result);
+		console.log(result);
 
 		fc.success(`Получение уровней выполнено`);
 		return res.send(result);
