@@ -13,7 +13,7 @@ import GJHelpers from '../helpers/GJHelpers';
 const router = express.Router();
 
 router.post('/getGJFriendRequests(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['accountID', 'page'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -69,7 +69,7 @@ router.post('/getGJFriendRequests(20)?(.php)?', async (req, res) => {
 });
 
 router.post('/getGJUserList(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'type'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -147,7 +147,7 @@ router.post('/getGJUserList(20)?(.php)?', async (req, res) => {
 });
 
 router.post('/acceptGJFriendRequest(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'requestID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -181,7 +181,7 @@ router.post('/acceptGJFriendRequest(20)?(.php)?', async (req, res) => {
 });
 
 router.post('/blockGJUser(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -219,7 +219,7 @@ router.post('/blockGJUser(20)?(.php)?', async (req, res) => {
 });
 
 router.post('/unblockGJUser(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -246,7 +246,7 @@ router.post('/unblockGJUser(20)?(.php)?', async (req, res) => {
 
 
 router.post('/uploadFriendRequest(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'toAccountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -285,7 +285,7 @@ router.post('/uploadFriendRequest(20)?(.php)?', async (req, res) => {
 });
 
 router.post('/deleteGJFriendRequests(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'isSender', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -322,7 +322,7 @@ router.post('/deleteGJFriendRequests(20)?(.php)?', async (req, res) => {
 });
 
 router.post('/readGJFriendRequest(20)?(.php)?', async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['gjp', 'accountID', 'requestID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
