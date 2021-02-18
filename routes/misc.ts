@@ -25,7 +25,7 @@ router.post('/getAccountURL(.php)?', async (req, res) => {
 	return res.send('http://' + req.headers.host + req.url);
 });
 
-router.post('/accounts/backupGJAccountNew(.php)?', async (req, res) => {
+router.post('/getAccountURL(.php)?/database/accounts/backupGJAccountNew(.php)?', async (req, res) => {
 	const requredKeys = ['userName', 'password', 'saveData'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -68,7 +68,7 @@ router.post('/accounts/backupGJAccountNew(.php)?', async (req, res) => {
 	}
 });
 
-router.post('/accounts/syncGJAccountNew(.php)?', async (req, res) => {
+router.post('/getAccountURL.php/database/accounts/syncGJAccountNew.php', async (req, res) => {
 	const requredKeys = ['userName', 'password'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

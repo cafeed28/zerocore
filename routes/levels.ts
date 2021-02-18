@@ -153,7 +153,7 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 	}
 
 	if (body.type == 0 || body.type == 15) { // 15 in gdw, idk for what
-		orderBy = { likes: 1 };
+		orderBy = { likes: -1 };
 		if (body.str) {
 			if (!isNaN(body.str)) {
 				params = { levelID: body.str };
@@ -164,7 +164,7 @@ router.post('/getGJLevels(21)?(.php)?', async (req, res) => {
 		orderBy = { downloads: 1 };
 	}
 	else if (body.type == 2) {
-		orderBy = { likes: 1 };
+		orderBy = { likes: -1 };
 	}
 	else if (body.type == 3) {
 		orderBy = { uploadDate: { $lt: Date.now() - (7 * 24 * 60 * 60) } };
