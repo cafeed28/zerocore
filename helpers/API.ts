@@ -46,4 +46,9 @@ export default class API {
 
 		return text;
 	}
+
+	static clamp(val: any, min: number, max: number) {
+		if (typeof val != 'number') return 0;
+		return val > max ? max : val < min ? min : val;
+	}
 }

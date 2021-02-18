@@ -81,11 +81,7 @@ mongoose.model('users',
 
 		IP: String,
 		lastPlayed: String,
-		isBanned: Boolean,
-		role: {
-			type: Number,
-			default: 0
-		}
+		isBanned: Boolean
 	})
 );
 
@@ -162,6 +158,14 @@ mongoose.model('roles',
 			type: String,
 			default: ''
 		}
+	})
+);
+
+mongoose.model('rolesAssign',
+	new Schema({
+		assignID: Number,
+		accountID: Number,
+		roleID: Number
 	})
 );
 

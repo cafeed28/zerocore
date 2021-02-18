@@ -22,7 +22,7 @@ router.get('/api/songs', async (req, res) => {
 			authorName: song.authorName,
 			download: song.download
 		});
-	})
+	});
 
 	return res.json({
 		'status': 'success',
@@ -115,7 +115,7 @@ router.post('/api/songs', async (req, res) => {
 	}
 });
 
-router.get('/api/:id', async (req, res) => {
+router.get('/api/songs/:id', async (req, res) => {
 	const body = req.body;
 	let songList: any[] = [];
 });

@@ -111,7 +111,10 @@ router.post('/getGJComments(21)?(.php)?', async (req, res) => {
 			if (!users.includes(user.accountID)) {
 				usersString += `${user.accountID}:${user.userName}:${user.accountID}|`;
 			}
-			const userRole = await Mongoose.roles.findOne({ roleID: user.roleID });
+
+			const roleAssign = await Mongoose.users.findOne({ accountID: comment.accountID });
+			const userRole = await Mongoose.roles.findOne({ roleID: roleAssign.roleID });
+
 			if (userRole) {
 				var prefix: any = userRole.prefix + ' - ';
 				var badgeLevel = userRole.badgeLevel;
