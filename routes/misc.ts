@@ -15,7 +15,7 @@ import config from '../config';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/getAccountURL(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getAccountURL(.php)?`, async (req, res) => {
 	const requredKeys: any[] = [];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -26,7 +26,7 @@ router.post(`${config.basePath}/getAccountURL(.php)?`, async (req, res) => {
 	return res.send('http://' + req.headers.host + req.url);
 });
 
-router.post(`${config.basePath}/getAccountURL(.php)?/database/accounts/backupGJAccountNew(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getAccountURL(.php)?/database/accounts/backupGJAccountNew(.php)?`, async (req, res) => {
 	const requredKeys = ['userName', 'password', 'saveData'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -69,7 +69,7 @@ router.post(`${config.basePath}/getAccountURL(.php)?/database/accounts/backupGJA
 	}
 });
 
-router.post(`${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew.php`, async (req, res) => {
+router.post(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew.php`, async (req, res) => {
 	const requredKeys = ['userName', 'password'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -100,7 +100,7 @@ router.post(`${config.basePath}/getAccountURL.php/database/accounts/syncGJAccoun
 	}
 });
 
-router.post(`${config.basePath}/likeGJItem(211)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/likeGJItem(211)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'itemID', 'like', 'type'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -146,7 +146,7 @@ router.post(`${config.basePath}/likeGJItem(211)?(.php)?`, async (req, res) => {
 	}
 });
 
-router.post(`${config.basePath}/getGJSongInfo(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJSongInfo(.php)?`, async (req, res) => {
 	const requredKeys = ['songID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -191,7 +191,7 @@ router.post(`${config.basePath}/getGJSongInfo(.php)?`, async (req, res) => {
 	return res.send(songString);
 });
 
-router.post(`${config.basePath}/requestUserAccess(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/requestUserAccess(.php)?`, async (req, res) => {
 	const requredKeys = ['accountID', 'gjp', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -219,7 +219,7 @@ router.post(`${config.basePath}/requestUserAccess(.php)?`, async (req, res) => {
 	}
 });
 
-router.post(`${config.basePath}/suggestGJStars(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/suggestGJStars(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['accountID', 'gjp', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

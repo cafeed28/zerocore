@@ -13,7 +13,7 @@ import config from '../config';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/uploadGJComment(21)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/uploadGJComment(21)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'userName', 'accountID', 'levelID', 'comment', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -48,7 +48,7 @@ router.post(`${config.basePath}/uploadGJComment(21)?(.php)?`, async (req, res) =
 	}
 });
 
-router.post(`${config.basePath}/deleteGJComment(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/deleteGJComment(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'commentID', 'levelID', 'accountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -80,7 +80,7 @@ router.post(`${config.basePath}/deleteGJComment(20)?(.php)?`, async (req, res) =
 	}
 });
 
-router.post(`${config.basePath}/getGJComments(21)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJComments(21)?(.php)?`, async (req, res) => {
 	const requredKeys = ['levelID', 'page'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

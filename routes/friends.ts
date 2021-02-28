@@ -13,7 +13,7 @@ import config from '../config';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/getGJFriendRequests(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJFriendRequests(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['accountID', 'page'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -69,7 +69,7 @@ router.post(`${config.basePath}/getGJFriendRequests(20)?(.php)?`, async (req, re
 	}
 });
 
-router.post(`${config.basePath}/getGJUserList(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJUserList(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'type'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -147,7 +147,7 @@ router.post(`${config.basePath}/getGJUserList(20)?(.php)?`, async (req, res) => 
 	}
 });
 
-router.post(`${config.basePath}/acceptGJFriendRequest(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/acceptGJFriendRequest(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'requestID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -181,7 +181,7 @@ router.post(`${config.basePath}/acceptGJFriendRequest(20)?(.php)?`, async (req, 
 	}
 });
 
-router.post(`${config.basePath}/blockGJUser(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/blockGJUser(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -219,7 +219,7 @@ router.post(`${config.basePath}/blockGJUser(20)?(.php)?`, async (req, res) => {
 	}
 });
 
-router.post(`${config.basePath}/unblockGJUser(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/unblockGJUser(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -246,7 +246,7 @@ router.post(`${config.basePath}/unblockGJUser(20)?(.php)?`, async (req, res) => 
 });
 
 
-router.post(`${config.basePath}/uploadFriendRequest(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/uploadFriendRequest(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'toAccountID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -285,7 +285,7 @@ router.post(`${config.basePath}/uploadFriendRequest(20)?(.php)?`, async (req, re
 	}
 });
 
-router.post(`${config.basePath}/deleteGJFriendRequests(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/deleteGJFriendRequests(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'isSender', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -322,7 +322,7 @@ router.post(`${config.basePath}/deleteGJFriendRequests(20)?(.php)?`, async (req,
 	}
 });
 
-router.post(`${config.basePath}/readGJFriendRequest(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/readGJFriendRequest(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['gjp', 'accountID', 'requestID', 'secret'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

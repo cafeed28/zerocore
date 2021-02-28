@@ -15,7 +15,7 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/uploadGJAccComment(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/uploadGJAccComment(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'gjp', 'userName', 'comment', 'accountID'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -66,7 +66,7 @@ router.post(`${config.basePath}/uploadGJAccComment(20)?(.php)?`, async (req, res
 	}
 });
 
-router.post(`${config.basePath}/deleteGJAccComment(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/deleteGJAccComment(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'gjp', 'commentID', 'accountID'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -117,7 +117,7 @@ router.post(`${config.basePath}/deleteGJAccComment(20)?(.php)?`, async (req, res
 	}
 });
 
-router.post(`${config.basePath}/getGJAccountComments(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJAccountComments(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['accountID', 'page'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

@@ -16,7 +16,7 @@ import XOR from '../helpers/classes/XOR';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/downloadGJLevel(22)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/downloadGJLevel(22)?(.php)?`, async (req, res) => {
 	const requredKeys = ['levelID'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -118,7 +118,7 @@ router.post(`${config.basePath}/downloadGJLevel(22)?(.php)?`, async (req, res) =
 	return res.send(response);
 });
 
-router.post(`${config.basePath}/getGJLevels(21)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJLevels(21)?(.php)?`, async (req, res) => {
 	const requredKeys = ['page', 'str'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -276,7 +276,7 @@ router.post(`${config.basePath}/getGJLevels(21)?(.php)?`, async (req, res) => {
 	}
 });
 
-router.post(`${config.basePath}/uploadGJLevel(21)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/uploadGJLevel(21)?(.php)?`, async (req, res) => {
 	const requredKeys = ['accountID', 'levelName', 'levelDesc', 'audioTrack', 'gjp'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

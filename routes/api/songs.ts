@@ -11,7 +11,7 @@ import APIHelpers from '../../helpers/classes/API';
 
 const router = express.Router();
 
-router.get(`${config.basePath}/api/songs`, async (req, res) => {
+router.get(`/${config.basePath}/api/songs`, async (req, res) => {
 	let songList: any[] = [];
 
 	const songs = await Mongoose.songs.find();
@@ -31,7 +31,7 @@ router.get(`${config.basePath}/api/songs`, async (req, res) => {
 });
 
 
-router.post(`${config.basePath}/api/songs`, async (req, res) => {
+router.post(`/${config.basePath}/api/songs`, async (req, res) => {
 	const requredKeys = ['songName', 'authorName', 'download'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -115,7 +115,7 @@ router.post(`${config.basePath}/api/songs`, async (req, res) => {
 	}
 });
 
-router.get(`${config.basePath}/api/songs/:id`, async (req, res) => {
+router.get(`/${config.basePath}/api/songs/:id`, async (req, res) => {
 	const body = req.body;
 	let songList: any[] = [];
 });

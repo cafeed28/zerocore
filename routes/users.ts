@@ -13,7 +13,7 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/getGJUserInfo(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJUserInfo(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['targetAccountID'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -132,7 +132,7 @@ router.post(`${config.basePath}/getGJUserInfo(20)?(.php)?`, async (req, res) => 
 	}]) + appendix);
 });
 
-router.post(`${config.basePath}/getGJUsers(20)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/getGJUsers(20)?(.php)?`, async (req, res) => {
 	const requredKeys = ['page', 'str'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -173,7 +173,7 @@ router.post(`${config.basePath}/getGJUsers(20)?(.php)?`, async (req, res) => {
 	return res.send(usersString.slice(0, -1) + `#${users.length}:${page}:10`);
 });
 
-router.post(`${config.basePath}/updateGJUserScore(22)?(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/updateGJUserScore(22)?(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'userName', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {

@@ -12,7 +12,7 @@ import config from '../config';
 
 const router = express.Router();
 
-router.post(`${config.basePath}/templates/route(.php)?`, async (req, res) => {
+router.post(`/${config.basePath}/templates/route(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'userName', 'password'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
