@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 const routes = fs.find('./routes', { recursive: true, matching: ['*.ts'] });
 for (const route of routes) {
 	const routeImport = require('.\\' + route);
-	app.use(`/${config.basePath}`, routeImport.router);
+	app.use(routeImport.router);
 }
 
 // Обработка 404

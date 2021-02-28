@@ -12,7 +12,7 @@ import GJHelpers from '../../helpers/classes/GJHelpers';
 
 const router = express.Router();
 
-router.get('/api/roles', async (req, res) => {
+router.get(`${config.basePath}/api/roles`, async (req, res) => {
 	let rolesList: any[] = [];
 
 	const roles = await Mongoose.roles.find();
@@ -26,7 +26,7 @@ router.get('/api/roles', async (req, res) => {
 	});
 });
 
-router.post('/api/roles', async (req, res) => {
+router.post(`${config.basePath}/api/roles`, async (req, res) => {
 	const requredKeys = ['roleName', 'userName', 'password'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -116,7 +116,7 @@ router.post('/api/roles', async (req, res) => {
 	}
 });
 
-router.post('/api/assignrole', async (req, res) => {
+router.post(`${config.basePath}/api/assignrole`, async (req, res) => {
 	const requredKeys = ['roleID', 'accountID', 'userName', 'password'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -193,7 +193,7 @@ router.post('/api/assignrole', async (req, res) => {
 	}
 });
 
-router.get('/api/roles/:id', async (req, res) => {
+router.get(`${config.basePath}/api/roles/:id`, async (req, res) => {
 	const body = req.body;
 	let songList: any[] = [];
 });

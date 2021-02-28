@@ -7,10 +7,11 @@ import Mongoose from '../helpers/classes/Mongoose';
 import Express from '../helpers/classes/Express';
 
 import GJCrypto from '../helpers/classes/GJCrypto';
+import config from '../config';
 
 const router = express.Router();
 
-router.post('/accounts/loginGJAccount(.php)?', async (req, res) => {
+router.post(`${config.basePath}/accounts/loginGJAccount(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'userName', 'password'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -34,7 +35,7 @@ router.post('/accounts/loginGJAccount(.php)?', async (req, res) => {
 	}
 });
 
-router.post('/accounts/registerGJAccount(.php)?', async (req, res) => {
+router.post(`${config.basePath}/accounts/registerGJAccount(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'userName', 'password', 'email'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
@@ -63,7 +64,7 @@ router.post('/accounts/registerGJAccount(.php)?', async (req, res) => {
 	}
 });
 
-router.post('/accounts/updateGJAccSettings20(.php)?', async (req, res) => {
+router.post(`${config.basePath}/accounts/updateGJAccSettings20(.php)?`, async (req, res) => {
 	const requredKeys = ['secret', 'gjp', 'accountID', 'mS', 'frS', 'cS', 'yt', 'twitter', 'twitch'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
