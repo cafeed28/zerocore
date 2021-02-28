@@ -4,7 +4,7 @@ import config from './config';
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import { connect } from './helpers/Mongoose';
+import { connect } from './helpers/classes/Mongoose';
 
 const app = express();
 

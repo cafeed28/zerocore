@@ -3,10 +3,10 @@ import fc from 'fancy-console';
 import bcrypt from 'bcrypt';
 import express from 'express';
 
-import Mongoose from '../helpers/Mongoose';
-import Express from '../helpers/Express';
+import Mongoose from '../helpers/classes/Mongoose';
+import Express from '../helpers/classes/Express';
 
-import GJCrypto from '../helpers/GJCrypto';
+import GJCrypto from '../helpers/classes/GJCrypto';
 
 const router = express.Router();
 

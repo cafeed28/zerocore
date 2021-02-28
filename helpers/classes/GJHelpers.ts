@@ -47,6 +47,28 @@ export default class GJHelpers {
 		});
 	}
 
+	static async getAccountPermission(accountID: Number, permission: string): Promise<number> {
+		return new Promise(async (resolve, reject) => {
+			const accRoles = await Mongoose.rolesAssign.find({ accountID: accountID });
+			let accRolesList: any[] = [];
+
+			accRoles.forEach(role => { accRolesList.push(role.roleID); });
+
+			let maxPerm = 0;
+
+			if (accRolesList.length != 0) {
+				let roles = await Mongoose.roles.find({ roleID: { $in: accRolesList } });
+				roles.forEach((role: any) => {
+					if (role[permission] > maxPerm) {
+						maxPerm = role[permission];
+					}
+				});
+			}
+
+			resolve(maxPerm);
+		});
+	}
+
 	static async getSongString(songID: Number) {
 		return new Promise(async (resolve, reject) => {
 			const song = await Mongoose.songs.findOne({ songID: songID });

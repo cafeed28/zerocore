@@ -4,10 +4,10 @@ import config from '../../config';
 import express from 'express';
 import axios from 'axios';
 
-import Mongoose from '../../helpers/Mongoose';
-import Express from '../../helpers/Express';
+import Mongoose from '../../helpers/classes/Mongoose';
+import Express from '../../helpers/classes/Express';
 
-import APIHelpers from '../../helpers/API';
+import APIHelpers from '../../helpers/classes/API';
 
 const router = express.Router();
 

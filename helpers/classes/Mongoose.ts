@@ -1,5 +1,5 @@
 import fc from 'fancy-console';
-import config from '../config';
+import config from '../../config';
 
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
@@ -115,7 +115,7 @@ mongoose.model('roles',
 			type: Number,
 			default: 0
 		},
-		rateLevel: {
+		rateLevelDiff: {
 			type: Number,
 			default: 0
 		},
@@ -123,15 +123,7 @@ mongoose.model('roles',
 			type: Number,
 			default: 0
 		},
-		rateLevelStarFeatured: {
-			type: Number,
-			default: 0
-		},
-		rateLevelStarEpic: {
-			type: Number,
-			default: 0
-		},
-		rateLevelStarDemon: {
+		sendLevelRate: {
 			type: Number,
 			default: 0
 		},
@@ -146,6 +138,10 @@ mongoose.model('roles',
 		},
 
 		badgeLevel: {
+			type: Number,
+			default: 0
+		},
+		requestMod: {
 			type: Number,
 			default: 0
 		},

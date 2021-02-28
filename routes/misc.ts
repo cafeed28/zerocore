@@ -6,11 +6,11 @@ import bcrypt from 'bcrypt';
 import express from 'express';
 import axios from 'axios';
 
-import Mongoose from '../helpers/Mongoose';
-import Express from '../helpers/Express';
+import Mongoose from '../helpers/classes/Mongoose';
+import Express from '../helpers/classes/Express';
 
-import GJCrypto from '../helpers/GJCrypto';
-import GJHelpers from '../helpers/GJHelpers';
+import GJCrypto from '../helpers/classes/GJCrypto';
+import GJHelpers from '../helpers/classes/GJHelpers';
 
 const router = express.Router();
 
@@ -188,6 +188,62 @@ router.post('/getGJSongInfo(.php)?', async (req, res) => {
 
 	fc.success(`Получение информации музыки ${songID} удалось`);
 	return res.send(songString);
+});
+
+router.post('/requestUserAccess(.php)?', async (req, res) => {
+	const requredKeys = ['accountID', 'gjp', 'secret'];
+	const body = req.body;
+	if (!Express.checkKeys(body, requredKeys)) {
+		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
+		return res.status(400).send('-1');
+	}
+
+	const accountID = body.accountID;
+	const gjp = body.gjp;
+	if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJHelpers.getAccountPermission(accountID, 'badgeLevel') > 0) {
+			const permission = await GJHelpers.getAccountPermission(accountID, 'badgeLevel');
+
+			fc.success(`Доступ модератора аккаунта ${accountID} уровня ${permission} получен`);
+			return res.send(permission.toString());
+		}
+		else {
+			fc.error(`Доступ модератора аккаунта ${accountID} не получен: доступ запрещен`);
+			return res.send('-1');
+		}
+	}
+	else {
+		fc.error(`Доступ модератора аккаунта ${accountID} не получен: ошибка авторизации`);
+		return res.send('-1');
+	}
+});
+
+router.post('/suggestGJStars(20)?(.php)?', async (req, res) => {
+	const requredKeys = ['accountID', 'gjp', 'secret'];
+	const body = req.body;
+	if (!Express.checkKeys(body, requredKeys)) {
+		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
+		return res.status(400).send('-1');
+	}
+
+	const accountID = body.accountID;
+	const gjp = body.gjp;
+	if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJHelpers.getAccountPermission(accountID, 'badgeLevel') > 0) {
+			const permission = await GJHelpers.getAccountPermission(accountID, 'badgeLevel');
+
+			fc.success(`Доступ модератора аккаунта ${accountID} уровня ${permission} получен`);
+			return res.send(permission.toString());
+		}
+		else {
+			fc.error(`Доступ модератора аккаунта ${accountID} не получен: доступ запрещен`);
+			return res.send('-1');
+		}
+	}
+	else {
+		fc.error(`Доступ модератора аккаунта ${accountID} не получен: ошибка авторизации`);
+		return res.send('-1');
+	}
 });
 
 export { router };

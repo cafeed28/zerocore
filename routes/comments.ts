@@ -4,11 +4,11 @@ import bcrypt from 'bcrypt';
 import express from 'express';
 import moment from 'moment';
 
-import Mongoose from '../helpers/Mongoose';
-import Express from '../helpers/Express';
+import Mongoose from '../helpers/classes/Mongoose';
+import Express from '../helpers/classes/Express';
 
-import GJCrypto from '../helpers/GJCrypto';
-import GJHelpers from '../helpers/GJHelpers';
+import GJCrypto from '../helpers/classes/GJCrypto';
+import GJHelpers from '../helpers/classes/GJHelpers';
 
 const router = express.Router();
 
