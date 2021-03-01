@@ -12,15 +12,21 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Защита от атак
+app.use(require('helmet')());
+
 // Логгер и игнор забаненных IP
 app.use((req, res, next) => {
 	let ip = req.ip.slice(7);
 	if (config.bannedIps.includes(ip)) {
 		console.log(`${ip} banned lol`);
-		return next();
+		return req.socket.destroy();
 	}
 
-	console.log(`\n[${req.method}] ${ip} ${req.url}\nBody:`);
+	let date = new Date().toISOString().
+		replace(/T/, ' ').replace(/\..+/, '').replace(/-/g, '.');
+
+	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}\nBody:`); // [2021.02.28 16:28:40] GET 192.168.1.1 /
 	console.log(req.body);
 	next();
 });

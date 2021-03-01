@@ -16,7 +16,7 @@ import config from '../config';
 const router = express.Router();
 
 router.post(`/${config.basePath}/getAccountURL(.php)?`, async (req, res) => {
-	const requredKeys: any[] = [];
+	const requredKeys: any[] = ['accountID', 'secret', 'type'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
@@ -26,6 +26,7 @@ router.post(`/${config.basePath}/getAccountURL(.php)?`, async (req, res) => {
 	return res.send('http://' + req.headers.host + req.url);
 });
 
+// idk why i should use this path, robtop why?
 router.post(`/${config.basePath}/getAccountURL(.php)?/database/accounts/backupGJAccountNew(.php)?`, async (req, res) => {
 	const requredKeys = ['userName', 'password', 'saveData'];
 	const body = req.body;
@@ -69,6 +70,7 @@ router.post(`/${config.basePath}/getAccountURL(.php)?/database/accounts/backupGJ
 	}
 });
 
+// same as backup, robtop, why
 router.post(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew.php`, async (req, res) => {
 	const requredKeys = ['userName', 'password'];
 	const body = req.body;
@@ -83,12 +85,18 @@ router.post(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccou
 
 	if (await GJHelpers.isValid(userName, password)) {
 		let saveData;
+
 		try {
 			saveData = await fs.readAsync(`data/saves/${accountID}`, 'utf8');
 		}
 		catch (e) {
 			fc.error(`Восстановление аккаунта ${userName} не выполнено: `, e.stack);
 			return '-1'
+		}
+
+		if (!saveData) {
+			fc.success(`Восстановление аккаунта ${userName} не выполнено: нет бэкапа`);
+			return res.send('-1');
 		}
 
 		fc.success(`Восстановление аккаунта ${userName} выполнено`);

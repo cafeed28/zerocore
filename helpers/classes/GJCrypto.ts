@@ -42,15 +42,18 @@ export default class GJCrypto {
 			let levelsArray = levelsMultiString.split(',');
 			let hash = '';
 
-			await Promise.all(levelsArray.map(async (levelID: string) => {
+			for await (const levelID of levelsArray) {
 				if (isNaN(parseInt(levelID))) {
 					resolve(false);
 				}
 
 				const level = await Mongoose.levels.findOne({ levelID: levelID });
 
-				hash += String(level.levelID)[0] + String(level.levelID).slice(String(level.levelID).length - 1) + (String(level.starStars) || '0') + (String(level.starCoins) || '0');
-			}));
+				hash += String(level.levelID)[0] +
+					String(level.levelID).slice(String(level.levelID).length - 1) +
+					(String(level.starStars) || '0') +
+					(String(level.starCoins) || '0');
+			}
 
 			resolve(crypto.createHash('sha1').update(hash + 'xI25fpAapCQg').digest('hex'));
 		});

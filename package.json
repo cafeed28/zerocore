@@ -18,6 +18,7 @@
 		"express": "^4.17.1",
 		"fancy-console": "^0.1.7",
 		"fs-jetpack": "^4.1.0",
+		"helmet": "^4.4.1",
 		"moment": "^2.29.1",
 		"mongodb": "^3.6.4",
 		"mongoose": "^5.11.15",
