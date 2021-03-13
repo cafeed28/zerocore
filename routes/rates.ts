@@ -60,6 +60,7 @@ router.post(`/${config.basePath}/suggestGJStars(20)?(.php)?`, async (req, res) =
 	if (GJCrypto.gjpCheck(gjp, accountID)) {
 		if (await GJHelpers.checkPermission(accountID, 'rateLevelStar')) {
 			let diff: any = GJHelpers.getDiffFromStars(stars);
+            console.log(diff);
 
 			await GJHelpers.rateLevel(accountID, levelID, stars, diff['diff'], diff['auto'], diff['demon']);
 			await GJHelpers.featureLevel(accountID, levelID, feature);

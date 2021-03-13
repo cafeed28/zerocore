@@ -77,42 +77,42 @@ export default class GJHelpers {
 		});
 	}
 
-	static getDiffFromStars(stars: number): any {
+	static getDiffFromStars(stars: string): any {
 		let diffname = 'N/A: ' + stars;
 		let diff = 0;
 
 		let auto = 0;
 		let demon = 0;
 		switch (stars) {
-			case 1:
+			case '1':
 				diffname = 'Auto';
 				diff = 50;
 				auto = 1;
 				break;
-			case 2:
+			case '2':
 				diffname = 'Easy';
 				diff = 10;
 				break;
-			case 3:
+			case '3':
 				diffname = 'Normal';
 				diff = 20;
 				break;
-			case 4:
-			case 5:
+			case '4':
+			case '5':
 				diffname = 'Hard';
 				diff = 30;
 				break;
-			case 6:
-			case 7:
+			case '6':
+			case '7':
 				diffname = 'Harder';
 				diff = 40;
 				break;
-			case 8:
-			case 9:
+			case '8':
+			case '9':
 				diffname = 'Insane';
 				diff = 50;
 				break;
-			case 10:
+			case '10':
 				diffname = 'Demon';
 				diff = 50;
 				demon = 1;
@@ -129,8 +129,10 @@ export default class GJHelpers {
 
 	static async rateLevel(accountID: number, levelID: number, stars: number, diff: string, auto: string, demon: string): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
+			console.log(stars);
+			console.log(diff);
 			await Mongoose.levels.updateOne({ levelID: levelID }, {
-				starDifficulty: diff,
+				starDifficulty: parseInt(diff),
 				starDemon: demon,
 				starAuto: auto,
 				starStars: stars
