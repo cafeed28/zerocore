@@ -1,5 +1,5 @@
 export default interface ICommand {
 	name: string,
 	modLevel: number,
-	execute: Function
+	execute(accountID: number, message: string): Promise<void>
 }

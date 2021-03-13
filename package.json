@@ -4,8 +4,9 @@
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.js",
 	"scripts": {
-		"start": "ts-node index",
-		"setup": "npm install & mkdir data & mkdir data/levels & mkdir data/saves"
+		"build": "tsc -p tsconfig.json",
+		"start": "cd dist & index",
+		"setup": "npm install & mkdir \"dist/data\" & mkdir \"dist/data/levels\" & mkdir \"dist/data/saves\""
 	},
 	"keywords": [],
 	"author": "cafeed28",

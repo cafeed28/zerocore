@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import axios from 'axios';
 
 export default class GJHelpers {
-	static async isValid(userName: String, password: String) {
+	static async isValid(userName: String, password: String): Promise<boolean> {
 		const account = await Mongoose.accounts.findOne({ userName: userName });
 		if (!account) return false;
 
@@ -11,7 +11,7 @@ export default class GJHelpers {
 		else return false;
 	}
 
-	static async isValidID(ID: Number, password: String) {
+	static async isValidID(ID: Number, password: String): Promise<boolean> {
 		const account = await Mongoose.accounts.findOne({ accountID: ID });
 		if (!password) {
 			return account ? true : false;
@@ -21,7 +21,7 @@ export default class GJHelpers {
 		}
 	}
 
-	static jsonToRobtop(json: any) {
+	static jsonToRobtop(json: any): string {
 		let result = [];
 
 		for (let i = 0; i < json.length; i++) {
@@ -40,7 +40,7 @@ export default class GJHelpers {
 		return result.join('|');
 	}
 
-	static async getUserString(accountID: Number) {
+	static async getUserString(accountID: Number): Promise<string> {
 		return new Promise(async (resolve, reject) => {
 			const account = await Mongoose.accounts.findOne({ accountID: accountID });
 			resolve(`${accountID}:${account.userName}:${accountID}`);
@@ -69,7 +69,95 @@ export default class GJHelpers {
 		});
 	}
 
-	static async getSongString(songID: Number) {
+	static async checkPermission(accountID: Number, permission: string): Promise<boolean> {
+		return new Promise(async (resolve, reject) => {
+			let maxPerm = await this.getAccountPermission(accountID, permission);
+			if (maxPerm > 0) resolve(true);
+			else resolve(false);
+		});
+	}
+
+	static getDiffFromStars(stars: number): any {
+		let diffname = 'N/A: ' + stars;
+		let diff = 0;
+
+		let auto = 0;
+		let demon = 0;
+		switch (stars) {
+			case 1:
+				diffname = 'Auto';
+				diff = 50;
+				auto = 1;
+				break;
+			case 2:
+				diffname = 'Easy';
+				diff = 10;
+				break;
+			case 3:
+				diffname = 'Normal';
+				diff = 20;
+				break;
+			case 4:
+			case 5:
+				diffname = 'Hard';
+				diff = 30;
+				break;
+			case 6:
+			case 7:
+				diffname = 'Harder';
+				diff = 40;
+				break;
+			case 8:
+			case 9:
+				diffname = 'Insane';
+				diff = 50;
+				break;
+			case 10:
+				diffname = 'Demon';
+				diff = 50;
+				demon = 1;
+				break;
+		};
+
+		return {
+			'diff': diff,
+			'auto': auto,
+			'demon': demon,
+			'name': diffname
+		};
+	}
+
+	static async rateLevel(accountID: number, levelID: number, stars: number, diff: string, auto: string, demon: string): Promise<boolean> {
+		return new Promise(async (resolve, reject) => {
+			await Mongoose.levels.updateOne({ levelID: levelID }, {
+				starDifficulty: diff,
+				starDemon: demon,
+				starAuto: auto,
+				starStars: stars
+			});
+			resolve(true);
+		});
+	}
+
+	static async featureLevel(accountID: number, levelID: number, feature: number): Promise<boolean> {
+		return new Promise(async (resolve, reject) => {
+			await Mongoose.levels.updateOne({ levelID: levelID }, {
+				starFeatured: feature
+			});
+			resolve(true);
+		});
+	}
+
+	static async verifyCoinsLevel(accountID: number, levelID: number, coins: number): Promise<boolean> {
+		return new Promise(async (resolve, reject) => {
+			await Mongoose.levels.updateOne({ levelID: levelID }, {
+				starCoins: coins
+			});
+			resolve(true);
+		});
+	}
+
+	static async getSongString(songID: Number): Promise<string> {
 		return new Promise(async (resolve, reject) => {
 			const song = await Mongoose.songs.findOne({ songID: songID });
 			if (!song || song.length == 0) {

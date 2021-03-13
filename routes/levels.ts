@@ -114,7 +114,6 @@ router.post(`/${config.basePath}/downloadGJLevel(22)?(.php)?`, async (req, res) 
 	response += someString;
 
 	fc.success(`Скачивание уровня ${levelID} выполнено`);
-	// console.log(response);
 	return res.send(response);
 });
 
@@ -201,7 +200,7 @@ router.post(`/${config.basePath}/getGJLevels(21)?(.php)?`, async (req, res) => {
 		params.levelLength = { $in: body.len.split(',') };
 	}
 
-	console.log(params);
+	fc.log(params);
 
 	const levels = await Mongoose.levels.find(params).sort(orderBy).skip(page * 10).limit(10);
 	const levelsCount = await Mongoose.levels.countDocuments(params);
@@ -269,7 +268,7 @@ router.post(`/${config.basePath}/getGJLevels(21)?(.php)?`, async (req, res) => {
 		}
 
 		const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
-		console.log(result);
+		fc.log(result);
 
 		fc.success(`Получение уровней выполнено`);
 		return res.send(result);
@@ -312,7 +311,7 @@ router.post(`/${config.basePath}/uploadGJLevel(21)?(.php)?`, async (req, res) =>
 			fc.error(`Уровень на аккаунте ${body.userName} не опубликован: имя или уровень пустой`);
 			return res.send('-1');
 		}
-		console.log('levelID: ' + levelID);
+		fc.log('levelID: ' + levelID);
 
 		if (levelID == 0) {
 			levelID = (await Mongoose.levels.countDocuments()) + 1;

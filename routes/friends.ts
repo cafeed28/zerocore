@@ -137,7 +137,7 @@ router.post(`/${config.basePath}/getGJUserList(20)?(.php)?`, async (req, res) =>
 			await Mongoose.friends.updateMany({ accountID1: accountID }, { isUnread2: 0 });
 		}
 
-		console.log(usersString);
+		fc.log(usersString);
 
 		fc.success(`Получение списка пользователей типа ${type} удалось`);
 		return res.send(usersString);

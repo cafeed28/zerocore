@@ -31,9 +31,9 @@
 			const songName = document.getElementById('songName').value;
 			const authorName = document.getElementById('authorName').value;
 			const download = document.getElementById('download').value;
-			console.log(songName);
-			console.log(authorName);
-			console.log(download);
+			fc.log(songName);
+			fc.log(authorName);
+			fc.log(download);
 			let params = new URLSearchParams();
 			params.append('songName', songName);
 			params.append('authorName', authorName);

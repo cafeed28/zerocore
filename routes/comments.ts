@@ -132,7 +132,7 @@ router.post(`/${config.basePath}/getGJComments(21)?(.php)?`, async (req, res) =>
 		fc.success(`Комментарии уровня ${levelID} получены`);
 
 		const result = `${commentsString}#${usersString}#${commentsCount}:${page}:10`
-		console.log(result);
+		fc.log(result);
 
 		return res.send(result);
 	}

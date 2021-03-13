@@ -13,27 +13,14 @@ import config from '../config';
 const router = express.Router();
 
 router.post(`/${config.basePath}/templates/route(.php)?`, async (req, res) => {
-	const requredKeys = ['secret', 'userName', 'password'];
+	const requredKeys = ['secret', 'shit'];
 	const body = req.body;
 	if (!Express.checkKeys(body, requredKeys)) {
 		fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
 		return res.status(400).send('-1');
 	}
 
-	const account = await Mongoose.accounts.findOne({ userName: body.userName });
-
-	if (!account) {
-		fc.error(`Вход в аккаунт ${body.userName} не выполнен: аккаунта не существует`);
-		return res.send('-1');
-	} else {
-		if (await bcrypt.compare(body.password, account.password)) {
-			fc.success(`Вход в аккаунт ${body.userName} выполнен`);
-			return res.send(`${account.accountID},${account.accountID}`);
-		} else {
-			fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`);
-			return res.send('-12');
-		}
-	}
+	return res.send('test');
 });
 
 export { router };
