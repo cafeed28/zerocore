@@ -1,12 +1,12 @@
 {
-	"name": "zerocore-mongo",
-	"version": "0.1.5-dev",
+	"name": "zerocore",
+	"version": "0.1.6-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index",
-		"install": "npm install & mkdir data & mkdir data/levels & mkdir data/saves",
-		"cmd": "start cmd /C start.bat"
+		"build": "tsc -p tsconfig.json",
+		"start": "cd dist & index",
+		"setup": "npm install & mkdir \"dist/data\" & mkdir \"dist/data/levels\" & mkdir \"dist/data/saves\""
 	},
 	"keywords": [],
 	"author": "cafeed28",
@@ -14,17 +14,26 @@
 	"dependencies": {
 		"axios": "^0.21.1",
 		"bcrypt": "^5.0.0",
-		"ejs": "^3.1.5",
+		"body-parser": "^1.19.0",
+		"colors": "^1.4.0",
 		"express": "^4.17.1",
 		"fancy-console": "^0.1.7",
-		"fs-readdir-recursive": "^1.1.0",
-		"http-status-codes": "^2.1.4",
+		"fs-jetpack": "^4.1.0",
+		"helmet": "^4.4.1",
 		"moment": "^2.29.1",
-		"mongodb": "^3.6.3",
-		"mongoose": "^5.11.10",
-		"node-gzip": "^1.1.2"
+		"mongodb": "^3.6.4",
+		"mongoose": "^5.11.15",
+		"morgan": "^1.10.0",
+		"node-gzip": "^1.1.2",
+		"serve-favicon": "^2.5.0",
+		"typescript": "^4.2.3"
 	},
 	"devDependencies": {
-		"@types/node": "^14.14.20"
+		"@types/bcrypt": "^3.0.0",
+		"@types/express": "^4.17.11",
+		"@types/morgan": "^1.9.2",
+		"@types/node": "^14.14.25",
+		"@types/node-gzip": "^1.1.0",
+		"@types/serve-favicon": "^2.5.2"
 	}
 }

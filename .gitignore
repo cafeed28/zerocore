@@ -110,4 +110,6 @@ dist
 data/levels/*
 data/saves/*
 start.bat
-config.js
+config.ts
+
+.vscode/
