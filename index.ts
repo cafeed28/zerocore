@@ -3,40 +3,40 @@ import nodefs from 'fs';
 import fc from 'fancy-console';
 import config from './config';
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import { connect } from './helpers/classes/Mongoose';
+import fastify from 'fastify';
+import { connect, stop } from './helpers/classes/Mongoose';
 
-console.log('ZeroCore Starting...');
+console.log('ZeroCore starting...');
 
-// Обработчик выхода и ошибок
+const app = fastify();
+
+// error and exit handler
 process.stdin.resume();
 
-function exitHandler(options: any, exitCode: any) {
-	if (options.cleanup) fc.log('clean');
-	if (exitCode || exitCode === 0) fc.log(exitCode);
-	if (options.exit) process.exit();
+async function exitHandler(options: any, exitCode: any) {
+	if (!exitCode) exitCode = 0;
+	fc.error(`Stopping ZeroCore with exit code ${exitCode}...`);
+
+	// cleanup
+	await app.close();
+	await stop();
+
+	process.exit();
 }
 
 process.on('exit', exitHandler.bind(null, { cleanup: true })); // exit
 process.on('SIGINT', exitHandler.bind(null, { exit: true })); // ctrl+c
 process.on('uncaughtException', exitHandler.bind(null, { exit: true })); // uncaught exceptions
-// kill pid (например, nodemon restart)
+// kill pid
 process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
 process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 
-const app = express();
+app.register(require('fastify-formbody'));
+app.register(require('fastify-helmet'), { contentSecurityPolicy: false });
 
-// body-parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// Защита от атак
-app.use(require('helmet')());
-
-// Логгер и игнор забаненных IP
-app.use((req, res, next) => {
-	let ip = req.ip.slice(7);
+// logger and ip bans
+app.addHook('preHandler', async (req, res) => {
+	let ip = req.ip;
 	if (config.bannedIps.includes(ip)) {
 		fc.log(`${ip} banned lol`);
 		return req.socket.destroy();
@@ -46,37 +46,53 @@ app.use((req, res, next) => {
 		replace(/T/, ' ').replace(/\..+/, '').replace(/-/g, '.');
 
 	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`); // [2021.02.28 16:28:40] GET 192.168.1.1 /
-	console.log(`Body:`);
-	console.log(JSON.parse(JSON.stringify(req.body)));
-	next();
+
+	console.log('Body:', req.body);
+	// console.log(JSON.stringify(req.body, null, 2));
 });
 
-// Использование транспортов
+// 404 handler
+app.setNotFoundHandler((req, res) => {
+	fc.error(`Not found: ${req.method} ${req.url}`);
+	res.code(404).send({ status: 'error', code: '404' });
+});
+
+// any error handler
+app.setErrorHandler((err, req, res) => {
+	fc.error(`${res.statusCode || 500} Internal error: ${err.message}`);
+	fc.error(`Stacktrace:\n${err.stack}`);
+
+	console.log(err);
+
+	res.code(err.statusCode || 500).send({ status: 'error', code: err.statusCode, message: err.message });
+});
+
+app.addHook('onRoute', (opts) => {
+	// console.log(opts.path);
+});
+
+// router
 const routes = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] });
 for (const route of routes) {
 	const routeImport = require('.\\' + route);
-	app.use('/', routeImport.router);
+	app.register(routeImport.router);
 }
 
-// Обработка 404
-app.use((req, res, next) => {
-	res.status(404);
-	fc.error('Not found URL: ' + req.url);
-	res.send({ status: 'error', code: '404' });
-	return;
-});
+// start
+const start = async () => {
+	try {
+		// MongoDB
+		console.log('Connecting to MongoDB...');
+		await connect(config.mongodbAddress);
 
-// Обработка всех остальных ошибок
-app.use((err: any, req: any, res: any, next: any) => {
-	res.status(err.status || 500);
-	fc.error(`${res.statusCode} Internal error: ${err.message}`);
-	fc.error(`Stack trace:\n${err.stack}`);
-	res.send({ status: 'error', code: err.statusCode, message: err.message });
-	return;
-});
+		// server
+		await app.listen(config.port, '0.0.0.0');
+		fc.success('ZeroCore started and listening on port ' + config.port);
+	} catch (err) {
+		fc.error('Failed to start ZeroCore');
+		fc.error(err);
+		process.exit(1);
+	}
+}
 
-app.listen(80, async () => {
-	fc.log('Connecting to MongoDB...');
-	await connect();
-	fc.success('ZeroCore started and listening on port 80');
-});
+start();

@@ -1,11 +1,11 @@
 {
 	"name": "zerocore",
-	"version": "0.1.6-dev",
+	"version": "0.6.4-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
-	"main": "index.js",
+	"main": "index.ts",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
-		"start": "cd dist & index",
+		"start": "cd dist & node --trace-warnings index",
 		"setup": "npm install & mkdir \"dist/data\" & mkdir \"dist/data/levels\" & mkdir \"dist/data/saves\""
 	},
 	"keywords": [],
@@ -14,26 +14,23 @@
 	"dependencies": {
 		"axios": "^0.21.1",
 		"bcrypt": "^5.0.0",
-		"body-parser": "^1.19.0",
-		"colors": "^1.4.0",
-		"express": "^4.17.1",
+		"chalk": "^4.1.0",
 		"fancy-console": "^0.1.7",
+		"fastify": "^3.14.0",
+		"fastify-formbody": "^5.0.0",
+		"fastify-helmet": "^5.3.0",
 		"fs-jetpack": "^4.1.0",
-		"helmet": "^4.4.1",
 		"moment": "^2.29.1",
-		"mongodb": "^3.6.4",
-		"mongoose": "^5.11.15",
-		"morgan": "^1.10.0",
+		"mongodb": "3.6.3",
+		"mongoose": "5.11.15",
 		"node-gzip": "^1.1.2",
-		"serve-favicon": "^2.5.0",
 		"typescript": "^4.2.3"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
-		"@types/express": "^4.17.11",
-		"@types/morgan": "^1.9.2",
 		"@types/node": "^14.14.25",
 		"@types/node-gzip": "^1.1.0",
-		"@types/serve-favicon": "^2.5.2"
+		"gulp": "^4.0.2",
+		"gulp-tsb": "^4.0.6"
 	}
 }

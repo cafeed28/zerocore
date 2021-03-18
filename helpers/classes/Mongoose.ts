@@ -314,12 +314,16 @@ mongoose.model('songs',
 	})
 );
 
-const connect = async () => {
-	await mongoose.connect(config.mongodbAddress, {
+const connect = async (address: string) => {
+	await mongoose.connect(address, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useFindAndModify: false
 	});
+}
+
+const stop = async () => {
+	await mongoose.connection.close();
 }
 
 const models = mongoose.models;
@@ -335,4 +339,4 @@ connection.once('open', () => {
 });
 
 export default models;
-export { connect };
+export { connect, stop };
