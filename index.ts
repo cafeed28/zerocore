@@ -47,6 +47,7 @@ app.addHook('preHandler', async (req, res) => {
 
 	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`); // [2021.02.28 16:28:40] GET 192.168.1.1 /
 
+	console.log('Content-type: ' + req.headers['content-type']);
 	console.log('Body:', req.body);
 	// console.log(JSON.stringify(req.body, null, 2));
 });

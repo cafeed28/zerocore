@@ -34,14 +34,6 @@ async function router(router: any, options: any) {
 
 		const roleName = APIHelpers.translitCyrillic(body.roleName).trim();
 
-		if (roleName == '') {
-			fc.error(`Роль не создана: пустое название`);
-			return {
-				'status': 'error',
-				'code': 'emptyName'
-			};
-		}
-
 		const userName = body.userName.trim();
 		const password = body.password.trim();
 		if (!GJHelpers.isValid(userName, password)) {
@@ -50,6 +42,14 @@ async function router(router: any, options: any) {
 				'status': 'error',
 				'code': 'authError'
 			}
+		}
+
+		if (roleName == '') {
+			fc.error(`Роль не создана: пустое название`);
+			return {
+				'status': 'error',
+				'code': 'emptyName'
+			};
 		}
 
 		const checkRole = await Mongoose.roles.findOne({
@@ -91,7 +91,7 @@ async function router(router: any, options: any) {
 				"embeds": [
 					{
 						"title": `Role Created by ${userName}`,
-						"color": 5814783,
+						"color": 3715756,
 						"fields": [
 							{
 								"name": `${roleName}`,
@@ -168,7 +168,7 @@ async function router(router: any, options: any) {
 				"embeds": [
 					{
 						"title": `Role ${roleID} Assigned to ${accountID} by ${userName}`,
-						"color": 5814783,
+						"color": 3715756,
 						"fields": [
 							{
 								"name": `${roleID}`,

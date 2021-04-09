@@ -314,6 +314,26 @@ mongoose.model('songs',
 	})
 );
 
+mongoose.model('dailys',
+	new Schema({
+		levelID: Number,
+		timestamp: Number,
+		type: Number
+	})
+);
+
+mongoose.model('messages',
+	new Schema({
+		userName: String,
+		senderID: Number,
+		recipientID: Number,
+		body: String,
+		subject: String,
+		messageID: String,
+		isNew: String
+	})
+);
+
 const connect = async (address: string) => {
 	await mongoose.connect(address, {
 		useNewUrlParser: true,

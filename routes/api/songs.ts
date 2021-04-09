@@ -90,7 +90,7 @@ async function router(router: any, options: any) {
 				"embeds": [
 					{
 						"title": "Song Uploaded",
-						"color": 5814783,
+						"color": 3715756,
 						"fields": [
 							{
 								"name": `${authorName} - ${songName}`,

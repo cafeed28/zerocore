@@ -41,7 +41,7 @@ async function router(router: any, options: any) {
 				"embeds": [
 					{
 						"title": "Created Post",
-						"color": 5814783,
+						"color": 3715756,
 						"fields": [
 							{
 								"name": `${userName}`,
@@ -90,7 +90,7 @@ async function router(router: any, options: any) {
 					"embeds": [
 						{
 							"title": "Deleted Post",
-							"color": 5814783,
+							"color": 3715756,
 							"fields": [
 								{
 									"name": `Account ID: ${accountID}`,

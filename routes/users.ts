@@ -171,7 +171,7 @@ async function router(router: any, options: any) {
 		return usersString.slice(0, -1) + `#${users.length}:${page}:10`;
 	});
 
-	router.post(`/${config.basePath}/updateGJUserScore([0-9]{2?)?.php`, async (req: any, res: any) => {
+	router.post(`/${config.basePath}/updateGJUserScore22.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkKeys(body, requredKeys)) {
@@ -253,7 +253,7 @@ async function router(router: any, options: any) {
 			accExplosion: accExplosion,
 
 			IP: ip,
-			lastPlayed: new Date().getTime(),
+			lastPlayed: Math.round(new Date().getTime() / 1000),
 		}, { upsert: true });
 
 		axios.post(config.webhook, {
@@ -261,7 +261,7 @@ async function router(router: any, options: any) {
 			"embeds": [
 				{
 					"title": "Updated Stats",
-					"color": 5814783,
+					"color": 3715756,
 					"fields": [
 						{
 							"name": `${body.userName} updated a stats`,
@@ -278,6 +278,55 @@ async function router(router: any, options: any) {
 
 		fc.success(`Обновление статистики пользователя ${body.userName} выполнено`);
 		return id;
+	});
+
+	router.post(`/${config.basePath}/getGJScores.php`, async (req: any, res: any) => {
+		const requredKeys = ['secret', 'gjp', 'accountID', 'type'];
+		const body = req.body;
+		if (!WebHelper.checkKeys(body, requredKeys)) {
+			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
+			return res.code(400).send('-1');
+		}
+
+		const gjp = body.gjp;
+		const accountID = body.accountID;
+		const type = body.type;
+		let count = body.count || 50;
+
+		if (GJCrypto.gjpCheck(gjp, accountID)) {
+			if (type == 'top' || type == 'creators' || type == 'relative') {
+				let sort = {};
+				let query: any = { isBanned: 0 };
+				let limit = 100;
+
+				if (type == 'top') sort = { stars: -1 };
+				if (type == 'creators') sort = { creatorPoints: -1 };
+				if (type == 'relative') {
+					query = { isBanned: 0, accountID: accountID };
+					let user: any = await Mongoose.users.find(query);
+					let stars = user.stars;
+					count = Math.floor(count / 2);
+
+					query = {
+						stars: {
+							$lte: stars
+						},
+						isBanned: 0
+					};
+
+					sort = { stars: -1 };
+					limit = count;
+				}
+
+				let users = await Mongoose.users.find(query).sort(sort).limit(limit);
+			}
+
+			fc.success(`Получение топа игроков пользователем ${accountID} выполнено`);
+			return '1';
+		} else {
+			fc.error(`Получение топа игроков пользователем ${accountID} не выполнено: ошибка авторизации`);
+			return '-1';
+		}
 	});
 }
 

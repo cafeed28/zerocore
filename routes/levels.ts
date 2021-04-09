@@ -118,30 +118,39 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJDailyLevel.php`, async (req: any, res: any) => {
 		const body = req.body;
 
-		const d = new Date();
-
 		let type = body.weekly || 0;
 		if (type == 0) { // daily
-			var midnight = d.setHours(24, 0, 0, 0); // next midnight
+			var midnight = Math.round(new Date(new Date().setUTCHours(24, 0, 0)).getTime() / 1000); // next midnight
 		}
 		else { // weekly
-			var midnight = d.setDate(d.getDate() + (1 + 7 - d.getDay()) % 7); // next monday
+			const d = new Date();
+			var midnight = Math.round(new Date(d.setUTCDate(d.getUTCDate() + (1 + 7 - d.getUTCDay()) % 7)).getTime() / 1000); // next monday
 		}
 
-		let dailyID = await Mongoose.dailys.findOne({
+		const time = Math.round(new Date().getTime() / 1000);
+
+		let daily = await Mongoose.dailys.findOne({
 			timestamp: {
-				$lt: d
+				$lt: time
 			},
 			type: type
 		});
+
+		if (!daily) {
+			fc.error('Получение ежедневных уровней не выполнено: ежедневный уровень не найден');
+			return '-1';
+		}
+
+		let dailyID = daily.levelID;
 
 		if (type == 1) { //weekly
 			dailyID += 100001; // fuck robtop...
 		}
 
-		let timeleft = midnight - d.getTime();
+		let timeleft = midnight - time;
 
 		fc.success('Получение ежедневных уровней выполнено');
+		console.log(`${dailyID}|${timeleft}`);
 		return `${dailyID}|${timeleft}`;
 	});
 
@@ -386,7 +395,7 @@ async function router(router: any, options: any) {
 				"embeds": [
 					{
 						"title": "Uploaded Level",
-						"color": 5814783,
+						"color": 3715756,
 						"fields": [
 							{
 								"name": `${body.userName} uploaded a level ${levelID}`,
