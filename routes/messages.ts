@@ -1,7 +1,5 @@
 import fc from 'fancy-console';
 
-import bcrypt from 'bcrypt';
-
 import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
 
