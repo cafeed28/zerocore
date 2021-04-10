@@ -96,10 +96,72 @@ async function router(router: any, options: any) {
 
 			let user = await Mongoose.users.findOne({ accountID: accountID });
 
-			fc.success(`Скачивание сообщения ${messageID} выполнено`);
+			fc.success(`Удаление сообщения ${messageID} выполнено`);
 			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${isSender}:5:${message.body}:7:uploadDate`;
 		} else {
 			fc.error(`Удаление сообщения ${messageID} не выполнено: ошибка авторизации`);
+			return '-1';
+		}
+	});
+
+	router.post(`/${config.basePath}/getGJMessages20.php`, async (req: any, res: any) => {
+		const requredKeys = ['messageID', 'accountID', 'gjp'];
+		const body = req.body;
+		if (!WebHelper.checkKeys(body, requredKeys)) {
+			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
+			return res.code(400).send('-1');
+		}
+
+		const gjp = body.gjp;
+		let accountID = body.accountID;
+		const page = body.page;
+
+		let getSent = body.getSent;
+		let offset = page * 10;
+
+		let messagesString = '';
+
+		if (GJCrypto.gjpCheck(gjp, accountID)) {
+			if (getSent != 1) {
+				var messages = await Mongoose.messages
+					.find({ recipientID: accountID })
+					.sort({ messageID: -1 })
+					.skip(offset)
+					.limit(10);
+
+				var count = await Mongoose.messages.count({ recipientID: accountID });
+				getSent = 0;
+			} else {
+				var messages = await Mongoose.messages
+					.find({ senderID: accountID })
+					.sort({ messageID: -1 })
+					.skip(offset)
+					.limit(10);
+
+				var count = await Mongoose.messages.count({ senderID: accountID });
+				getSent = 1;
+			}
+
+			if (count == 0) {
+				fc.error(`Получение сообщений для аккаунта ${accountID} не выполнено: сообщений нет`);
+				return '-2';
+			}
+
+			for (const message of messages) {
+				if (!message.messageID) continue;
+
+				if (getSent == 1) accountID = message.recipientID;
+				else accountID = message.accountID;
+
+				let user: any = await Mongoose.users.find({ accountID: accountID });
+
+				messagesString += `6:${user.userName}:3:${user.userID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${getSent}:7:uploadDate|`;
+			}
+
+			fc.success(`Получение сообщений для аккаунта ${accountID} выполнено`);
+			return ``;
+		} else {
+			fc.error(`Получение сообщений для аккаунта ${accountID} не выполнено: ошибка авторизации`);
 			return '-1';
 		}
 	});

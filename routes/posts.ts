@@ -128,13 +128,13 @@ async function router(router: any, options: any) {
 
 		let postsString = '';
 
-		const posts = await Mongoose.posts.find({ accountID: accountID }).skip(page * 10).limit(10);
+		const posts = await Mongoose.posts.find({ accountID: accountID }).skip(page * 10).limit(10).sort({ postID: -1 });
 
 		if (!posts) {
 			fc.error(`Посты аккаунта ${accountID} не получены: посты не найдены`);
 			return '-1';
 		} else {
-			Array.from(posts).reverse().map(post => {
+			posts.map(post => {
 				let dateAgo = moment(post.uploadDate).fromNow(true);
 
 				// робтоп я тебя ненавижу...
