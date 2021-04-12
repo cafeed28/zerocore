@@ -17,10 +17,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
 		const requredKeys = ['levelID'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const levelID = body.levelID;
 
@@ -157,10 +154,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJLevels21.php`, async (req: any, res: any) => {
 		const requredKeys = ['page', 'str'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const page = body.page;
 
@@ -315,10 +309,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/uploadGJLevel21.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'levelName', 'levelDesc', 'audioTrack', 'gjp'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp || 0;
 		const accountID = body.accountID;

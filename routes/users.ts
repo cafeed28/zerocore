@@ -14,10 +14,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJUserInfo20.php`, async (req: any, res: any) => {
 		const requredKeys = ['targetAccountID'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const targetAccountID = body.targetAccountID;
@@ -133,10 +130,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJUsers20.php`, async (req: any, res: any) => {
 		const requredKeys = ['page', 'str'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const page = body.page;
 
@@ -174,10 +168,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/updateGJUserScore22.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const userName = body.userName.replace(/[^A-Za-z0-9 ]/, '');
 		const stars = body.stars;
@@ -283,10 +274,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJScores.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'accountID', 'type'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;

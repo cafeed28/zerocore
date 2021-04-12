@@ -13,10 +13,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/rateGJStars.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'gjp', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const levelID = body.levelID;
@@ -44,10 +41,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/suggestGJStars20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'levelID', 'accountID'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-2');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const levelID = body.levelID;

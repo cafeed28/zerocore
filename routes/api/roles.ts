@@ -27,10 +27,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
 		const requredKeys = ['roleName', 'userName', 'password'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const roleName = APIHelpers.translitCyrillic(body.roleName).trim();
 
@@ -117,10 +114,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/api/assignrole`, async (req: any, res: any) => {
 		const requredKeys = ['roleID', 'accountID', 'userName', 'password'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const roleID = body.roleID;
 		const accountID = body.accountID;

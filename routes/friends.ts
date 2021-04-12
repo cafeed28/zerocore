@@ -14,10 +14,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJFriendRequests20.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'page'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const accountID = body.accountID;
 		const page = body.page;
@@ -70,10 +67,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJUserList20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'type'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -148,10 +142,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/acceptGJFriendRequest20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'requestID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -182,10 +173,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/blockGJUser20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -220,10 +208,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/unblockGJUser20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -247,10 +232,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/uploadFriendRequest20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'toAccountID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -286,10 +268,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/deleteGJFriendRequests20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'targetAccountID', 'isSender', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -323,10 +302,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/readGJFriendRequest20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'requestID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;

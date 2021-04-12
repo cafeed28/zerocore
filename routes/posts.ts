@@ -16,10 +16,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/uploadGJAccComment20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'userName', 'comment', 'accountID'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const userName = body.userName;
@@ -67,10 +64,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/deleteGJAccComment20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'commentID', 'accountID'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -118,10 +112,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJAccountComments20.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'page'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const accountID = body.accountID;
 		const page = body.page;

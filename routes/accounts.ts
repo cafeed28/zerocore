@@ -12,10 +12,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/accounts/loginGJAccount.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'password'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const account = await Mongoose.accounts.findOne({ userName: body.userName });
 
@@ -36,10 +33,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/accounts/registerGJAccount.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'password', 'email'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const checkUser = await Mongoose.accounts.findOne({ userName: body.userName });
 
@@ -65,10 +59,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/accounts/updateGJAccSettings20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'accountID', 'mS', 'frS', 'cS', 'yt', 'twitter', 'twitch'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;

@@ -16,10 +16,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getAccountURL.php`, async (req: any, res: any) => {
 		const requredKeys: any[] = ['accountID', 'secret', 'type'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		return 'http://' + req.headers.host + req.url;
 	});
@@ -28,10 +25,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getAccountURL.php/database/accounts/backupGJAccountNew.php`, async (req: any, res: any) => {
 		const requredKeys = ['userName', 'password', 'saveData'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		let saveData = body.saveData
 		const userName = body.userName;
@@ -72,10 +66,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew.php`, async (req: any, res: any) => {
 		const requredKeys = ['userName', 'password'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const userName = body.userName;
 		const password = body.password;
@@ -109,10 +100,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/likeGJItem([0-9]{2,3?)?.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'itemID', 'like', 'type'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -155,10 +143,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJSongInfo.php`, async (req: any, res: any) => {
 		const requredKeys = ['songID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const songID = body.songID;
 
@@ -200,10 +185,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/requestUserAccess.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'gjp', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const accountID = body.accountID;
 		const gjp = body.gjp;

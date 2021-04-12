@@ -14,10 +14,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/uploadGJComment21.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'userName', 'accountID', 'levelID', 'comment', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const userName = body.userName;
@@ -49,10 +46,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/deleteGJComment20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'commentID', 'levelID', 'accountID', 'secret'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const levelID = body.levelID;
@@ -81,10 +75,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJComments21.php`, async (req: any, res: any) => {
 		const requredKeys = ['levelID', 'page'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const levelID = body.levelID;
 		const page = body.page;

@@ -113,3 +113,4 @@ start.bat
 config.ts
 
 .vscode/
+.idea/*

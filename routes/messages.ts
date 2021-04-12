@@ -10,10 +10,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/deleteGJMessages20.php`, async (req: any, res: any) => {
 		const requredKeys = ['messageID', 'accountID', 'gjp'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		const accountID = body.accountID;
@@ -52,13 +49,10 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/deleteGJMessages20.php`, async (req: any, res: any) => {
+	router.post(`/${config.basePath}/downloadGJMessage20.php`, async (req: any, res: any) => {
 		const requredKeys = ['messageID', 'accountID', 'gjp'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		let accountID = body.accountID;
@@ -75,7 +69,7 @@ async function router(router: any, options: any) {
 			});
 
 			if (!message) {
-				fc.error(`Удаление сообщения ${messageID} не выполнено: сообщение не найдено`);
+				fc.error(`Скачивание сообщения ${messageID} не выполнено: сообщение не найдено`);
 				return '-1';
 			}
 
@@ -96,21 +90,18 @@ async function router(router: any, options: any) {
 
 			let user = await Mongoose.users.findOne({ accountID: accountID });
 
-			fc.success(`Удаление сообщения ${messageID} выполнено`);
+			fc.success(`Скачивание сообщения ${messageID} выполнено`);
 			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${isSender}:5:${message.body}:7:uploadDate`;
 		} else {
-			fc.error(`Удаление сообщения ${messageID} не выполнено: ошибка авторизации`);
+			fc.error(`Скачивание сообщения ${messageID} не выполнено: ошибка авторизации`);
 			return '-1';
 		}
 	});
 
 	router.post(`/${config.basePath}/getGJMessages20.php`, async (req: any, res: any) => {
-		const requredKeys = ['messageID', 'accountID', 'gjp'];
+		const requredKeys = ['messageID', 'accountID', 'gjp', 'page'];
 		const body = req.body;
-		if (!WebHelper.checkKeys(body, requredKeys)) {
-			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			return res.code(400).send('-1');
-		}
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
 		let accountID = body.accountID;
@@ -162,6 +153,62 @@ async function router(router: any, options: any) {
 			return ``;
 		} else {
 			fc.error(`Получение сообщений для аккаунта ${accountID} не выполнено: ошибка авторизации`);
+			return '-1';
+		}
+	});
+
+	router.post(`/${config.basePath}/uploadGJMessage20.php`, async (req: any, res: any) => {
+		const requredKeys = ['secret', 'accountID', 'gjp', 'subject', 'toAccountID', 'body'];
+		const body = req.body;
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+
+		const gjp = body.gjp;
+		let accountID = body.accountID;
+		let recipientID = body.toAccountID;
+		let subject = body.subject;
+		let msgbody = body.body;
+
+		if (accountID == recipientID) {
+			fc.error(`Отправление сообщения аккаунту ${recipientID} не выполнено: всмысле ты как себе пытаешься написать?`);
+			return '-1';
+		}
+
+		if (GJCrypto.gjpCheck(gjp, accountID)) {
+			let isBlocked = await Mongoose.blocks.find({ accountID1: recipientID, accountID2: accountID });
+
+			let sender: any = await Mongoose.users.find({ accountID: accountID });
+			let recipient: any = await Mongoose.users.find({ accountID: recipientID });
+			let mSOnly = recipient.mS;
+
+			let isFriend = await Mongoose.friends.find({
+				$or: [
+					{ accountID1: accountID, accountID2: recipientID },
+					{ accountID2: accountID, accountID1: recipientID }
+				]
+			});
+
+			if (mSOnly == 2) {
+				fc.error(`Отправление сообщения аккаунту ${recipientID} не выполнено: получатель запретил принимать сообщения`);
+				return '-1';
+			}
+
+			if (!isBlocked && ((!mSOnly || mSOnly != 2) || !isFriend)) {
+				let message = new Mongoose.messages({
+					subject: subject,
+					body: msgbody,
+					senderID: accountID,
+					recipientID: recipientID,
+					userName: sender.userName,
+					uploadDate: Math.round(new Date().getTime() / 1000),
+				});
+
+				await message.save();
+			}
+
+			fc.success(`Отправление сообщения аккаунту ${recipientID} выполнено`);
+			return ``;
+		} else {
+			fc.error(`Отправление сообщения аккаунту ${recipientID} не выполнено: ошибка авторизации`);
 			return '-1';
 		}
 	});
