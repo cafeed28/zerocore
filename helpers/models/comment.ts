@@ -1,18 +1,20 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface ICommentAssign extends Document {
+export interface IComment {
 	userName: string,
 	comment: string,
 	accountID: number,
 	levelID: number,
 	percent: number,
 	uploadDate: number,
-	likes: { type: number, default: 0 },
-	isSpam: { type: number, default: 0 },
-	commentID: { type: number, default: 0 }
+	likes: number,
+	isSpam: number,
+	commentID: number
 }
 
-const CommentAssignSchema: Schema = new Schema({
+interface ICommentModel extends IComment, Document { }
+
+const CommentSchema: Schema = new Schema({
 	userName: String,
 	comment: String,
 	accountID: Number,
@@ -21,7 +23,7 @@ const CommentAssignSchema: Schema = new Schema({
 	uploadDate: Number,
 	likes: { type: Number, default: 0 },
 	isSpam: { type: Number, default: 0 },
-	commentID: { type: Number, default: 0 }
+	commentID: Number
 });
 
-export default mongoose.model<ICommentAssign>('comments', CommentAssignSchema);
+export const CommentModel = mongoose.model<ICommentModel>('comments', CommentSchema);

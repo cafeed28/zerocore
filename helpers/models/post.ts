@@ -1,23 +1,25 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IPost extends Document {
+export interface IPost {
 	userName: string,
 	post: string,
-	accountID: string,
+	accountID: number,
 	uploadDate: number,
-	likes: { type: number, default: 0 },
-	isSpam: { type: number, default: 0 },
-	postID: { type: number, default: 0 }
+	likes?: number,
+	isSpam?: number,
+	postID: number,
 }
+
+interface IPostModel extends IPost, Document { }
 
 const PostSchema: Schema = new Schema({
 	userName: String,
 	post: String,
-	accountID: String,
+	accountID: Number,
 	uploadDate: Number,
 	likes: { type: Number, default: 0 },
 	isSpam: { type: Number, default: 0 },
 	postID: { type: Number, default: 0 }
 });
 
-export default mongoose.model<IPost>('accounts', PostSchema);
+export const PostModel = mongoose.model<IPostModel>('accounts', PostSchema);

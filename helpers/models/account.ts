@@ -1,12 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IAccount extends Document {
+export interface IAccount {
 	accountID: number,
 	userName: string,
 	password: string,
 	email: string,
 	secret: string
 }
+
+interface IAccountModel extends IAccount, Document { }
 
 const AccountSchema: Schema = new Schema({
 	accountID: Number,
@@ -16,4 +18,4 @@ const AccountSchema: Schema = new Schema({
 	secret: String
 });
 
-export default mongoose.model<IAccount>('accounts', AccountSchema);
+export const AccountModel = mongoose.model<IAccountModel>('accounts', AccountSchema);

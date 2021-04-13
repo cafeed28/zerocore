@@ -1,12 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IFriend extends Document {
+export interface IFriend {
 	ID: number,
 	accountID1: number,
 	accountID2: number,
-	isUnread1: { type: number, default: 1 },
-	isUnread2: { type: number, default: 1 }
+	isUnread1?: number,
+	isUnread2?: number
 }
+
+interface IFriendModel extends IFriend, Document { }
 
 const FriendSchema: Schema = new Schema({
 	ID: Number,
@@ -16,4 +18,4 @@ const FriendSchema: Schema = new Schema({
 	isUnread2: { type: Number, default: 1 }
 });
 
-export default mongoose.model<IFriend>('friends', FriendSchema);
+export const FriendModel = mongoose.model<IFriendModel>('friends', FriendSchema);

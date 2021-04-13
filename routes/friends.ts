@@ -1,14 +1,16 @@
 import fc from 'fancy-console';
+import config from '../config';
 
-import bcrypt from 'bcrypt';
 import moment from 'moment';
 
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
-
 import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
-import config from '../config';
+
+import { FriendRequestModel, IFriendRequest } from '../helpers/models/friendRequest';
+import { IUser, UserModel } from '../helpers/models/user';
+import { BlockModel, IBlock } from '../helpers/models/block';
+import { FriendModel, IFriend } from '../helpers/models/friend';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJFriendRequests20.php`, async (req: any, res: any) => {
@@ -24,9 +26,9 @@ async function router(router: any, options: any) {
 
 		let requests;
 		if (getSent == 1) {
-			requests = await Mongoose.friendrequests.find({ fromAccountID: accountID }).skip(page * 10).limit(10);
+			requests = await FriendRequestModel.find({ fromAccountID: accountID }).skip(page * 10).limit(10);
 		} else {
-			requests = await Mongoose.friendrequests.find({ toAccountID: accountID }).skip(page * 10).limit(10);
+			requests = await FriendRequestModel.find({ toAccountID: accountID }).skip(page * 10).limit(10);
 		}
 
 		if (!requests) {
@@ -38,7 +40,7 @@ async function router(router: any, options: any) {
 			for (const request of requests) {
 				let dateAgo = moment(request.uploadDate).fromNow(true);
 
-				const user = await Mongoose.users.findOne({
+				const user = await UserModel.findOne({
 					accountID: getSent == 1 ? request.toAccountID : request.fromAccountID
 				});
 
@@ -78,15 +80,13 @@ async function router(router: any, options: any) {
 			let list: any;
 
 			if (type == 0) {
-				collection = Mongoose.friends;
-				list = await collection.find().or([{
+				list = await BlockModel.find().or([{
 					accountID1: accountID
 				}, {
 					accountID2: accountID
 				}]);
 			} else if (type == 1) {
-				collection = Mongoose.blocks;
-				list = await collection.find({
+				list = await BlockModel.find({
 					accountID1: accountID
 				});
 			}
@@ -96,16 +96,16 @@ async function router(router: any, options: any) {
 				return '-2';
 			}
 
-			let users: any = [];
-			let isUnread: any = [];
-			list.map((item: any) => {
+			let users: number[] = [];
+			let isUnread: boolean[] = [];
+			list.map((item: IBlock) => {
 				let user = item.accountID1 != accountID ? item.accountID1 : item.accountID2;
-				isUnread[user] = item.accountID1 != accountID ? item.isUnread1 || 0 : item.isUnread2 || 0;
+				isUnread[user] = item.accountID1 != accountID ? item.isUnread1 : item.isUnread2;
 
 				users.push(user);
 			});
 
-			const usersList = await Mongoose.users.find().where('accountID').in(users);
+			const usersList = await UserModel.find().where('accountID').in(users);
 
 			let usersString = '';
 			usersList.map(user => {
@@ -125,8 +125,8 @@ async function router(router: any, options: any) {
 			});
 
 			if (type == 0) {
-				await Mongoose.friends.updateMany({ accountID2: accountID }, { isUnread1: 0 });
-				await Mongoose.friends.updateMany({ accountID1: accountID }, { isUnread2: 0 });
+				await FriendModel.updateMany({ accountID2: accountID }, { isUnread1: 0 });
+				await FriendModel.updateMany({ accountID1: accountID }, { isUnread2: 0 });
 			}
 
 			fc.log(usersString);
@@ -150,17 +150,17 @@ async function router(router: any, options: any) {
 		const requestID = body.requestID;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			await Mongoose.friendrequests.deleteOne({
+			await FriendRequestModel.deleteOne({
 				requestID: requestID
 			});
 
-			const friend = new Mongoose.friends({
-				ID: (await Mongoose.friends.find().sort({ _id: -1 }).limit(1))[0].ID + 1,
+			const friend: IFriend = {
+				ID: (await FriendModel.countDocuments()) + 1,
 				accountID1: accountID,
 				accountID2: toAccountID
-			});
+			};
 
-			friend.save();
+			FriendModel.create(friend);
 
 			fc.success(`Запрос в друзья ${requestID} принят`);
 			return '1';
@@ -180,19 +180,19 @@ async function router(router: any, options: any) {
 		const toAccountID = body.targetAccountID;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			const block = new Mongoose.blocks({
+			const block: IBlock = {
 				accountID1: accountID,
 				accountID2: toAccountID
-			});
+			};
 
-			block.save();
+			BlockModel.create(block);
 
-			await Mongoose.friends.deleteOne({
+			await FriendModel.deleteOne({
 				fromAccountID: accountID,
 				toAccountID: toAccountID
 			});
 
-			await Mongoose.friendrequests.deleteOne({
+			await FriendRequestModel.deleteOne({
 				fromAccountID: accountID,
 				toAccountID: toAccountID
 			});
@@ -215,7 +215,7 @@ async function router(router: any, options: any) {
 		const toAccountID = body.targetAccountID;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			await Mongoose.blocks.findOneAndDelete({
+			await BlockModel.findOneAndDelete({
 				accountID1: accountID,
 				accountID2: toAccountID
 			});
@@ -240,22 +240,23 @@ async function router(router: any, options: any) {
 		const message = body.comment;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			const user: any = await Mongoose.users.find({ accountID: toAccountID });
-			const blocked = await Mongoose.blocks.find({ accountID1: toAccountID, accountID2: accountID });
+			const user: any = await UserModel.find({ accountID: toAccountID });
+			const blocked = await BlockModel.find({ accountID1: toAccountID, accountID2: accountID });
 
 			if (user.frS == 1 || blocked.length > 0) {
 				fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не отправлен: ${accountID} заблокирован ${toAccountID}`);
 				return '-1';
 			}
 
-			const request = new Mongoose.friendrequests({
-				requestID: await Mongoose.friendrequests.countDocuments(),
+			const request: IFriendRequest = {
+				requestID: (await FriendRequestModel.countDocuments()) + 1,
 				fromAccountID: accountID,
 				toAccountID: toAccountID,
-				message: message
-			});
+				message: message,
+				uploadDate: Math.round(new Date().getTime() / 1000)
+			};
 
-			request.save();
+			FriendRequestModel.create(request);
 
 			fc.success(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} отправлен`);
 			return '1';
@@ -277,12 +278,12 @@ async function router(router: any, options: any) {
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
 			if (isSender == 0) {
-				await Mongoose.friendrequests.deleteOne({
+				await FriendRequestModel.deleteOne({
 					fromAccountID: toAccountID,
 					toAccountID: accountID
 				});
 			} else if (isSender == 1) {
-				await Mongoose.friendrequests.deleteOne({
+				await FriendRequestModel.deleteOne({
 					fromAccountID: accountID,
 					toAccountID: toAccountID
 				});
@@ -309,7 +310,7 @@ async function router(router: any, options: any) {
 		const requestID = body.requestID;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			await Mongoose.friendrequests.findOneAndUpdate({
+			await FriendRequestModel.findOneAndUpdate({
 				requestID: requestID
 			}, { isUnread: 0 });
 

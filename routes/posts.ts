@@ -1,16 +1,13 @@
 import fc from 'fancy-console';
 import config from '../config';
-import bcrypt from 'bcrypt';
 
 import axios from 'axios';
-
 import moment from 'moment';
 
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
-
 import GJCrypto from '../helpers/classes/GJCrypto';
-import GJHelpers from '../helpers/classes/GJHelpers';
+
+import { IPost, PostModel } from '../helpers/models/post';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/uploadGJAccComment20.php`, async (req: any, res: any) => {
@@ -24,14 +21,14 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			const post = new Mongoose.posts({
+			const post: IPost = {
 				userName: userName,
 				post: comment,
 				accountID: accountID,
 				uploadDate: Date.now(),
-				postID: (await Mongoose.posts.countDocuments()) + 1
-			});
-			post.save();
+				postID: (await PostModel.countDocuments()) + 1
+			};
+			await PostModel.create(post);
 
 			axios.post(config.webhook, {
 				"content": null,
@@ -71,7 +68,7 @@ async function router(router: any, options: any) {
 		const postID = body.commentID;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			const post = await Mongoose.posts.deleteOne({
+			const post = await PostModel.deleteOne({
 				postID: postID,
 			});
 
@@ -119,7 +116,7 @@ async function router(router: any, options: any) {
 
 		let postsString = '';
 
-		const posts = await Mongoose.posts.find({ accountID: accountID }).skip(page * 10).limit(10).sort({ postID: -1 });
+		const posts = await PostModel.find({ accountID: accountID }).skip(page * 10).limit(10).sort({ postID: -1 });
 
 		if (!posts) {
 			fc.error(`Посты аккаунта ${accountID} не получены: посты не найдены`);

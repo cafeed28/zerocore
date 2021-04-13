@@ -1,17 +1,17 @@
 import fc from 'fancy-console';
-import config from '../config';
 import fs from 'fs-jetpack';
+import config from '../config';
 
-import bcrypt from 'bcrypt';
-import axios from 'axios';
 import zlib from 'node-gzip';
+import axios from 'axios';
 
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
-
 import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
 import XOR from '../helpers/classes/XOR';
+
+import { LevelModel } from '../helpers/models/level';
+import { DailyModel } from '../helpers/models/daily';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
@@ -21,7 +21,7 @@ async function router(router: any, options: any) {
 
 		const levelID = body.levelID;
 
-		const level = await Mongoose.levels.findOne({ levelID: levelID })
+		const level = await LevelModel.findOne({ levelID: levelID })
 
 		if (!level) {
 			fc.error(`Скачивание уровня ${levelID} не выполнено: уровень не найден в бд`);
@@ -42,14 +42,14 @@ async function router(router: any, options: any) {
 			return '-1';
 		}
 
-		await Mongoose.levels.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
+		await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
 
 		let pass = level.password;
-		let xorPass = pass;
 		// if(checkModPerms('freeCopy')) pass = 1
 		if (pass != 0) {
-			xorPass = Buffer.from(XOR.cipher(pass.toString(), 26364)).toString('base64');
+			var xorPass = Buffer.from(XOR.cipher(pass.toString(), 26364)).toString('base64');
 		}
+		else var xorPass = pass.toString();
 
 		if (levelString.substr(0, 3) == 'kS1') {
 			levelString = Buffer.from(await zlib.gzip(levelString)).toString('base64');
@@ -126,7 +126,7 @@ async function router(router: any, options: any) {
 
 		const time = Math.round(new Date().getTime() / 1000);
 
-		let daily = await Mongoose.dailys.findOne({
+		let daily = await DailyModel.findOne({
 			timestamp: {
 				$lt: time
 			},
@@ -233,8 +233,8 @@ async function router(router: any, options: any) {
 
 		fc.log(params);
 
-		const levels = await Mongoose.levels.find(params).sort(orderBy).skip(page * 10).limit(10);
-		const levelsCount = await Mongoose.levels.countDocuments(params);
+		const levels = await LevelModel.find(params).sort(orderBy).skip(page * 10).limit(10);
+		const levelsCount = await LevelModel.countDocuments(params);
 
 		if (!levels.length) {
 			fc.error(`Получение уровней не выполнено: уровни не найдены`);
@@ -257,7 +257,7 @@ async function router(router: any, options: any) {
 					'1': level.levelID,
 					'2': level.levelName,
 					'3': level.levelDesc,
-					'5': level.version || 0,
+					'5': level.levelVersion || 0,
 					'6': level.accountID,
 					'8': '10',
 					'9': level.starDifficulty,
@@ -342,16 +342,16 @@ async function router(router: any, options: any) {
 			fc.log('levelID: ' + levelID);
 
 			if (levelID == 0) {
-				levelID = (await Mongoose.levels.countDocuments()) + 1;
+				levelID = (await LevelModel.countDocuments()) + 1;
 			} else {
-				let level = await Mongoose.levels.findOne({ levelID: levelID });
+				let level = await LevelModel.findOne({ levelID: levelID });
 				if (level && level.accountID != accountID) {
 					fc.error(`Уровень на аккаунте ${body.userName} не опубликован: уровень ${levelID} уже есть от другого автора`);
 					return '-1';
 				}
 			}
 
-			await Mongoose.levels.updateOne({ levelName: levelName, accountID: accountID }, {
+			await LevelModel.updateOne({ levelName: levelName, accountID: accountID }, {
 				accountID: accountID,
 				levelID: levelID,
 				levelName: levelName,

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IUser extends Document {
+export interface IUser {
 	userName: string,
 	accountID: number,
 	coins: number,
@@ -10,8 +10,8 @@ export interface IUser extends Document {
 	orbs: number,
 	special: number,
 	demons: number,
-	creatorPoints: { type: number, default: 0 },
-	completedLevels: { type: number, default: 0 },
+	creatorPoints: number,
+	completedLevels: number,
 
 	chest1Time: number,
 	chest2Time: number,
@@ -33,17 +33,19 @@ export interface IUser extends Document {
 	accGlow: number,
 	accExplosion: number,
 
-	mS: { type: number, default: 0 },
-	frS: { type: number, default: 0 },
-	cS: { type: number, default: 0 },
-	youtube: { type: string, default: '' },
-	twitter: { type: string, default: '' },
-	twitch: { type: string, default: '' }, // поменяю на discord когда выйдет blackTea от партура
+	mS: number,
+	frS: number,
+	cS: number,
+	youtube: string,
+	twitter: string,
+	twitch: string, // поменяю на discord когда выйдет blackTea от партура
 
 	IP: string,
-	lastPlayed: string,
+	lastPlayed: number,
 	isBanned: boolean
 }
+
+interface IUserModel extends IUser, Document { }
 
 const UserSchema: Schema = new Schema({
 	userName: String,
@@ -86,8 +88,8 @@ const UserSchema: Schema = new Schema({
 	twitch: { type: String, default: '' }, // поменяю на discord когда выйдет blackTea от партура
 
 	IP: String,
-	lastPlayed: String,
+	lastPlayed: Number,
 	isBanned: Boolean
 });
 
-export default mongoose.model<IUser>('users', UserSchema);
+export const UserModel = mongoose.model<IUserModel>('users', UserSchema);

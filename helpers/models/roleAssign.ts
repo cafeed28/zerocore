@@ -1,10 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IRoleAssign extends Document {
+export interface IRoleAssign {
 	assignID: number,
 	accountID: number,
 	roleID: number
 }
+
+interface IRoleAssignModel extends IRoleAssign, Document { }
 
 const RoleAssignSchema: Schema = new Schema({
 	assignID: Number,
@@ -12,4 +14,4 @@ const RoleAssignSchema: Schema = new Schema({
 	roleID: Number
 });
 
-export default mongoose.model<IRoleAssign>('roleAssigns', RoleAssignSchema);
+export const RoleAssignModel = mongoose.model<IRoleAssignModel>('roleAssigns', RoleAssignSchema);

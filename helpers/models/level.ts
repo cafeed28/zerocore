@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface ILevel extends Document {
+export interface ILevel {
 	accountID: number,
 	levelID: number,
 	levelName: string,
-	levelLength: { type: number, default: 0 },
-	levelVersion: { type: number, default: 0 },
-	levelDesc: { type: string, default: '' },
+	levelLength: number,
+	levelVersion: number,
+	levelDesc: string,
 	extraString: string,
 
 	audioTrack: number,
@@ -14,26 +14,28 @@ export interface ILevel extends Document {
 	password: number,
 	original: number,
 	twoPlayer: number,
-	songID: { type: number, default: 0 },
+	songID: number,
 	objects: number,
 	coins: number,
-	starCoins: { type: number, default: 0 },
+	starCoins: number,
 	requestedStars: number,
 	unlisted: number,
 	ldm: number,
 
-	starDifficulty: { type: number, default: 0 },
-	starDemon: { type: number, default: 0 },
-	starStars: { type: number, default: 0 },
-	starFeatured: { type: number, default: 0 },
-	starAuto: { type: number, default: 0 },
-	starEpic: { type: number, default: 0 },
-	starDemonDiff: { type: number, default: 0 },
-	downloads: { type: number, default: 0 },
-	likes: { type: number, default: 0 },
+	starDifficulty: number,
+	starDemon: number,
+	starStars: number,
+	starFeatured: number,
+	starAuto: number,
+	starEpic: number,
+	starDemonDiff: number,
+	downloads: number,
+	likes: number,
 
 	IP: string
 }
+
+interface ILevelModel extends ILevel, Document { }
 
 const LevelSchema: Schema = new Schema({
 	accountID: Number,
@@ -70,4 +72,4 @@ const LevelSchema: Schema = new Schema({
 	IP: String
 });
 
-export default mongoose.model<ILevel>('levels', LevelSchema);
+export const LevelModel = mongoose.model<ILevelModel>('levels', LevelSchema);

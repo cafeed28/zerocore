@@ -1,16 +1,20 @@
 import fc from 'fancy-console';
 import fs from 'fs-jetpack';
-import zlib from 'node-gzip';
+import config from '../config';
 
-import bcrypt from 'bcrypt';
+import zlib from 'node-gzip';
 import axios from 'axios';
 
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
-
 import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
-import config from '../config';
+
+import { AccountModel } from '../helpers/models/account';
+import { UserModel } from '../helpers/models/user';
+import { LevelModel } from '../helpers/models/level';
+import { CommentModel } from '../helpers/models/comment';
+import { PostModel } from '../helpers/models/post';
+import { SongModel } from '../helpers/models/song';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getAccountURL.php`, async (req: any, res: any) => {
@@ -30,7 +34,7 @@ async function router(router: any, options: any) {
 		let saveData = body.saveData
 		const userName = body.userName;
 		const password = body.password;
-		const accountID = (await Mongoose.accounts.findOne({ userName: userName })).accountID;
+		const accountID = (await AccountModel.findOne({ userName: userName })).accountID;
 
 		if (await GJHelpers.isValid(userName, password)) {
 			let saveDataArr = saveData.split(';');
@@ -51,7 +55,7 @@ async function router(router: any, options: any) {
 				fc.error(`Сохрнение аккаунта ${userName} не выполнено: неизвестная ошибка\n${e.stack}`);
 				return '-1';
 			}
-			await Mongoose.users.updateOne({ accountID: accountID }, { orbs: orbs, completedLevels: levels });
+			await UserModel.updateOne({ accountID: accountID }, { orbs: orbs, completedLevels: levels });
 
 			fc.success(`Сохрнение аккаунта ${userName} выполнено`);
 			return '1';
@@ -70,7 +74,7 @@ async function router(router: any, options: any) {
 
 		const userName = body.userName;
 		const password = body.password;
-		const accountID = (await Mongoose.accounts.findOne({ userName: userName })).accountID;
+		const accountID = (await AccountModel.findOne({ userName: userName })).accountID;
 
 		if (await GJHelpers.isValid(userName, password)) {
 			let saveData;
@@ -111,11 +115,11 @@ async function router(router: any, options: any) {
 			let item;
 
 			if (type == 1) {
-				item = await Mongoose.levels.findOne({ levelID: itemID });
+				item = await LevelModel.findOne({ levelID: itemID });
 			} else if (type == 2) {
-				item = await Mongoose.comments.findOne({ commentID: itemID });
+				item = await CommentModel.findOne({ commentID: itemID });
 			} else if (type == 3) {
-				item = await Mongoose.posts.findOne({ postID: itemID });
+				item = await PostModel.findOne({ postID: itemID });
 			} else {
 				fc.error(`Лайк на предмет типа ${type} с ID ${itemID} не поставлен: неизвестный тип`);
 				return '-1';
@@ -147,7 +151,7 @@ async function router(router: any, options: any) {
 
 		const songID = body.songID;
 
-		const song = await Mongoose.songs.findOne({ songID: songID });
+		const song = await SongModel.findOne({ songID: songID });
 
 		if (!song && songID > 5000000) {
 			fc.error(`Получение информации музыки ${songID} не удалось: кастомная музыка не найдена`);

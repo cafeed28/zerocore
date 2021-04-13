@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IRole extends Document {
+export interface IRole {
 	roleName: string,
 	roleID: Number,
 
@@ -18,6 +18,8 @@ export interface IRole extends Document {
 	commentColor: { type: string, default: '255,255,255' },
 	prefix: { type: string, default: '' }
 }
+
+interface IRoleModel extends IRole, Document { }
 
 const RoleSchema: Schema = new Schema({
 	roleName: String,
@@ -38,4 +40,4 @@ const RoleSchema: Schema = new Schema({
 	prefix: { type: String, default: '' }
 });
 
-export default mongoose.model<IRole>('roles', RoleSchema);
+export const RoleModel = mongoose.model<IRoleModel>('roles', RoleSchema);

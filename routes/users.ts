@@ -4,11 +4,16 @@ import config from '../config';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
 
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
-
 import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
+
+import { BlockModel } from '../helpers/models/block';
+import { UserModel } from '../helpers/models/user';
+import { FriendRequestModel } from '../helpers/models/friendRequest';
+import { FriendModel } from '../helpers/models/friend';
+import { MessageModel } from '../helpers/models/message';
+import { AccountModel } from '../helpers/models/account';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJUserInfo20.php`, async (req: any, res: any) => {
@@ -27,14 +32,14 @@ async function router(router: any, options: any) {
 			}
 		}
 
-		const blocked = await Mongoose.blocks.findOne({ accountID1: targetAccountID, accountID2: accountID });
+		const blocked = await BlockModel.findOne({ accountID1: targetAccountID, accountID2: accountID });
 
 		if (blocked) {
 			fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: пользователь заблокировал вас`);
 			return '-1';
 		}
 
-		const user = await Mongoose.users.findOne({ accountID: body.targetAccountID });
+		const user = await UserModel.findOne({ accountID: body.targetAccountID });
 
 		if (!user) {
 			fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: пользователь не найден`);
@@ -49,10 +54,9 @@ async function router(router: any, options: any) {
 		let friendState = 0;
 
 		if (accountID == targetAccountID) {
-			let newFriendRequests = await Mongoose.friendrequests.countDocuments({ toAccountID: accountID });
-			// let newMessages = await Mongoose.messages.countDocuments({ toAccountID: accountID, isUnread: 1 });
-			let newMessages = 2;
-			let newFriends = await Mongoose.friends.countDocuments({
+			let newFriendRequests = await FriendRequestModel.countDocuments({ toAccountID: accountID });
+			let newMessages = await MessageModel.countDocuments({ recipientID: accountID, isUnread: true });
+			let newFriends = await FriendModel.countDocuments({
 				$or: [
 					{ accountID1: accountID, isUnread2: 1 },
 					{ accountID2: accountID, isUnread1: 1 }]
@@ -65,7 +69,7 @@ async function router(router: any, options: any) {
 			}]);
 		}
 		else {
-			let incomingRequests: any = await Mongoose.friendrequests.find({
+			let incomingRequests: any = await FriendRequestModel.find({
 				fromAccountID: targetAccountID, toAccountID: accountID
 			});
 			if (incomingRequests.length > 0) {
@@ -77,12 +81,12 @@ async function router(router: any, options: any) {
 				}]);
 			}
 
-			let outcomingRequests = await Mongoose.friendrequests.countDocuments({
+			let outcomingRequests = await FriendRequestModel.countDocuments({
 				toAccountID: targetAccountID, fromAccountID: accountID
 			});
 			if (outcomingRequests > 0) friendState = 4;
 
-			let friend = await Mongoose.friends.countDocuments({
+			let friend = await FriendModel.countDocuments({
 				$or: [
 					{ accountID1: accountID, accountID2: targetAccountID },
 					{ accountID2: accountID, accountID1: targetAccountID }
@@ -122,7 +126,7 @@ async function router(router: any, options: any) {
 			'45': '', // twitch, когда выйдет blackTea от партура, удалю
 			'46': user.diamonds,
 			'47': user.accExplosion,
-			'49': user.badge,
+			'49': '0', // badge
 			'50': '0' // commentState
 		}]) + appendix);
 	});
@@ -136,7 +140,7 @@ async function router(router: any, options: any) {
 
 		let usersString = '';
 
-		const users = await Mongoose.users.find({ userName: new RegExp(body.str, 'i') });
+		const users = await UserModel.find({ userName: new RegExp(body.str, 'i') });
 
 		if (!users.length) {
 			fc.error(`Получение пользователей не выполнено: пользователи не найдены`);
@@ -207,7 +211,7 @@ async function router(router: any, options: any) {
 
 		const id = body.accountID;
 
-		if (!await Mongoose.accounts.findOne({ accountID: id })) {
+		if (!await AccountModel.findOne({ accountID: id })) {
 			fc.success(`Обновление статистики пользователя ${body.userName} не выполнено: аккаунта не существует`);
 			return '-1';
 		}
@@ -219,7 +223,7 @@ async function router(router: any, options: any) {
 
 		const ip = req.ip;
 
-		await Mongoose.users.updateOne({ accountID: id }, {
+		await UserModel.updateOne({ accountID: id }, {
 			userName: userName,
 			coins: coins,
 			userCoins: userCoins,
@@ -291,7 +295,7 @@ async function router(router: any, options: any) {
 				if (type == 'creators') sort = { creatorPoints: -1 };
 				if (type == 'relative') {
 					query = { isBanned: 0, accountID: accountID };
-					let user: any = await Mongoose.users.find(query);
+					let user = await UserModel.findOne(query);
 					let stars = user.stars;
 					count = Math.floor(count / 2);
 
@@ -306,7 +310,7 @@ async function router(router: any, options: any) {
 					limit = count;
 				}
 
-				let users = await Mongoose.users.find(query).sort(sort).limit(limit);
+				let users = await UserModel.find(query).sort(sort).limit(limit);
 			}
 
 			fc.success(`Получение топа игроков пользователем ${accountID} выполнено`);

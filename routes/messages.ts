@@ -1,10 +1,13 @@
 import fc from 'fancy-console';
-
-import Mongoose from '../helpers/classes/Mongoose';
-import WebHelper from '../helpers/classes/WebHelper';
-
-import GJCrypto from '../helpers/classes/GJCrypto';
 import config from '../config';
+
+import WebHelper from '../helpers/classes/WebHelper';
+import GJCrypto from '../helpers/classes/GJCrypto';
+
+import { IMessage, MessageModel } from '../helpers/models/message';
+import { UserModel } from '../helpers/models/user';
+import { BlockModel } from '../helpers/models/block';
+import { FriendModel } from '../helpers/models/friend';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/deleteGJMessages20.php`, async (req: any, res: any) => {
@@ -27,14 +30,14 @@ async function router(router: any, options: any) {
 				var limit = 1;
 			}
 
-			await Mongoose.messages.find({
+			await MessageModel.find({
 				messageID: {
 					$in: messages
 				},
 				senderID: accountID
 			}).limit(limit).deleteMany();
 
-			await Mongoose.messages.find({
+			await MessageModel.find({
 				messageID: {
 					$in: messages
 				},
@@ -60,7 +63,7 @@ async function router(router: any, options: any) {
 		let isSender = body.isSender;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			let message = await Mongoose.messages.findOne({
+			let message = await MessageModel.findOne({
 				messageID: messageID,
 				$or: [{
 					senderID: accountID,
@@ -74,7 +77,7 @@ async function router(router: any, options: any) {
 			}
 
 			if (isSender) {
-				await Mongoose.messages.updateOne({
+				await MessageModel.updateOne({
 					messageID: messageID,
 					recipientID: accountID
 				}, {
@@ -88,7 +91,7 @@ async function router(router: any, options: any) {
 				accountID = message.recipientID;
 			}
 
-			let user = await Mongoose.users.findOne({ accountID: accountID });
+			let user = await UserModel.findOne({ accountID: accountID });
 
 			fc.success(`Скачивание сообщения ${messageID} выполнено`);
 			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${isSender}:5:${message.body}:7:uploadDate`;
@@ -114,22 +117,22 @@ async function router(router: any, options: any) {
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
 			if (getSent != 1) {
-				var messages = await Mongoose.messages
+				var messages = await MessageModel
 					.find({ recipientID: accountID })
 					.sort({ messageID: -1 })
 					.skip(offset)
 					.limit(10);
 
-				var count = await Mongoose.messages.count({ recipientID: accountID });
+				var count = await MessageModel.count({ recipientID: accountID });
 				getSent = 0;
 			} else {
-				var messages = await Mongoose.messages
+				var messages = await MessageModel
 					.find({ senderID: accountID })
 					.sort({ messageID: -1 })
 					.skip(offset)
 					.limit(10);
 
-				var count = await Mongoose.messages.count({ senderID: accountID });
+				var count = await MessageModel.count({ senderID: accountID });
 				getSent = 1;
 			}
 
@@ -142,9 +145,9 @@ async function router(router: any, options: any) {
 				if (!message.messageID) continue;
 
 				if (getSent == 1) accountID = message.recipientID;
-				else accountID = message.accountID;
+				else accountID = message.senderID;
 
-				let user: any = await Mongoose.users.find({ accountID: accountID });
+				let user: any = await UserModel.find({ accountID: accountID });
 
 				messagesString += `6:${user.userName}:3:${user.userID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${getSent}:7:uploadDate|`;
 			}
@@ -163,10 +166,10 @@ async function router(router: any, options: any) {
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const gjp = body.gjp;
-		let accountID = body.accountID;
-		let recipientID = body.toAccountID;
-		let subject = body.subject;
-		let msgbody = body.body;
+		let accountID: number = body.accountID;
+		let recipientID: number = body.toAccountID;
+		let subject: string = body.subject;
+		let msgbody: string = body.body;
 
 		if (accountID == recipientID) {
 			fc.error(`Отправление сообщения аккаунту ${recipientID} не выполнено: всмысле ты как себе пытаешься написать?`);
@@ -174,13 +177,13 @@ async function router(router: any, options: any) {
 		}
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			let isBlocked = await Mongoose.blocks.find({ accountID1: recipientID, accountID2: accountID });
+			let isBlocked = await BlockModel.findOne({ accountID1: recipientID, accountID2: accountID });
 
-			let sender: any = await Mongoose.users.find({ accountID: accountID });
-			let recipient: any = await Mongoose.users.find({ accountID: recipientID });
+			let sender = await UserModel.findOne({ accountID: accountID });
+			let recipient = await UserModel.findOne({ accountID: recipientID });
 			let mSOnly = recipient.mS;
 
-			let isFriend = await Mongoose.friends.find({
+			let isFriend = await FriendModel.find({
 				$or: [
 					{ accountID1: accountID, accountID2: recipientID },
 					{ accountID2: accountID, accountID1: recipientID }
@@ -193,20 +196,20 @@ async function router(router: any, options: any) {
 			}
 
 			if (!isBlocked && ((!mSOnly || mSOnly != 2) || !isFriend)) {
-				let message = new Mongoose.messages({
+				let message: IMessage = {
 					subject: subject,
 					body: msgbody,
 					senderID: accountID,
 					recipientID: recipientID,
 					userName: sender.userName,
 					uploadDate: Math.round(new Date().getTime() / 1000),
-				});
+				};
 
-				await message.save();
+				await MessageModel.create(message);
 			}
 
 			fc.success(`Отправление сообщения аккаунту ${recipientID} выполнено`);
-			return ``;
+			return '1';
 		} else {
 			fc.error(`Отправление сообщения аккаунту ${recipientID} не выполнено: ошибка авторизации`);
 			return '-1';

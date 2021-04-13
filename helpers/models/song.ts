@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface ISong extends Document {
+export interface ISong {
 	songID: number,
 	name: string,
 	authorID: number,
@@ -8,6 +8,8 @@ export interface ISong extends Document {
 	size: number,
 	download: string
 }
+
+interface ISongModel extends ISong, Document { }
 
 const SongSchema: Schema = new Schema({
 	songID: Number,
@@ -18,4 +20,4 @@ const SongSchema: Schema = new Schema({
 	download: String
 });
 
-export default mongoose.model<ISong>('songs', SongSchema);
+export const SongModel = mongoose.model<ISongModel>('songs', SongSchema);

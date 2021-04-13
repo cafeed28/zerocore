@@ -1,13 +1,10 @@
 import fc from 'fancy-console';
+import config from '../config';
 
-import bcrypt from 'bcrypt';
-
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
 
 import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
-import config from '../config';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/rateGJStars.php`, async (req: any, res: any) => {

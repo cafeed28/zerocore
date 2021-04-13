@@ -1,12 +1,13 @@
 import fc from 'fancy-console';
+import config from '../config';
 
 import bcrypt from 'bcrypt';
 
-import Mongoose from '../helpers/classes/Mongoose';
 import WebHelper from '../helpers/classes/WebHelper';
-
 import GJCrypto from '../helpers/classes/GJCrypto';
-import config from '../config';
+
+import { AccountModel, IAccount } from '../helpers/models/account';
+import { UserModel } from '../helpers/models/user';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/accounts/loginGJAccount.php`, async (req: any, res: any) => {
@@ -14,7 +15,7 @@ async function router(router: any, options: any) {
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
-		const account = await Mongoose.accounts.findOne({ userName: body.userName });
+		const account = await AccountModel.findOne({ userName: body.userName });
 
 		if (!account) {
 			fc.error(`Вход в аккаунт ${body.userName} не выполнен: аккаунта не существует`);
@@ -35,21 +36,21 @@ async function router(router: any, options: any) {
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
-		const checkUser = await Mongoose.accounts.findOne({ userName: body.userName });
+		const checkUser = await AccountModel.findOne({ userName: body.userName });
 
 		if (checkUser) {
 			fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
 			return '-2';
 		} else {
-			const account = new Mongoose.accounts({
-				accountID: (await Mongoose.accounts.countDocuments()) + 1,
+			const account: IAccount = {
+				accountID: (await AccountModel.countDocuments()) + 1,
 				userName: body.userName,
 				password: await bcrypt.hash(body.password, 10),
 				email: body.email,
 				secret: body.secret
-			});
+			};
 
-			account.save();
+			await AccountModel.create(account);
 
 			fc.success(`Аккаунт ${body.userName} создан`);
 			return '1';
@@ -71,7 +72,7 @@ async function router(router: any, options: any) {
 		const twitch = body.twitch;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			await Mongoose.users.findOneAndUpdate({
+			await UserModel.findOneAndUpdate({
 				accountID: accountID
 			}, {
 				mS: mS,
