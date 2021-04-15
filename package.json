@@ -1,11 +1,12 @@
 {
 	"name": "zerocore",
-	"version": "0.7.3-dev",
+	"version": "0.7.6-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.ts",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
 		"start": "cd dist & node --trace-warnings index",
+		"build-and-start": "tsc -p tsconfig.json && cd dist && node --trace-warnings index",
 		"setup": "npm install & mkdir \"dist/data\" & mkdir \"dist/data/levels\" & mkdir \"dist/data/saves\""
 	},
 	"keywords": [],
@@ -28,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
+		"@types/dateformat": "^3.0.1",
 		"@types/node": "^14.14.25",
 		"@types/node-gzip": "^1.1.0"
 	}

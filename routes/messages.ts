@@ -1,4 +1,5 @@
 import fc from 'fancy-console';
+import moment from 'moment';
 import config from '../config';
 
 import WebHelper from '../helpers/classes/WebHelper';
@@ -86,8 +87,9 @@ async function router(router: any, options: any) {
 
 			let user = await UserModel.findOne({ accountID: accountID });
 
+			let uploadDate = moment(message.uploadDate).fromNow(true);
 			fc.success(`Скачивание сообщения ${messageID} выполнено`);
-			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${isSender}:5:${message.body}:7:uploadDate`;
+			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${isSender}:5:${message.body}:7:${uploadDate}`;
 		} else {
 			fc.error(`Скачивание сообщения ${messageID} не выполнено: ошибка авторизации`);
 			return '-1';
@@ -142,7 +144,8 @@ async function router(router: any, options: any) {
 
 				let user = await UserModel.findOne({ accountID: accountID });
 
-				messagesString += `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${getSent}:7:uploadDate|`;
+				let uploadDate = moment(message.uploadDate).fromNow(true);
+				messagesString += `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${getSent}:7:${uploadDate}|`;
 			}
 
 			fc.success(`Получение сообщений для аккаунта ${accountID} выполнено`);
@@ -196,7 +199,7 @@ async function router(router: any, options: any) {
 					recipientID: recipientID,
 					userName: sender.userName,
 					messageID: (await MessageModel.countDocuments()) + 1,
-					uploadDate: Math.round(new Date().getTime() / 1000),
+					uploadDate: Date.now(),
 				};
 
 				await MessageModel.create(message);
