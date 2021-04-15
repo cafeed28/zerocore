@@ -10,8 +10,8 @@ export interface IUser {
 	orbs: number,
 	special: number,
 	demons: number,
-	creatorPoints: number,
-	completedLevels: number,
+	creatorPoints?: number,
+	completedLevels?: number,
 
 	chest1Time: number,
 	chest2Time: number,
@@ -33,16 +33,16 @@ export interface IUser {
 	accGlow: number,
 	accExplosion: number,
 
-	mS: number,
-	frS: number,
-	cS: number,
-	youtube: string,
-	twitter: string,
-	twitch: string, // поменяю на discord когда выйдет blackTea от партура
+	mS?: number,
+	frS?: number,
+	cS?: number,
+	youtube?: string,
+	twitter?: string,
+	twitch?: string, // поменяю на discord когда выйдет blackTea от партура
 
 	IP: string,
 	lastPlayed: number,
-	isBanned: boolean
+	isBanned?: boolean
 }
 
 interface IUserModel extends IUser, Document { }
@@ -89,7 +89,7 @@ const UserSchema: Schema = new Schema({
 
 	IP: String,
 	lastPlayed: Number,
-	isBanned: Boolean
+	isBanned: { type: Boolean, default: false }
 });
 
 export const UserModel = mongoose.model<IUserModel>('users', UserSchema);

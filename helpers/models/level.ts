@@ -5,8 +5,8 @@ export interface ILevel {
 	levelID: number,
 	levelName: string,
 	levelLength: number,
-	levelVersion: number,
-	levelDesc: string,
+	levelVersion?: number,
+	levelDesc?: string,
 	extraString: string,
 
 	audioTrack: number,
@@ -22,15 +22,15 @@ export interface ILevel {
 	unlisted: number,
 	ldm: number,
 
-	starDifficulty: number,
-	starDemon: number,
-	starStars: number,
-	starFeatured: number,
-	starAuto: number,
-	starEpic: number,
-	starDemonDiff: number,
-	downloads: number,
-	likes: number,
+	starDifficulty?: number,
+	starDemon?: number,
+	starStars?: number,
+	starFeatured?: number,
+	starAuto?: number,
+	starEpic?: number,
+	starDemonDiff?: number,
+	downloads?: number,
+	likes?: number,
 
 	IP: string
 }

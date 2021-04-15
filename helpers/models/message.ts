@@ -6,7 +6,7 @@ export interface IMessage {
 	recipientID: number,
 	body: string,
 	subject: string,
-	messageID?: number,
+	messageID: number,
 	uploadDate: number,
 	isUnread?: boolean
 }

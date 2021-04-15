@@ -1,7 +1,8 @@
-import Mongoose from './Mongoose';
 import GJHelpers from './GJHelpers';
 import XOR from './xor';
 import crypto from 'crypto';
+
+import { LevelModel } from '../models/level';
 
 export default class GJCrypto {
 	static gjpCheck(gjp: String, accountID: any) {
@@ -37,17 +38,18 @@ export default class GJCrypto {
 		return crypto.createHash('sha1').update(levelsMultiString + 'pC26fpYaQCtg').digest('hex');
 	}
 
-	static async genMulti(levelsMultiString: String) {
+	static async genMulti(levelsMultiString: string) {
 		return new Promise(async (resolve, reject) => {
 			let levelsArray = levelsMultiString.split(',');
 			let hash = '';
 
-			for await (const levelID of levelsArray) {
-				if (isNaN(parseInt(levelID))) {
+			for await (let lID of levelsArray) {
+				if (isNaN(parseInt(lID))) {
 					resolve(false);
 				}
+				let levelID = parseInt(lID);
 
-				const level = await Mongoose.levels.findOne({ levelID: levelID });
+				const level = await LevelModel.findOne({ levelID: levelID });
 
 				hash += String(level.levelID)[0] +
 					String(level.levelID).slice(String(level.levelID).length - 1) +

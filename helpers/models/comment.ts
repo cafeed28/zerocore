@@ -7,8 +7,8 @@ export interface IComment {
 	levelID: number,
 	percent: number,
 	uploadDate: number,
-	likes: number,
-	isSpam: number,
+	likes?: number,
+	isSpam?: number,
 	commentID: number
 }
 

@@ -3,23 +3,24 @@ import config from '../../config';
 
 import axios from 'axios';
 
-import Mongoose from '../../helpers/classes/Mongoose';
 import WebHelper from '../../helpers/classes/WebHelper';
-
 import GJHelpers from '../../helpers/classes/GJHelpers';
+
+import { DailyModel, IDaily } from '../../helpers/models/daily';
+import { LevelModel } from '../../helpers/models/level';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/daily`, async (req: any, res: any) => {
-		const d = new Date();
+		const d = Math.round(new Date().getTime() / 1000);
 
-		const daily = await Mongoose.dailys.findOne({
+		const daily = await DailyModel.findOne({
 			timestamp: {
 				$lt: d
 			},
 			type: 0
 		});
 
-		const weekly = await Mongoose.dailys.findOne({
+		const weekly = await DailyModel.findOne({
 			timestamp: {
 				$lt: d
 			},
@@ -69,7 +70,7 @@ async function router(router: any, options: any) {
 			}
 		}
 
-		const checkDaily = await Mongoose.dailys.findOne({
+		const checkDaily = await DailyModel.findOne({
 			levelID: levelID
 		});
 
@@ -80,7 +81,7 @@ async function router(router: any, options: any) {
 				'code': 'alreadyUploaded'
 			};
 		} else {
-			const level = await Mongoose.levels.findOne({ levelID: levelID });
+			const level = await LevelModel.findOne({ levelID: levelID });
 
 			if (!level) {
 				fc.error(`Дейли не назначен: такого уровня нет`);
@@ -94,13 +95,13 @@ async function router(router: any, options: any) {
 			if (type == 'daily') numType = 0;
 			if (type == 'weekly') numType = 1;
 
-			const daily = new Mongoose.dailys({
+			const daily: IDaily = {
 				levelID: levelID,
 				timestamp: Math.round(new Date().getTime() / 1000),
 				type: numType
-			});
+			};
 
-			daily.save();
+			await DailyModel.create(daily);
 
 			axios.post(config.webhook, {
 				"content": null,

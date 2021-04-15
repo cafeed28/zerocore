@@ -1,7 +1,6 @@
 import fc from 'fancy-console';
 import config from '../config';
 
-import bcrypt from 'bcrypt';
 import axios from 'axios';
 
 import WebHelper from '../helpers/classes/WebHelper';

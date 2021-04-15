@@ -3,11 +3,16 @@ import fc from 'fancy-console';
 import mongoose from 'mongoose';
 
 const connect = async (address: string) => {
-	await mongoose.connect(address, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-		useFindAndModify: false
-	});
+	try {
+		await mongoose.connect(address, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			useFindAndModify: false
+		});
+	}
+	catch (e) {
+		throw e
+	};
 }
 
 const stop = async () => {
@@ -18,7 +23,7 @@ const connection = mongoose.connection;
 
 connection.on('error', (err) => {
 	fc.error('MongoDB Connection error:', err.message);
-	process.exit();
+	process.exit(1);
 });
 
 connection.once('open', () => {

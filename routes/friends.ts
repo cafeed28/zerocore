@@ -76,20 +76,22 @@ async function router(router: any, options: any) {
 		const type = body.type;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			let collection;
-			let list: any;
-
 			if (type == 0) {
-				list = await BlockModel.find().or([{
-					accountID1: accountID
-				}, {
-					accountID2: accountID
-				}]);
+				var list = await BlockModel.find({
+					$or: [{
+						accountID1: parseInt(accountID)
+					}, {
+						accountID2: parseInt(accountID)
+					}]
+				});
+
 			} else if (type == 1) {
-				list = await BlockModel.find({
+				var list = await BlockModel.find({
 					accountID1: accountID
 				});
 			}
+
+			console.log(list);
 
 			if (list.length == 0) {
 				fc.error(`Получение списка пользователей типа ${type} не удалось: список пуст`);

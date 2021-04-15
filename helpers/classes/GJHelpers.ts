@@ -1,18 +1,23 @@
-import Mongoose from './Mongoose';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
 
+import { AccountModel } from '../models/account';
+import { RoleAssignModel } from '../models/roleAssign';
+import { RoleModel } from '../models/role';
+import { LevelModel } from '../models/level';
+import { SongModel } from '../models/song';
+
 export default class GJHelpers {
-	static async isValid(userName: String, password: String): Promise<boolean> {
-		const account = await Mongoose.accounts.findOne({ userName: userName });
+	static async isValid(userName: string, password: string): Promise<boolean> {
+		const account = await AccountModel.findOne({ userName: userName });
 		if (!account) return false;
 
 		if (await bcrypt.compare(password, account.password)) return true;
 		else return false;
 	}
 
-	static async isValidID(ID: Number, password: String): Promise<boolean> {
-		const account = await Mongoose.accounts.findOne({ accountID: ID });
+	static async isValidID(ID: number, password: string): Promise<boolean> {
+		const account = await AccountModel.findOne({ accountID: ID });
 		if (!password) {
 			return account ? true : false;
 		} else {
@@ -40,16 +45,16 @@ export default class GJHelpers {
 		return result.join('|');
 	}
 
-	static async getUserString(accountID: Number): Promise<string> {
+	static async getUserString(accountID: number): Promise<string> {
 		return new Promise(async (resolve, reject) => {
-			const account = await Mongoose.accounts.findOne({ accountID: accountID });
+			const account = await AccountModel.findOne({ accountID: accountID });
 			resolve(`${accountID}:${account.userName}:${accountID}`);
 		});
 	}
 
-	static async getAccountPermission(accountID: Number, permission: string): Promise<number> {
+	static async getAccountPermission(accountID: number, permission: string): Promise<number> {
 		return new Promise(async (resolve, reject) => {
-			const accRoles = await Mongoose.rolesAssign.find({ accountID: accountID });
+			const accRoles = await RoleAssignModel.find({ accountID: accountID });
 			let accRolesList: any[] = [];
 
 			accRoles.forEach(role => { accRolesList.push(role.roleID); });
@@ -57,7 +62,7 @@ export default class GJHelpers {
 			let maxPerm = 0;
 
 			if (accRolesList.length != 0) {
-				let roles = await Mongoose.roles.find({ roleID: { $in: accRolesList } });
+				let roles = await RoleModel.find({ roleID: { $in: accRolesList } });
 				roles.forEach((role: any) => {
 					if (role[permission] > maxPerm) {
 						maxPerm = role[permission];
@@ -69,7 +74,7 @@ export default class GJHelpers {
 		});
 	}
 
-	static async checkPermission(accountID: Number, permission: string): Promise<boolean> {
+	static async checkPermission(accountID: number, permission: string): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			let maxPerm = await this.getAccountPermission(accountID, permission);
 			if (maxPerm > 0) resolve(true);
@@ -127,12 +132,12 @@ export default class GJHelpers {
 		};
 	}
 
-	static async rateLevel(accountID: number, levelID: number, stars: number, diff: string, auto: string, demon: string): Promise<boolean> {
+	static async rateLevel(accountID: number, levelID: number, stars: number, diff: number, auto: number, demon: number): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			console.log(stars);
 			console.log(diff);
-			await Mongoose.levels.updateOne({ levelID: levelID }, {
-				starDifficulty: parseInt(diff),
+			await LevelModel.updateOne({ levelID: levelID }, {
+				starDifficulty: diff,
 				starDemon: demon,
 				starAuto: auto,
 				starStars: stars
@@ -143,7 +148,7 @@ export default class GJHelpers {
 
 	static async featureLevel(accountID: number, levelID: number, feature: number): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
-			await Mongoose.levels.updateOne({ levelID: levelID }, {
+			await LevelModel.updateOne({ levelID: levelID }, {
 				starFeatured: feature
 			});
 			resolve(true);
@@ -152,17 +157,17 @@ export default class GJHelpers {
 
 	static async verifyCoinsLevel(accountID: number, levelID: number, coins: number): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
-			await Mongoose.levels.updateOne({ levelID: levelID }, {
+			await LevelModel.updateOne({ levelID: levelID }, {
 				starCoins: coins
 			});
 			resolve(true);
 		});
 	}
 
-	static async getSongString(songID: Number): Promise<string> {
+	static async getSongString(songID: number): Promise<string> {
 		return new Promise(async (resolve, reject) => {
-			const song = await Mongoose.songs.findOne({ songID: songID });
-			if (!song || song.length == 0) {
+			const song = await SongModel.findOne({ songID: songID });
+			if (!song) {
 				let params = new URLSearchParams();
 				params.append('songID', songID.toString());
 				params.append('secret', 'Wmfd2893gb7');

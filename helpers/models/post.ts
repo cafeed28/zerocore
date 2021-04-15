@@ -6,7 +6,7 @@ export interface IPost {
 	accountID: number,
 	uploadDate: number,
 	likes?: number,
-	isSpam?: number,
+	isSpam?: boolean,
 	postID: number,
 }
 
@@ -18,8 +18,8 @@ const PostSchema: Schema = new Schema({
 	accountID: Number,
 	uploadDate: Number,
 	likes: { type: Number, default: 0 },
-	isSpam: { type: Number, default: 0 },
-	postID: { type: Number, default: 0 }
+	isSpam: { type: Boolean, default: false },
+	postID: Number
 });
 
-export const PostModel = mongoose.model<IPostModel>('accounts', PostSchema);
+export const PostModel = mongoose.model<IPostModel>('posts', PostSchema);

@@ -46,8 +46,7 @@ async function router(router: any, options: any) {
 				accountID: (await AccountModel.countDocuments()) + 1,
 				userName: body.userName,
 				password: await bcrypt.hash(body.password, 10),
-				email: body.email,
-				secret: body.secret
+				email: body.email
 			};
 
 			await AccountModel.create(account);

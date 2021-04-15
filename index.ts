@@ -10,27 +10,6 @@ console.log('ZeroCore starting...');
 
 const app = fastify();
 
-// error and exit handler
-process.stdin.resume();
-
-async function exitHandler(options: any, exitCode: any) {
-	if (!exitCode) exitCode = 0;
-	fc.error(`Stopping ZeroCore with exit code ${exitCode}...`);
-
-	// cleanup
-	await app.close();
-	await stop();
-
-	process.exit();
-}
-
-process.on('exit', exitHandler.bind(null, { cleanup: true })); // exit
-process.on('SIGINT', exitHandler.bind(null, { exit: true })); // ctrl+c
-process.on('uncaughtException', exitHandler.bind(null, { exit: true })); // uncaught exceptions
-// kill pid
-process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
-process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
-
 app.register(require('fastify-formbody'));
 app.register(require('fastify-helmet'), { contentSecurityPolicy: false });
 

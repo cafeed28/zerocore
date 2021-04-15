@@ -4,19 +4,19 @@ export interface IRole {
 	roleName: string,
 	roleID: Number,
 
-	freeCopy: { type: number, default: 0 },
-	rateLevelDiff: { type: number, default: 0 },
-	rateLevelStar: { type: number, default: 0 },
-	sendLevelRate: { type: number, default: 0 },
+	freeCopy?: boolean,
+	rateLevelDiff?: boolean,
+	rateLevelStar?: boolean,
+	sendLevelRate?: boolean,
 
-	moveLevelAcc: { type: number, default: 0 },
-	changeLevelDesc: { type: number, default: 0 },
+	moveLevelAcc?: boolean,
+	changeLevelDesc?: boolean,
 
-	badgeLevel: { type: number, default: 0 },
-	requestMod: { type: number, default: 0 },
+	badgeLevel?: number,
+	requestMod?: boolean,
 
-	commentColor: { type: string, default: '255,255,255' },
-	prefix: { type: string, default: '' }
+	commentColor: string,
+	prefix: string
 }
 
 interface IRoleModel extends IRole, Document { }
@@ -25,16 +25,16 @@ const RoleSchema: Schema = new Schema({
 	roleName: String,
 	roleID: Number,
 
-	freeCopy: { type: Number, default: 0 },
-	rateLevelDiff: { type: Number, default: 0 },
-	rateLevelStar: { type: Number, default: 0 },
-	sendLevelRate: { type: Number, default: 0 },
+	freeCopy: { type: Boolean, default: false },
+	rateLevelDiff: { type: Boolean, default: false },
+	rateLevelStar: { type: Boolean, default: false },
+	sendLevelRate: { type: Boolean, default: false },
 
-	moveLevelAcc: { type: Number, default: 0 },
-	changeLevelDesc: { type: Number, default: 0 },
+	moveLevelAcc: { type: Boolean, default: false },
+	changeLevelDesc: { type: Boolean, default: false },
 
 	badgeLevel: { type: Number, default: 0 },
-	requestMod: { type: Number, default: 0 },
+	requestMod: { type: Boolean, default: false },
 
 	commentColor: { type: String, default: '255,255,255' },
 	prefix: { type: String, default: '' }

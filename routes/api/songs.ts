@@ -3,16 +3,16 @@ import config from '../../config';
 
 import axios from 'axios';
 
-import Mongoose from '../../helpers/classes/Mongoose';
 import WebHelper from '../../helpers/classes/WebHelper';
-
 import APIHelpers from '../../helpers/classes/API';
+
+import { ISong, SongModel } from '../../helpers/models/song';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/songs`, async (req: any, res: any) => {
 		let songList: any[] = [];
 
-		const songs = await Mongoose.songs.find();
+		const songs = await SongModel.find();
 		songs.map(song => {
 			songList.push({
 				songID: song.songID,
@@ -46,12 +46,12 @@ async function router(router: any, options: any) {
 			};
 		}
 
-		const checkSong = await Mongoose.songs.findOne({
+		const checkSong = await SongModel.findOne({
 			name: new RegExp(songName, 'i'),
 			authorName: new RegExp(authorName, 'i')
 		});
 
-		const checkUrl = await Mongoose.songs.findOne({
+		const checkUrl = await SongModel.findOne({
 			download: download
 		});
 
@@ -71,16 +71,16 @@ async function router(router: any, options: any) {
 				};
 			}
 
-			const song = new Mongoose.songs({
-				songID: (await Mongoose.songs.countDocuments()) + 5000000 + 1,
+			const song: ISong = {
+				songID: (await SongModel.countDocuments()) + 5000000 + 1,
 				name: songName,
 				authorID: 9,
 				authorName: authorName,
 				size: 0,
 				download: download
-			});
+			};
 
-			song.save();
+			await SongModel.create(song);
 
 			axios.post(config.webhook, {
 				"content": null,

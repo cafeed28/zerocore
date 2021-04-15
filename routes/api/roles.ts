@@ -3,17 +3,18 @@ import config from '../../config';
 
 import axios from 'axios';
 
-import Mongoose from '../../helpers/classes/Mongoose';
 import WebHelper from '../../helpers/classes/WebHelper';
-
 import APIHelpers from '../../helpers/classes/API';
 import GJHelpers from '../../helpers/classes/GJHelpers';
+
+import { IRole, RoleModel } from '../../helpers/models/role';
+import { IRoleAssign, RoleAssignModel } from '../../helpers/models/roleAssign';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
 		let rolesList: any[] = [];
 
-		const roles = await Mongoose.roles.find();
+		const roles = await RoleModel.find();
 		roles.map(role => {
 			rolesList.push(role);
 		});
@@ -49,7 +50,7 @@ async function router(router: any, options: any) {
 			};
 		}
 
-		const checkRole = await Mongoose.roles.findOne({
+		const checkRole = await RoleModel.findOne({
 			roleName: new RegExp(roleName, 'i')
 		});
 
@@ -61,27 +62,26 @@ async function router(router: any, options: any) {
 				'value': checkRole.roleID
 			};
 		} else {
-			const role = new Mongoose.roles({
-				roleID: (await Mongoose.roles.countDocuments()) + 1,
+			const role: IRole = {
+				roleID: (await RoleModel.countDocuments()) + 1,
 				roleName: roleName,
 
-				// i know, unreadable
-				freeCopy: APIHelpers.clamp(parseInt(body.freeCopy), 0, 1),
-				rateLevelDiff: APIHelpers.clamp(parseInt(body.rateLevelDiff), 0, 1),
-				rateLevelStar: APIHelpers.clamp(parseInt(body.rateLevelStar), 0, 1),
-				sendLevelRate: APIHelpers.clamp(parseInt(body.sendLevelRate), 0, 1),
+				freeCopy: !!parseInt(body.freeCopy),
+				rateLevelDiff: !!parseInt(body.rateLevelDiff),
+				rateLevelStar: !!parseInt(body.rateLevelStar),
+				sendLevelRate: !!parseInt(body.sendLevelRate),
 
-				moveLevelAcc: APIHelpers.clamp(parseInt(body.moveLevelAcc), 0, 1),
-				changeLevelDesc: APIHelpers.clamp(parseInt(body.changeLevelDesc), 0, 1),
+				moveLevelAcc: !!parseInt(body.moveLevelAcc),
+				changeLevelDesc: !!parseInt(body.changeLevelDesc),
 
 				badgeLevel: APIHelpers.clamp(parseInt(body.badgeLevel), 0, 2),
-				requestMod: APIHelpers.clamp(parseInt(body.requestMod), 0, 1),
+				requestMod: !!parseInt(body.requestMod),
 
 				commentColor: body.commentColor || '255,255,255',
 				prefix: body.prefix || ''
-			});
+			};
 
-			role.save();
+			await RoleModel.create(role);
 
 			axios.post(config.webhook, {
 				"content": null,
@@ -137,7 +137,7 @@ async function router(router: any, options: any) {
 			}
 		}
 
-		const checkAssign = await Mongoose.rolesAssign.findOne({
+		const checkAssign = await RoleAssignModel.findOne({
 			roleID: roleID
 		});
 
@@ -149,13 +149,13 @@ async function router(router: any, options: any) {
 				'value': checkAssign.assignID
 			};
 		} else {
-			const assign = new Mongoose.rolesAssign({
-				assignID: (await Mongoose.rolesAssign.countDocuments()) + 1,
+			const assign: IRoleAssign = {
+				assignID: (await RoleAssignModel.countDocuments()) + 1,
 				accountID: accountID,
 				roleID: roleID
-			});
+			};
 
-			assign.save();
+			await RoleAssignModel.create(assign);
 
 			axios.post(config.webhook, {
 				"content": null,

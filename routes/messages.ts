@@ -60,15 +60,11 @@ async function router(router: any, options: any) {
 		const gjp = body.gjp;
 		let accountID = body.accountID;
 		let messageID = body.messageID;
-		let isSender = body.isSender;
+		let isSender = body.isSender || 0;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
 			let message = await MessageModel.findOne({
-				messageID: messageID,
-				$or: [{
-					senderID: accountID,
-					recipientID: accountID
-				}]
+				messageID: messageID
 			});
 
 			if (!message) {
@@ -76,25 +72,22 @@ async function router(router: any, options: any) {
 				return '-1';
 			}
 
-			if (isSender) {
+			if (isSender == 0) {
 				await MessageModel.updateOne({
-					messageID: messageID,
-					recipientID: accountID
+					messageID: messageID
 				}, {
-					isNew: 1
+					isUnread: false
 				});
 
-				accountID = message.senderID;
-				isSender = 0;
-			} else {
-				isSender = 1;
 				accountID = message.recipientID;
+			} else if (isSender == 1) {
+				accountID = message.senderID;
 			}
 
 			let user = await UserModel.findOne({ accountID: accountID });
 
 			fc.success(`Скачивание сообщения ${messageID} выполнено`);
-			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${isSender}:5:${message.body}:7:uploadDate`;
+			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${isSender}:5:${message.body}:7:uploadDate`;
 		} else {
 			fc.error(`Скачивание сообщения ${messageID} не выполнено: ошибка авторизации`);
 			return '-1';
@@ -102,7 +95,7 @@ async function router(router: any, options: any) {
 	});
 
 	router.post(`/${config.basePath}/getGJMessages20.php`, async (req: any, res: any) => {
-		const requredKeys = ['messageID', 'accountID', 'gjp', 'page'];
+		const requredKeys = ['accountID', 'gjp', 'page'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
@@ -123,7 +116,7 @@ async function router(router: any, options: any) {
 					.skip(offset)
 					.limit(10);
 
-				var count = await MessageModel.count({ recipientID: accountID });
+				var count = await MessageModel.countDocuments({ recipientID: accountID });
 				getSent = 0;
 			} else {
 				var messages = await MessageModel
@@ -132,7 +125,7 @@ async function router(router: any, options: any) {
 					.skip(offset)
 					.limit(10);
 
-				var count = await MessageModel.count({ senderID: accountID });
+				var count = await MessageModel.countDocuments({ senderID: accountID });
 				getSent = 1;
 			}
 
@@ -147,13 +140,13 @@ async function router(router: any, options: any) {
 				if (getSent == 1) accountID = message.recipientID;
 				else accountID = message.senderID;
 
-				let user: any = await UserModel.find({ accountID: accountID });
+				let user = await UserModel.findOne({ accountID: accountID });
 
-				messagesString += `6:${user.userName}:3:${user.userID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${message.isNew}:9:${getSent}:7:uploadDate|`;
+				messagesString += `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${getSent}:7:uploadDate|`;
 			}
 
 			fc.success(`Получение сообщений для аккаунта ${accountID} выполнено`);
-			return ``;
+			return `${messagesString}#${count}:${offset}:10`;
 		} else {
 			fc.error(`Получение сообщений для аккаунта ${accountID} не выполнено: ошибка авторизации`);
 			return '-1';
@@ -183,7 +176,7 @@ async function router(router: any, options: any) {
 			let recipient = await UserModel.findOne({ accountID: recipientID });
 			let mSOnly = recipient.mS;
 
-			let isFriend = await FriendModel.find({
+			let isFriend = await FriendModel.findOne({
 				$or: [
 					{ accountID1: accountID, accountID2: recipientID },
 					{ accountID2: accountID, accountID1: recipientID }
@@ -202,6 +195,7 @@ async function router(router: any, options: any) {
 					senderID: accountID,
 					recipientID: recipientID,
 					userName: sender.userName,
+					messageID: (await MessageModel.countDocuments()) + 1,
 					uploadDate: Math.round(new Date().getTime() / 1000),
 				};
 
