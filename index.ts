@@ -63,7 +63,7 @@ const start = async () => {
 	try {
 		// MongoDB
 		console.log('Connecting to MongoDB...');
-		await connect(config.mongodbAddress);
+		await connect(`mongodb://${config.mongodbUser}:${config.mongodbPassword}@${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`);
 
 		// server
 		await app.listen(config.port, '0.0.0.0');

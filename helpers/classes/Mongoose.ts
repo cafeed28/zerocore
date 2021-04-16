@@ -1,11 +1,10 @@
 import fc from 'fancy-console';
-import c from '../../config';
 
 import mongoose from 'mongoose';
 
-const connect = async (address: string) => {
+const connect = async (conString: string) => {
 	try {
-		await mongoose.connect(`mongodb://${c.mongodbUser}:${c.mongodbPassword}@${c.mongodbAddress}/${c.mongodbDatabase}`, {
+		await mongoose.connect(conString, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useFindAndModify: false
