@@ -60,10 +60,10 @@ const UserSchema: Schema = new Schema({
 	creatorPoints: { type: Number, default: 0 },
 	completedLevels: { type: Number, default: 0 },
 
-	chest1Time: Number,
-	chest2Time: Number,
-	chest1Count: Number,
-	chest2Count: Number,
+	chest1Time: { type: Number, default: 0 },
+	chest2Time: { type: Number, default: 0 },
+	chest1Count: { type: Number, default: 0 },
+	chest2Count: { type: Number, default: 0 },
 
 	color1: Number,
 	color2: Number,
