@@ -126,7 +126,7 @@ async function router(router: any, options: any) {
 			fc.success(`Комментарии уровня ${levelID} получены`);
 
 			const result = `${commentsList.join('|')}#${usersList.join('|')}#${commentsCount}:${page}:10`
-			fc.log(result);
+			console.log(result);
 
 			return result;
 		}

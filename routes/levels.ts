@@ -12,6 +12,7 @@ import XOR from '../helpers/classes/XOR';
 
 import { LevelModel } from '../helpers/models/level';
 import { DailyModel } from '../helpers/models/daily';
+import { GauntletModel } from '../helpers/models/gauntlets';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
@@ -152,9 +153,7 @@ async function router(router: any, options: any) {
 	});
 
 	router.post(`/${config.basePath}/getGJLevels21.php`, async (req: any, res: any) => {
-		const requredKeys = ['page', 'str'];
 		const body = req.body;
-		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const page = body.page;
 
@@ -167,7 +166,11 @@ async function router(router: any, options: any) {
 		let orderBy: any = {};
 
 		if (!parseInt(body.str)) params.levelName = new RegExp(body.str, 'i');
-		else params.levelID = body.str; // search by ID
+		else params.levelID = body.str; // search one by ID
+
+		// search levels by IDs like '4,5,6' = [4, 5, 6]
+		if (body.str)
+			if (body.str.includes(',')) params = { levelID: { $in: body.str.split(',').map(Number) } };
 
 		if (body.featured == 1) params.starFeatured = 1;
 		if (body.original == 1) params.original = 0;
@@ -225,13 +228,28 @@ async function router(router: any, options: any) {
 		if (body.star) params.starStars != 0;
 		if (body.noStar) params.starStars = 0;
 
-		// gauntlet
-
 		if (body.len && body.len != '-') {
 			params.levelLength = { $in: body.len.split(',') };
 		}
 
-		fc.log(params);
+		if (body.gauntlet) {
+			orderBy = {};
+			let gauntlet = await GauntletModel.findOne({
+				packID: body.gauntlet
+			});
+
+			let lvls = [
+				gauntlet.levelID1,
+				gauntlet.levelID2,
+				gauntlet.levelID3,
+				gauntlet.levelID4,
+				gauntlet.levelID5
+			]
+
+			params = { levelID: { $in: lvls.map(Number) } };
+		}
+
+		console.log(params);
 
 		const levels = await LevelModel.find(params).sort(orderBy).skip(page * 10).limit(10);
 		const levelsCount = await LevelModel.countDocuments(params);
@@ -282,7 +300,7 @@ async function router(router: any, options: any) {
 					'45': level.objects,
 					'46': '1',
 					'47': '2',
-				}]) + '|';
+				}]);
 
 				levelsList.push(levelString);
 			}
@@ -296,7 +314,7 @@ async function router(router: any, options: any) {
 			}
 
 			const result = `${levelsList.join('|')}#${usersList.join('|')}#${songsList.join('~:~')}#${levelsCount}:${page * 10}:10#${hash}`;
-			fc.log(result);
+			console.log(result);
 
 			fc.success(`Получение уровней выполнено`);
 			return result;
@@ -336,7 +354,7 @@ async function router(router: any, options: any) {
 				fc.error(`Уровень на аккаунте ${body.userName} не опубликован: имя или уровень пустой`);
 				return '-1';
 			}
-			fc.log('levelID: ' + levelID);
+			console.log('levelID: ' + levelID);
 
 			if (levelID == 0) {
 				levelID = (await LevelModel.countDocuments()) + 1;

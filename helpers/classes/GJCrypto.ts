@@ -3,6 +3,7 @@ import XOR from './xor';
 import crypto from 'crypto';
 
 import { LevelModel } from '../models/level';
+import { MapPackModel } from '../models/mappacks';
 
 export default class GJCrypto {
 	static gjpCheck(gjp: String, accountID: any) {
@@ -42,12 +43,14 @@ export default class GJCrypto {
 		return new Promise(async (resolve, reject) => {
 			let levelsArray = levelsMultiString.split(',');
 			let hash = '';
+			console.log(levelsMultiString);
 
 			for await (let lID of levelsArray) {
 				if (isNaN(parseInt(lID))) {
 					resolve(false);
 				}
 				let levelID = parseInt(lID);
+				console.log(levelID);
 
 				const level = await LevelModel.findOne({ levelID: levelID });
 
@@ -55,6 +58,29 @@ export default class GJCrypto {
 					String(level.levelID).slice(String(level.levelID).length - 1) +
 					(String(level.starStars) || '0') +
 					(String(level.starCoins) || '0');
+			}
+
+			resolve(crypto.createHash('sha1').update(hash + 'xI25fpAapCQg').digest('hex'));
+		});
+	}
+
+	static async genPack(packsMultiString: string) {
+		return new Promise(async (resolve, reject) => {
+			let packsArray = packsMultiString.split(',');
+			let hash = '';
+
+			for await (let pID of packsArray) {
+				if (isNaN(parseInt(pID))) {
+					resolve(false);
+				}
+				let packID = parseInt(pID);
+
+				const level = await MapPackModel.findOne({ packID: packID });
+
+				hash += String(level.packID)[0] +
+					String(level.packID).slice(String(level.packID).length - 1) +
+					(String(level.stars) || '0') +
+					(String(level.coins) || '0');
 			}
 
 			resolve(crypto.createHash('sha1').update(hash + 'xI25fpAapCQg').digest('hex'));

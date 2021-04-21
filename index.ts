@@ -19,7 +19,7 @@ app.register(require('fastify-helmet'), { contentSecurityPolicy: false });
 app.addHook('preHandler', async (req, res) => {
 	let ip = req.ip;
 	if (config.bannedIps.includes(ip)) {
-		fc.log(`${ip} banned lol`);
+		console.log(`${ip} banned lol`);
 		return req.socket.destroy();
 	}
 
