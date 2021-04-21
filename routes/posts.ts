@@ -114,7 +114,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const page = body.page;
 
-		let postsString = '';
+		let postsList: string[] = [];
 
 		const posts = await PostModel.find({ accountID: accountID }).skip(page * 10).limit(10).sort({ postID: -1 });
 
@@ -126,11 +126,11 @@ async function router(router: any, options: any) {
 				let dateAgo = moment(post.uploadDate).fromNow(true);
 
 				// робтоп я тебя ненавижу...
-				postsString += `2~${post.post}~3~${post.accountID}~4~${post.likes}~5~0~7~${post.isSpam}~9~${dateAgo}~6~${post.postID}|`;
+				postsList.push(`2~${post.post}~3~${post.accountID}~4~${post.likes}~5~0~7~${post.isSpam}~9~${dateAgo}~6~${post.postID}`);
 			});
 			fc.success(`Посты аккаунта ${accountID} получены`);
 
-			return postsString + `#${posts.length}:${page}:10`;
+			return postsList.join('|') + `#${posts.length}:${page}:10`;
 		}
 	});
 }

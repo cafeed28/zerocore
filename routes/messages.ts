@@ -108,7 +108,7 @@ async function router(router: any, options: any) {
 		let getSent = body.getSent;
 		let offset = page * 10;
 
-		let messagesString = '';
+		let messagesList = [];
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
 			if (getSent != 1) {
@@ -145,11 +145,11 @@ async function router(router: any, options: any) {
 				let user = await UserModel.findOne({ accountID: accountID });
 
 				let uploadDate = moment(message.uploadDate).fromNow(true);
-				messagesString += `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${getSent}:7:${uploadDate}|`;
+				messagesList.push(`6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${getSent}:7:${uploadDate}`);
 			}
 
 			fc.success(`Получение сообщений для аккаунта ${accountID} выполнено`);
-			return `${messagesString}#${count}:${offset}:10`;
+			return `${messagesList}#${count}:${offset}:10`;
 		} else {
 			fc.error(`Получение сообщений для аккаунта ${accountID} не выполнено: ошибка авторизации`);
 			return '-1';

@@ -8,7 +8,7 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 
 import { UserModel } from '../helpers/models/user';
 import XOR from '../helpers/classes/xor';
-import { randomInt } from 'crypto';
+import rand from 'random-node-module';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJRewards.php`, async (req: any, res: any) => {
@@ -68,17 +68,15 @@ async function router(router: any, options: any) {
 				await userQuery[0].updateOne({ chest2Count: chest2Count, chest2Time: time });
 			}
 
-			const r = randomInt;
+			const r = rand.int;
 			let chest1Content = `${r(drc.c1MinOrbs, drc.c1MaxOrbs)},${r(drc.c1MinDiamonds, drc.c1MaxDiamonds)},${r(drc.c1MinShards, drc.c1MaxShards)},${r(drc.c1MinKeys, drc.c1MaxKeys)}`;
 			let chest2Content = `${r(drc.c2MinOrbs, drc.c2MaxOrbs)},${r(drc.c2MinDiamonds, drc.c2MaxDiamonds)},${r(drc.c2MInItemID, drc.c2MaxItemID)},${r(drc.c1MinKeys, drc.c1MaxKeys)}`;
 
 			let str = `1:${accountID}:${chk}:${udid}:${accountID}:${chest1Left}:${chest1Content}:${chest1Count}:${chest2Left}:${chest2Content}:${chest2Count}:${rewardType}`;
-			console.log(str);
 			let xor = XOR.cipher(str, 59182);
 			let result = Buffer.from(xor).toString('base64').replace('/', '_').replace('+', '-');
 
 			let hash = GJCrypto.genSolo4(result);
-			console.log(hash);
 
 			fc.success(`Получение ежедневных наград ${rewardType} для ${accountID} выполнено`);
 			return `SaKuJ${result}|${hash}`;

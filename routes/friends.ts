@@ -22,7 +22,7 @@ async function router(router: any, options: any) {
 		const page = body.page;
 		const getSent = body.getSent || 0;
 
-		let requestsString = '';
+		let requestsList = [];
 
 		let requests;
 		if (getSent == 1) {
@@ -44,7 +44,7 @@ async function router(router: any, options: any) {
 					accountID: getSent == 1 ? request.toAccountID : request.fromAccountID
 				});
 
-				requestsString += GJHelpers.jsonToRobtop([{
+				requestsList.push(GJHelpers.jsonToRobtop([{
 					'1': user.userName,
 					'2': user.accountID,
 					'3': user.accIcon,
@@ -58,11 +58,11 @@ async function router(router: any, options: any) {
 					'35': request.message,
 					'37': dateAgo,
 					'41': request.isUnread
-				}]) + '|';
+				}]));
 			}
 			fc.success(`Запросы в друзья аккаунту ${accountID} получены`);
 
-			return requestsString + `#${requests.length}:${page * 10}:10`;
+			return requestsList.join('|') + `#${requests.length}:${page * 10}:10`;
 		}
 	});
 
@@ -98,20 +98,20 @@ async function router(router: any, options: any) {
 				return '-2';
 			}
 
-			let users: number[] = [];
+			let usersIDs: number[] = [];
 			let isUnread: boolean[] = [];
 			list.map((item: IBlock) => {
 				let user = item.accountID1 != accountID ? item.accountID1 : item.accountID2;
 				isUnread[user] = item.accountID1 != accountID ? item.isUnread1 : item.isUnread2;
 
-				users.push(user);
+				usersIDs.push(user);
 			});
 
-			const usersList = await UserModel.find().where('accountID').in(users);
+			const users = await UserModel.find().where('accountID').in(usersIDs);
 
-			let usersString = '';
-			usersList.map(user => {
-				usersString += GJHelpers.jsonToRobtop([{
+			let usersList: string[] = [];
+			users.map(user => {
+				usersList.push(GJHelpers.jsonToRobtop([{
 					'1': user.userName,
 					'2': user.accountID,
 					'9': user.icon,
@@ -123,7 +123,7 @@ async function router(router: any, options: any) {
 					'17': user.userCoins,
 					'18': '0',
 					'41': isUnread[user.accountID],
-				}]) + '|';
+				}]));
 			});
 
 			if (type == 0) {
@@ -131,10 +131,8 @@ async function router(router: any, options: any) {
 				await FriendModel.updateMany({ accountID1: accountID }, { isUnread2: 0 });
 			}
 
-			fc.log(usersString);
-
 			fc.success(`Получение списка пользователей типа ${type} удалось`);
-			return usersString;
+			return usersList.join('|');
 		} else {
 			fc.error(`Получение списка пользователей типа ${type} не удалось: ошибка авторизации`);
 			return '-1';

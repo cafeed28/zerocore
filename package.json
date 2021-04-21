@@ -1,6 +1,6 @@
 {
 	"name": "zerocore",
-	"version": "0.8.0-dev",
+	"version": "0.8.1-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.ts",
 	"scripts": {
@@ -25,12 +25,14 @@
 		"mongodb": "3.6.3",
 		"mongoose": "5.11.15",
 		"node-gzip": "^1.1.2",
+		"random-node-module": "^1.2.0",
 		"typescript": "^4.2.4"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.1",
 		"@types/dateformat": "^3.0.1",
 		"@types/node": "^14.14.41",
-		"@types/node-gzip": "^1.1.0"
+		"@types/node-gzip": "^1.1.0",
+		"source-map-support": "^0.5.19"
 	}
 }

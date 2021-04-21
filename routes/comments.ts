@@ -87,8 +87,8 @@ async function router(router: any, options: any) {
 		let orderBy: any = { commentID: 1 };
 		if (mode == 1) orderBy = { likes: 1 };
 
-		let commentsString = '';
-		let usersString = '';
+		let commentsList = [];
+		let usersList = [];
 
 		let users: number[] = [];
 
@@ -102,7 +102,7 @@ async function router(router: any, options: any) {
 			for (const comment of comments) {
 				const user = await UserModel.findOne({ accountID: comment.accountID });
 				if (!users.includes(user.accountID)) {
-					usersString += `${user.accountID}:${user.userName}:${user.accountID}|`;
+					usersList.push(`${user.accountID}:${user.userName}:${user.accountID}`);
 				}
 
 				const roleAssign = await RoleAssignModel.findOne({ accountID: comment.accountID });
@@ -119,12 +119,13 @@ async function router(router: any, options: any) {
 				// надеюсь, в 2.2 будет json...
 				// робтоп, если ты это читаешь (ага конечно), знай, ты пидо рас блять где json ну нахуя этот формат ёбнутый
 
-				commentsString += `2~${comment.comment}~3~${comment.accountID}~4~${comment.likes}~5~0~7~${comment.isSpam}~9~${prefix || ''}${dateAgo}~6~${comment.commentID}~10~${comment.percent}`;
-				commentsString += `~11~${badgeLevel || 0}~12~${commentColor || 0}:1~${user.userName}~7~1~9~${user.icon}~10~${user.color1}~11~${user.color2}~14~${user.iconType}~15~${user.special}~16~${user.accountID}|`;
+				commentsList.push(`2~${comment.comment}~3~${comment.accountID}~4~${comment.likes}~5~0~7~${comment.isSpam}~9~${prefix || ''}${dateAgo}~6~${comment.commentID}~10~${comment.percent}`
+					+
+					`~11~${badgeLevel || 0}~12~${commentColor || 0}:1~${user.userName}~7~1~9~${user.icon}~10~${user.color1}~11~${user.color2}~14~${user.iconType}~15~${user.special}~16~${user.accountID}`);
 			};
 			fc.success(`Комментарии уровня ${levelID} получены`);
 
-			const result = `${commentsString}#${usersString}#${commentsCount}:${page}:10`
+			const result = `${commentsList.join('|')}#${usersList.join('|')}#${commentsCount}:${page}:10`
 			fc.log(result);
 
 			return result;

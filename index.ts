@@ -1,3 +1,5 @@
+require('source-map-support').install();
+
 import fs from 'fs-jetpack';
 import nodefs from 'fs';
 import fc from 'fancy-console';

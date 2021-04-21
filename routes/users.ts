@@ -137,7 +137,7 @@ async function router(router: any, options: any) {
 
 		const page = body.page;
 
-		let usersString = '';
+		let usersList: string[] = [];
 
 		const users = await UserModel.find({ userName: new RegExp(body.str, 'i') });
 
@@ -146,7 +146,7 @@ async function router(router: any, options: any) {
 			return '-1';
 		} else {
 			users.map(user => {
-				usersString += GJHelpers.jsonToRobtop([{
+				usersList.push(GJHelpers.jsonToRobtop([{
 					'1': user.userName,
 					'2': user.accountID,
 					'3': user.stars,
@@ -160,12 +160,12 @@ async function router(router: any, options: any) {
 					'15': user.special,
 					'16': user.accountID,
 					'17': user.userCoins
-				}]) + '|';
+				}]));
 			});
 		}
 		fc.success(`Получение пользователей выполнено`);
 
-		return usersString.slice(0, -1) + `#${users.length}:${page}:10`;
+		return usersList.join('|') + `#${users.length}:${page}:10`;
 	});
 
 	router.post(`/${config.basePath}/updateGJUserScore22.php`, async (req: any, res: any) => {

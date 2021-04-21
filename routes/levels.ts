@@ -158,10 +158,10 @@ async function router(router: any, options: any) {
 
 		const page = body.page;
 
-		let levelsString = '';
+		let levelsList = [];
 		let levelsMultiString = '';
-		let usersString = '';
-		let songsString = '';
+		let usersList = [];
+		let songsList = [];
 
 		let params: any = {};
 		let orderBy: any = {};
@@ -247,11 +247,11 @@ async function router(router: any, options: any) {
 
 				if (level.songID != 0) {
 					const song = await GJHelpers.getSongString(level.songID);
-					if (song) songsString += song + '~:~';
+					if (song) songsList.push(song);
 				}
 
 				const user = await GJHelpers.getUserString(level.accountID)
-				usersString += user + '|';
+				usersList.push(user);
 
 				const levelString = GJHelpers.jsonToRobtop([{
 					'1': level.levelID,
@@ -284,13 +284,10 @@ async function router(router: any, options: any) {
 					'47': '2',
 				}]) + '|';
 
-				levelsString += levelString;
+				levelsList.push(levelString);
 			}
 
-			levelsString = levelsString.slice(0, -1);
 			levelsMultiString = levelsMultiString.slice(0, -1);
-			usersString = usersString.slice(0, -1);
-			songsString = songsString.slice(0, -3);
 
 			let hash = await GJCrypto.genMulti(levelsMultiString);
 			if (!hash) {
@@ -298,7 +295,7 @@ async function router(router: any, options: any) {
 				return '-1';
 			}
 
-			const result = `${levelsString}#${usersString}#${songsString}#${levelsCount}:${page * 10}:10#${hash}`;
+			const result = `${levelsList.join('|')}#${usersList.join('|')}#${songsList.join('~:~')}#${levelsCount}:${page * 10}:10#${hash}`;
 			fc.log(result);
 
 			fc.success(`Получение уровней выполнено`);
