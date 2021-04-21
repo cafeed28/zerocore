@@ -199,7 +199,7 @@ async function router(router: any, options: any) {
 					recipientID: recipientID,
 					userName: sender.userName,
 					messageID: (await MessageModel.countDocuments()) + 1,
-					uploadDate: Date.now(),
+					uploadDate: Math.round(Date.now() / 1000),
 				};
 
 				await MessageModel.create(message);

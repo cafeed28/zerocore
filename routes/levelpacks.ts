@@ -5,7 +5,7 @@ import WebHelper from '../helpers/classes/WebHelper';
 import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
 import { MapPackModel } from '../helpers/models/mappacks';
-import { GauntletModel } from '../helpers/models/gauntlets';
+import { GauntletModel } from '../helpers/models/gauntlet';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJMapPacks21.php`, async (req: any, res: any) => {

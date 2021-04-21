@@ -25,7 +25,7 @@ async function router(router: any, options: any) {
 				userName: userName,
 				post: comment,
 				accountID: accountID,
-				uploadDate: Date.now(),
+				uploadDate: Math.round(Date.now() / 1000),
 				postID: (await PostModel.countDocuments()) + 1
 			};
 			await PostModel.create(post);

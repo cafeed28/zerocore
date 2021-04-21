@@ -31,7 +31,7 @@ async function router(router: any, options: any) {
 				levelID: levelID,
 				accountID: accountID,
 				percent: percent,
-				uploadDate: Date.now(),
+				uploadDate: Math.round(Date.now() / 1000),
 				commentID: (await CommentModel.countDocuments()) + 1,
 				likes: 0,
 				isSpam: 0

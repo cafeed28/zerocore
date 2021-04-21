@@ -9,6 +9,7 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 import { UserModel } from '../helpers/models/user';
 import XOR from '../helpers/classes/xor';
 import rand from 'random-node-module';
+import { QuestModel } from '../helpers/models/quest';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJRewards.php`, async (req: any, res: any) => {
@@ -17,11 +18,6 @@ async function router(router: any, options: any) {
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
 		const accountID = body.accountID;
-		if (accountID == 0) {
-			fc.error(`Получение ежедневных наград не выполнено: пользователь не зарегестрирован`);
-			return '-1';
-		}
-
 		const udid = body.udid;
 		let chk: string = body.chk;
 		const gjp = body.gjp;
@@ -83,6 +79,61 @@ async function router(router: any, options: any) {
 		}
 		else {
 			fc.error(`Получение ежедневных наград для ${accountID} не выполнено: ошибка авторизации`);
+			return '-1';
+		}
+	});
+
+	router.post(`/${config.basePath}/getGJChallenges.php`, async (req: any, res: any) => {
+		const requredKeys = ['secret', 'chk', 'gjp'];
+		const body = req.body;
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+
+		const accountID = body.accountID;
+		const gjp = body.gjp;
+		const udid = body.udid;
+
+		let chk: string = body.chk;
+
+		if (GJCrypto.gjpCheck(gjp, accountID)) {
+			const user = await UserModel.findOne({
+				accountID
+			});
+
+			if (!user) {
+				fc.error(`Получение квестов для ${accountID} не выполнено: пользователь не зарегестрирован`);
+				return '-1';
+			}
+
+			let time = Math.round(Date.now()) / 1000;
+
+			chk = XOR.cipher(Buffer.from(chk.substring(5), 'base64').toString(), 19847);
+
+			let from = Math.round(new Date('2000-12-17').getTime()) / 1000;
+			let diff = time - from;
+
+			let questID = Math.floor(diff / 86400) * 3;
+
+			let midnight = Math.round(new Date(new Date().setUTCHours(24, 0, 0)).getTime() / 1000); // next midnight
+			let timeleft = midnight - time;
+
+			let quests = await QuestModel.find();
+			quests = GJHelpers.shuffle(quests);
+
+			let quest1 = `${questID},${quests[0].type},${quests[0].amount},${quests[0].reward},${quests[0].questName}`;
+			let quest2 = `${questID + 1},${quests[1].type},${quests[1].amount},${quests[1].reward},${quests[1].questName}`;
+			let quest3 = `${questID + 2},${quests[2].type},${quests[2].amount},${quests[2].reward},${quests[2].questName}`;
+
+			let str = `SaKuJ:${accountID}:${chk}:${udid}:${accountID}:${timeleft}:${quest1}:${quest2}:${quest3}`;
+			let xor = XOR.cipher(str, 19847);
+			let result = Buffer.from(xor).toString('base64');
+
+			let hash = GJCrypto.genSolo3(result);
+
+			fc.success(`Получение квестов для ${accountID} выполнено`);
+			return `SaKuJ${result}|${hash}`;
+		}
+		else {
+			fc.error(`Получение квестов для ${accountID} не выполнено: ошибка авторизации`);
 			return '-1';
 		}
 	});

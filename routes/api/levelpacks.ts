@@ -8,7 +8,7 @@ import APIHelpers from '../../helpers/classes/API';
 import GJHelpers from '../../helpers/classes/GJHelpers';
 
 import { MapPackModel, IMapPack } from '../../helpers/models/mappacks';
-import { GauntletModel, IGauntlet } from '../../helpers/models/gauntlets';
+import { GauntletModel, IGauntlet } from '../../helpers/models/gauntlet';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/mappacks`, async (req: any, res: any) => {

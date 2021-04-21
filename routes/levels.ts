@@ -12,7 +12,7 @@ import XOR from '../helpers/classes/XOR';
 
 import { LevelModel } from '../helpers/models/level';
 import { DailyModel } from '../helpers/models/daily';
-import { GauntletModel } from '../helpers/models/gauntlets';
+import { GauntletModel } from '../helpers/models/gauntlet';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
@@ -200,7 +200,7 @@ async function router(router: any, options: any) {
 			orderBy = { likes: -1 };
 		}
 		else if (body.type == 3) {
-			orderBy = { uploadDate: { $lt: Date.now() - (7 * 24 * 60 * 60) } };
+			orderBy = { uploadDate: { $lt: Math.round(Date.now() / 1000) - (7 * 24 * 60 * 60) } };
 		}
 		else if (body.type == 4) {
 			orderBy = { levelID: -1 };
