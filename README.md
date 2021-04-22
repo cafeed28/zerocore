@@ -30,14 +30,16 @@ Geometry Dash server emulator on NodeJS and MongoDB
  - вебхук для дискорда - ✔️
 
  # Настройка и запуск 
- 1. Создать коллекцию командой `db.createCollection('zerocore')`
+ 1. Для начала необходимо настроить MongoDB, хорошая статья: https://www.digitalocean.com/community/tutorials/how-to-secure-mongodb-on-ubuntu-20-04-ru
 
- 2. Создать пользователя командой `db.createUser({ user: 'zerocore', pwd: 'password', roles: [{ role: 'readWrite', db: 'zerocore' }] })`
+ 2. Создать коллекцию командой `db.createCollection('zerocore')`
 
- 3. Переименновать `config.default.ts` в `config.ts` и настроить его (там всё понятно и прокомментированно)
+ 3. Создать пользователя командой `db.createUser({ user: 'zerocore', pwd: 'password', roles: [{ role: 'readWrite', db: 'zerocore' }] })`
 
- 4. Настроить `dailyRewardsConfig.ts`, если нужно (там всё понятно и прокомментированно). Советую оставить по умолчанию
+ 4. Переименновать `config.default.ts` в `config.ts` и настроить его (там всё понятно и прокомментированно)
 
- 5. Установить все пакеты командой `npm install`
+ 5. Настроить `dailyRewardsConfig.ts`, если нужно (там всё понятно и прокомментированно). Советую оставить по умолчанию
 
- 6. Запустить командой `npm run start`
+ 6. Установить все пакеты командой `npm install`
+
+ 7. Запустить командой `npm run start`
