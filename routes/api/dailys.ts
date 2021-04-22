@@ -62,8 +62,8 @@ async function router(router: any, options: any) {
 			};
 		}
 
-		if (type != 'daily' && type != 'weekly') {
-			fc.error(`Дейли не назначен: тип может быть только 'daily' и 'weekly'`);
+		if (type != 0 && type != 1) {
+			fc.error(`Дейли не назначен: тип может быть только 0 и 1`);
 			return {
 				status: 'error',
 				code: 'dailyOrWeeklyOnly'
@@ -91,14 +91,11 @@ async function router(router: any, options: any) {
 				};
 			}
 
-			let numType;
-			if (type == 'daily') numType = 0;
-			if (type == 'weekly') numType = 1;
-
 			const daily: IDaily = {
 				levelID: levelID,
 				timestamp: Math.round(new Date().getTime() / 1000),
-				type: numType
+				type: type,
+				feaID: (await DailyModel.countDocuments()) + 1
 			};
 
 			await DailyModel.create(daily);

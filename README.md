@@ -2,7 +2,7 @@
 Geometry Dash server emulator on NodeJS and MongoDB
 
 # Roadmap 
-## Прогресс - 91%
+## Прогресс - 97%
 ## Пунктов - 18
 
  ### Аккаунты и пользователи
@@ -24,7 +24,7 @@ Geometry Dash server emulator on NodeJS and MongoDB
 
  ### Дополнительно
  - маппаки и гаунтлеты - ✔️
- - дейли и викли - ❌
+ - дейли и викли - ✔️
  - дейли ревардс - ✔️
  - квесты - ✔️
  - вебхук для дискорда - ✔️

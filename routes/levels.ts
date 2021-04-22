@@ -20,7 +20,35 @@ async function router(router: any, options: any) {
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
-		const levelID = body.levelID;
+		let levelID = body.levelID;
+
+		const time = Math.round(new Date().getTime() / 1000);
+		// робтоп сука ну нахера так делать
+		if (levelID == '-1') {
+			let daily = await DailyModel.findOne({
+				timestamp: {
+					$lt: time
+				},
+				type: 0
+			});
+
+			levelID = daily.levelID;
+			var feaID = daily.feaID;
+		}
+		// можно же было просто после getGJDailyLevel скачивать уровени с id который тебе вернули, а не -1 и -2
+		else if (levelID == '-2') {
+			let daily = await DailyModel.findOne({
+				timestamp: {
+					$lt: time
+				},
+				type: 1
+			});
+
+			levelID = daily.levelID;
+			var feaID = daily.feaID + 100001;
+		}
+
+		console.log(feaID);
 
 		const level = await LevelModel.findOne({ levelID: levelID })
 
@@ -29,7 +57,7 @@ async function router(router: any, options: any) {
 			return '-1';
 		}
 
-		let levelString: any = '';
+		let levelString = '';
 		try {
 			levelString = await fs.readAsync(`data/levels/${levelID}`, 'utf8');
 		} catch (e) {
@@ -46,7 +74,7 @@ async function router(router: any, options: any) {
 		await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
 
 		let pass = level.password;
-		// if(checkModPerms('freeCopy')) pass = 1
+		// if (GJHelpers.getAccountPermission(accountID, 'freeCopy')) pass = 1
 		if (pass != 0) {
 			var xorPass = Buffer.from(XOR.cipher(pass.toString(), 26364)).toString('base64');
 		}
@@ -96,18 +124,22 @@ async function router(router: any, options: any) {
 			'48': '1',
 		}]);
 
+		if (feaID) response += `:41:${feaID}`;
+
 		response += `#${GJCrypto.genSolo(levelString)}#`;
 
-		let someString = [level.accountID,
-		level.starStars,
-		level.starDemon,
-		level.levelID,
-		level.starCoins,
-		level.starFeatured, pass, 0
+		let someString = [
+			level.accountID,
+			level.starStars,
+			level.starDemon,
+			level.levelID,
+			level.starCoins,
+			level.starFeatured, pass, 0 || feaID
 		].join(',');
 
 		response += GJCrypto.genSolo2(someString) + '#';
-		response += someString;
+		if (feaID) response += await GJHelpers.getUserString(level.accountID);
+		else response += someString;
 
 		fc.success(`Скачивание уровня ${levelID} выполнено`);
 		return response;
@@ -147,9 +179,10 @@ async function router(router: any, options: any) {
 
 		let timeleft = midnight - time;
 
+		// робтоп ты под чем писал это, ты получаешь айди дейли и потом качаешь уровень -1 или -2
+		let result = `${dailyID}|${timeleft}`;
 		fc.success('Получение ежедневных уровней выполнено');
-		console.log(`${dailyID}|${timeleft}`);
-		return `${dailyID}|${timeleft}`;
+		return result;
 	});
 
 	router.post(`/${config.basePath}/getGJLevels21.php`, async (req: any, res: any) => {

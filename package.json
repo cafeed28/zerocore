@@ -1,6 +1,6 @@
 {
 	"name": "zerocore",
-	"version": "0.9.2-dev",
+	"version": "0.9.3-dev",
 	"repository": "https://github.com/cafeed28/zerocore/",
 	"main": "index.ts",
 	"scripts": {
