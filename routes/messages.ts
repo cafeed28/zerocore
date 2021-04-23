@@ -21,7 +21,7 @@ async function router(router: any, options: any) {
 		let messageID = body.messageID;
 		let messages = body.messages;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (messages) {
 				messages = messages.replace(/[^0-9,]/, '').split(',');
 				var limit = 10;
@@ -63,7 +63,7 @@ async function router(router: any, options: any) {
 		let messageID = body.messageID;
 		let isSender = body.isSender || 0;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			let message = await MessageModel.findOne({
 				messageID: messageID
 			});
@@ -110,7 +110,7 @@ async function router(router: any, options: any) {
 
 		let messagesList = [];
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (getSent != 1) {
 				var messages = await MessageModel
 					.find({ recipientID: accountID })
@@ -172,7 +172,7 @@ async function router(router: any, options: any) {
 			return '-1';
 		}
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			let isBlocked = await BlockModel.findOne({ accountID1: recipientID, accountID2: accountID });
 
 			let sender = await UserModel.findOne({ accountID: accountID });

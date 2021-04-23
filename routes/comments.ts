@@ -28,7 +28,7 @@ async function router(router: any, options: any) {
 		const commentStr = body.comment;
 		const percent = body.percent || 0;
 
-		if (GJCrypto.gjpCheck(gjp, levelID)) {
+		if (await GJCrypto.gjpCheck(gjp, levelID)) {
 			const commentDec = Buffer.from(commentStr, 'base64').toString('utf8');
 			if (commentDec.startsWith(config.prefix)) {
 				const args = commentDec.slice(config.prefix.length).trim().split(/ +/);
@@ -89,7 +89,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const commentID = body.commentID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const comment = await CommentModel.deleteOne({
 				commentID: commentID
 			});

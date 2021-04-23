@@ -26,7 +26,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 
 		if (accountID != 0 && gjp) {
-			if (!GJCrypto.gjpCheck(gjp, accountID)) {
+			if (!await GJCrypto.gjpCheck(gjp, accountID)) {
 				fc.error(`Получение статистики пользователя ${body.targetAccountID} не выполнено: неверный gjp`);
 				return '-1';
 			}
@@ -221,7 +221,7 @@ async function router(router: any, options: any) {
 			return '-1';
 		}
 
-		if (!GJCrypto.gjpCheck(body.gjp, id)) {
+		if (!await GJCrypto.gjpCheck(body.gjp, id)) {
 			fc.error(`Обновление статистики пользователя ${body.userName} не выполнено: неверный gjp`);
 			return '-1';
 		}
@@ -290,7 +290,7 @@ async function router(router: any, options: any) {
 		const type = body.type;
 		let count = body.count || 50;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (type == 'top' || type == 'creators' || type == 'relative') {
 				let sort = {};
 				let query: any = { isBanned: 0 };

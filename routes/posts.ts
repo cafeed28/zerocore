@@ -20,7 +20,7 @@ async function router(router: any, options: any) {
 		const comment = body.comment;
 		const accountID = body.accountID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const post: IPost = {
 				userName: userName,
 				post: comment,
@@ -67,7 +67,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const postID = body.commentID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const post = await PostModel.deleteOne({
 				postID: postID,
 			});

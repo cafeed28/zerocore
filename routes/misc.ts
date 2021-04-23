@@ -112,7 +112,7 @@ async function router(router: any, options: any) {
 		const type = body.type;
 		const itemID = body.itemID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			let item;
 
 			if (type == 1) {
@@ -194,7 +194,7 @@ async function router(router: any, options: any) {
 
 		const accountID = body.accountID;
 		const gjp = body.gjp;
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel) > 0) {
 				const permission = await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel);
 

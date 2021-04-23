@@ -18,7 +18,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const stars = body.stars;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const permission = await GJHelpers.checkPermission(accountID, EPermissions.rateLevelStar);
 			if (permission) {
 				let diff: any = GJHelpers.getDiffFromStars(stars);
@@ -50,7 +50,7 @@ async function router(router: any, options: any) {
 		const stars = body.stars;
 		const feature = body.feature;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (await GJHelpers.checkPermission(accountID, EPermissions.rateLevelStar)) {
 				let diff: any = GJHelpers.getDiffFromStars(stars);
 

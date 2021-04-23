@@ -381,7 +381,7 @@ async function router(router: any, options: any) {
 		const unlisted = body.unlisted || 0;
 		const ldm = body.ldm || 0;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (!levelString || !levelName) {
 				fc.error(`Уровень на аккаунте ${body.userName} не опубликован: имя или уровень пустой`);
 				return '-1';

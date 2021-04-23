@@ -9,6 +9,8 @@ import GJHelpers from '../../helpers/classes/GJHelpers';
 
 import { QuestModel, IQuest } from '../../helpers/models/quest';
 import { GauntletModel, IGauntlet } from '../../helpers/models/gauntlet';
+import { AccountModel } from '../../helpers/models/account';
+import EPermissions from '../../helpers/EPermissions';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/quests`, async (req: any, res: any) => {
@@ -35,11 +37,22 @@ async function router(router: any, options: any) {
 		const userName = body.userName.trim();
 		const password = body.password.trim();
 
-		if (!GJHelpers.isValid(userName, password)) {
+		if (!await GJHelpers.isValid(userName, password)) {
 			fc.error(`Квест ${questName} не создан: ошибка аутентификации (${userName})`);
 			return {
 				'status': 'error',
 				'code': 'authError'
+			}
+		}
+
+		const account = await AccountModel.findOne({
+			userName: userName
+		});
+		if (await GJHelpers.getAccountPermission(account.accountID, EPermissions.badgeLevel) != 2) {
+			fc.error(`Квест не создан: нет прав (${userName})`);
+			return {
+				'status': 'error',
+				'code': 'permError'
 			}
 		}
 

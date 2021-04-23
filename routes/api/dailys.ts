@@ -8,6 +8,8 @@ import GJHelpers from '../../helpers/classes/GJHelpers';
 
 import { DailyModel, IDaily } from '../../helpers/models/daily';
 import { LevelModel } from '../../helpers/models/level';
+import { AccountModel } from '../../helpers/models/account';
+import EPermissions from '../../helpers/EPermissions';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/daily`, async (req: any, res: any) => {
@@ -43,11 +45,22 @@ async function router(router: any, options: any) {
 
 		const userName = body.userName.trim();
 		const password = body.password.trim();
-		if (!GJHelpers.isValid(userName, password)) {
+		if (!await GJHelpers.isValid(userName, password)) {
 			fc.error(`Дейли не назначен: ошибка аутентификации (${userName})`);
 			return {
 				'status': 'error',
 				'code': 'authError'
+			}
+		}
+
+		const account = await AccountModel.findOne({
+			userName: userName
+		});
+		if (await GJHelpers.getAccountPermission(account.accountID, EPermissions.badgeLevel) != 2) {
+			fc.error(`Делйи не назначен: нет прав (${userName})`);
+			return {
+				'status': 'error',
+				'code': 'permError'
 			}
 		}
 

@@ -9,6 +9,8 @@ import GJHelpers from '../../helpers/classes/GJHelpers';
 
 import { IRole, RoleModel } from '../../helpers/models/role';
 import { IRoleAssign, RoleAssignModel } from '../../helpers/models/roleAssign';
+import EPermissions from '../../helpers/EPermissions';
+import { AccountModel } from '../../helpers/models/account';
 
 async function router(router: any, options: any) {
 	router.get(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
@@ -34,11 +36,22 @@ async function router(router: any, options: any) {
 
 		const userName = body.userName.trim();
 		const password = body.password.trim();
-		if (!GJHelpers.isValid(userName, password)) {
+		if (!await GJHelpers.isValid(userName, password)) {
 			fc.error(`Роль ${roleName} не создана: ошибка аутентификации (${userName})`);
 			return {
 				'status': 'error',
 				'code': 'authError'
+			}
+		}
+
+		const account = await AccountModel.findOne({
+			userName: userName
+		});
+		if (await GJHelpers.getAccountPermission(account.accountID, EPermissions.badgeLevel) != 2) {
+			fc.error(`Роль ${roleName} не создана: нет прав (${userName})`);
+			return {
+				'status': 'error',
+				'code': 'permError'
 			}
 		}
 
@@ -129,11 +142,22 @@ async function router(router: any, options: any) {
 
 		const userName = body.userName.trim();
 		const password = body.password.trim();
-		if (!GJHelpers.isValid(userName, password)) {
+		if (!await GJHelpers.isValid(userName, password)) {
 			fc.error(`Роль ${roleID} не назначена аккаунту ${accountID}: ошибка аутентификации (${userName})`);
 			return {
 				'status': 'error',
 				'code': 'authError'
+			}
+		}
+
+		const account = await AccountModel.findOne({
+			userName: userName
+		});
+		if (await GJHelpers.getAccountPermission(account.accountID, EPermissions.badgeLevel) != 2) {
+			fc.error(`Роль ${roleID} не назначена аккаунту ${accountID}: нет прав (${userName})`);
+			return {
+				'status': 'error',
+				'code': 'permError'
 			}
 		}
 

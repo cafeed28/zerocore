@@ -75,7 +75,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const type = body.type;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (type == 0) {
 				var list = await BlockModel.find({
 					$or: [{
@@ -149,7 +149,7 @@ async function router(router: any, options: any) {
 		const toAccountID = body.targetAccountID;
 		const requestID = body.requestID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			await FriendRequestModel.deleteOne({
 				requestID: requestID
 			});
@@ -179,7 +179,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const toAccountID = body.targetAccountID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const block: IBlock = {
 				accountID1: accountID,
 				accountID2: toAccountID
@@ -214,7 +214,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const toAccountID = body.targetAccountID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			await BlockModel.findOneAndDelete({
 				accountID1: accountID,
 				accountID2: toAccountID
@@ -239,7 +239,7 @@ async function router(router: any, options: any) {
 		const toAccountID = body.toAccountID;
 		const message = body.comment;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const user = await UserModel.findOne({ accountID: toAccountID });
 			const blocked = await BlockModel.findOne({ accountID1: toAccountID, accountID2: accountID });
 
@@ -276,7 +276,7 @@ async function router(router: any, options: any) {
 		const toAccountID = body.targetAccountID;
 		const isSender = body.isSender;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			if (isSender == 0) {
 				await FriendRequestModel.deleteOne({
 					fromAccountID: toAccountID,
@@ -309,7 +309,7 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const requestID = body.requestID;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			await FriendRequestModel.findOneAndUpdate({
 				requestID: requestID
 			}, { isUnread: 0 });

@@ -23,7 +23,7 @@ async function router(router: any, options: any) {
 		const gjp = body.gjp;
 		const rewardType = body.rewardType;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const user = await UserModel.findOne({ accountID: accountID });
 			if (!user) {
 				fc.error(`Получение ежедневных наград для ${accountID} не выполнено: пользователь не зарегестрирован`);
@@ -94,7 +94,7 @@ async function router(router: any, options: any) {
 
 		let chk: string = body.chk;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			const user = await UserModel.findOne({
 				accountID
 			});

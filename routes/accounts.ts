@@ -70,7 +70,7 @@ async function router(router: any, options: any) {
 		const twitter = body.twitter;
 		const twitch = body.twitch;
 
-		if (GJCrypto.gjpCheck(gjp, accountID)) {
+		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			await UserModel.findOneAndUpdate({
 				accountID: accountID
 			}, {

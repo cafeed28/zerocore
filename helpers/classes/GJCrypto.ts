@@ -6,14 +6,14 @@ import { LevelModel } from '../models/level';
 import { MapPackModel } from '../models/mappacks';
 
 export default class GJCrypto {
-	static gjpCheck(gjp: String, accountID: any) {
+	static async gjpCheck(gjp: String, accountID: any) {
 		if (!gjp) return false;
 		let key = 37526;
 		let data = Buffer.from(gjp.replace(/_/g, '/').replace(/-/g, '+'), 'base64').toString('utf8');
 
 		let gjpdecode = XOR.cipher(data, key);
 
-		return GJHelpers.isValidID(accountID, gjpdecode);
+		return await GJHelpers.isValidID(accountID, gjpdecode);
 	}
 
 	static genSolo(levelString: String) {
