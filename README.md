@@ -42,4 +42,6 @@ Geometry Dash server emulator on NodeJS and MongoDB
 
  6. Установить все пакеты командой `npm install`
 
- 7. Запустить командой `npm run start`
+ 7. Собрать командой `npm run build`
+
+ 8. Запустить командой `npm run start`
