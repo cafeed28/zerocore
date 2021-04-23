@@ -21,8 +21,8 @@ const stop = async () => {
 
 const connection = mongoose.connection;
 
-connection.on('error', (err) => {
-	fc.error('MongoDB Connection error:', err.message);
+connection.on('error', (e) => {
+	fc.error('MongoDB Connection error:', e.message);
 	process.exit(1);
 });
 

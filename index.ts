@@ -40,13 +40,13 @@ app.setNotFoundHandler((req, res) => {
 });
 
 // any error handler
-app.setErrorHandler((err, req, res) => {
-	fc.error(`${res.statusCode || 500} Internal error: ${err.message}`);
-	fc.error(`Stacktrace:\n${err.stack}`);
+app.setErrorHandler((e, req, res) => {
+	fc.error(`${res.statusCode || 500} Internal error: ${e.message}`);
+	fc.error(`Stacktrace:\n${e.stack}`);
 
-	console.log(err);
+	console.log(e);
 
-	res.code(err.statusCode || 500).send({ status: 'error', code: err.statusCode, message: err.message });
+	res.code(e.statusCode || 500).send({ status: 'error', code: e.statusCode, message: e.message });
 });
 
 app.addHook('onRoute', (opts) => {
@@ -70,9 +70,9 @@ const start = async () => {
 		// server
 		await app.listen(config.port, '0.0.0.0');
 		fc.success('ZeroCore started and listening on port ' + config.port);
-	} catch (err) {
+	} catch (e) {
 		fc.error('Failed to start ZeroCore');
-		fc.error(err);
+		fc.error(e);
 		process.exit(1);
 	}
 }

@@ -1,5 +1,7 @@
+import EPermissions from "../EPermissions";
+
 export default interface ICommand {
 	name: string,
-	modLevel: number,
-	execute(accountID: number, args: string[]): Promise<void>
+	requiredPerms: EPermissions[],
+	execute(accountID: number, levelID: number, args: string[]): Promise<boolean>
 }

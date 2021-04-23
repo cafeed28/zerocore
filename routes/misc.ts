@@ -15,6 +15,7 @@ import { LevelModel } from '../helpers/models/level';
 import { CommentModel } from '../helpers/models/comment';
 import { PostModel } from '../helpers/models/post';
 import { SongModel } from '../helpers/models/song';
+import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getAccountURL.php`, async (req: any, res: any) => {
@@ -194,8 +195,8 @@ async function router(router: any, options: any) {
 		const accountID = body.accountID;
 		const gjp = body.gjp;
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			if (await GJHelpers.getAccountPermission(accountID, 'badgeLevel') > 0) {
-				const permission = await GJHelpers.getAccountPermission(accountID, 'badgeLevel');
+			if (await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel) > 0) {
+				const permission = await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel);
 
 				fc.success(`Доступ модератора аккаунта ${accountID} уровня ${permission} получен`);
 				return permission.toString();

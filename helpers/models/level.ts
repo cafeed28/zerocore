@@ -4,7 +4,7 @@ export interface ILevel {
 	accountID: number,
 	levelID: number,
 	levelName: string,
-	levelLength: number,
+	levelLength?: number,
 	levelVersion?: number,
 	levelDesc?: string,
 	extraString: string,
@@ -14,23 +14,26 @@ export interface ILevel {
 	password: number,
 	original: number,
 	twoPlayer: number,
-	songID: number,
+	songID?: number,
 	objects: number,
 	coins: number,
-	starCoins: number,
 	requestedStars: number,
 	unlisted: number,
 	ldm: number,
-
-	starDifficulty?: number,
-	starDemon?: number,
+	
 	starStars?: number,
-	starFeatured?: number,
-	starAuto?: number,
-	starEpic?: number,
+	starCoins?: boolean,
+	starDifficulty?: number,
+	starDemon?: boolean,
+	starFeatured?: boolean,
+	starAuto?: boolean,
+	starEpic?: boolean,
 	starDemonDiff?: number,
 	downloads?: number,
 	likes?: number,
+
+	uploadDate?: number,
+	updateDate?: number,
 
 	IP: string
 }
@@ -54,20 +57,23 @@ const LevelSchema: Schema = new Schema({
 	songID: { type: Number, default: 0 },
 	objects: Number,
 	coins: Number,
-	starCoins: { type: Number, default: 0 },
 	requestedStars: Number,
 	unlisted: Number,
 	ldm: Number,
-
-	starDifficulty: { type: Number, default: 0 },
-	starDemon: { type: Number, default: 0 },
+	
 	starStars: { type: Number, default: 0 },
-	starFeatured: { type: Number, default: 0 },
-	starAuto: { type: Number, default: 0 },
-	starEpic: { type: Number, default: 0 },
+	starCoins: { type: Boolean, default: false },
+	starDifficulty: { type: Number, default: 0 },
+	starDemon: { type: Boolean, default: false },
+	starFeatured: { type: Boolean, default: false },
+	starAuto: { type: Boolean, default: false },
+	starEpic: { type: Boolean, default: false },
 	starDemonDiff: { type: Number, default: 0 },
 	downloads: { type: Number, default: 0 },
 	likes: { type: Number, default: 0 },
+
+	uploadDate: { type: Number, default: 0 },
+	updateDate: { type: Number, default: 0 },
 
 	IP: String
 });

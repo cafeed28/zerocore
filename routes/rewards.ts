@@ -45,15 +45,13 @@ async function router(router: any, options: any) {
 			let chest1Left = Math.max(0, drc.c1Timeout - chest1Diff);
 			let chest2Left = Math.max(0, drc.c2Timeout - chest2Diff);
 
-			let userQuery = await UserModel.find({ accountID: accountID });
-
 			if (rewardType == 1) {
 				if (chest1Left != 0) {
 					fc.error(`Получение ежедневных наград для ${accountID} не выполнено: нет награды 1`);
 					return '-1';
 				}
 				chest1Count++;
-				await userQuery[0].updateOne({ chest1Count: chest1Count, chest1Time: time });
+				await user.updateOne({ chest1Count: chest1Count, chest1Time: time });
 			}
 			else if (rewardType == 2) {
 				if (chest2Left != 0) {
@@ -61,7 +59,7 @@ async function router(router: any, options: any) {
 					return '-1';
 				}
 				chest2Count++;
-				await userQuery[0].updateOne({ chest2Count: chest2Count, chest2Time: time });
+				await user.updateOne({ chest2Count: chest2Count, chest2Time: time });
 			}
 
 			const r = rand.int;
@@ -75,6 +73,8 @@ async function router(router: any, options: any) {
 			let hash = GJCrypto.genSolo4(result);
 
 			fc.success(`Получение ежедневных наград ${rewardType} для ${accountID} выполнено`);
+			console.log(result);
+			console.log(hash);
 			return `SaKuJ${result}|${hash}`;
 		}
 		else {

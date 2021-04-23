@@ -87,7 +87,7 @@ async function router(router: any, options: any) {
 
 			let user = await UserModel.findOne({ accountID: accountID });
 
-			let uploadDate = moment(message.uploadDate).fromNow(true);
+			let uploadDate = moment(message.uploadDate * 1000).fromNow(true);
 			fc.success(`Скачивание сообщения ${messageID} выполнено`);
 			return `6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${isSender}:5:${message.body}:7:${uploadDate}`;
 		} else {
@@ -144,7 +144,7 @@ async function router(router: any, options: any) {
 
 				let user = await UserModel.findOne({ accountID: accountID });
 
-				let uploadDate = moment(message.uploadDate).fromNow(true);
+				let uploadDate = moment(message.uploadDate * 1000).fromNow(true);
 				messagesList.push(`6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${+message.isUnread}:9:${getSent}:7:${uploadDate}`);
 			}
 

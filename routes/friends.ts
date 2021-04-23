@@ -38,7 +38,7 @@ async function router(router: any, options: any) {
 			// робтоп я тебя ненавижу...
 
 			for (const request of requests) {
-				let dateAgo = moment(request.uploadDate).fromNow(true);
+				let dateAgo = moment(request.uploadDate * 1000).fromNow(true);
 
 				const user = await UserModel.findOne({
 					accountID: getSent == 1 ? request.toAccountID : request.fromAccountID
@@ -240,10 +240,10 @@ async function router(router: any, options: any) {
 		const message = body.comment;
 
 		if (GJCrypto.gjpCheck(gjp, accountID)) {
-			const user: any = await UserModel.find({ accountID: toAccountID });
-			const blocked = await BlockModel.find({ accountID1: toAccountID, accountID2: accountID });
+			const user = await UserModel.findOne({ accountID: toAccountID });
+			const blocked = await BlockModel.findOne({ accountID1: toAccountID, accountID2: accountID });
 
-			if (user.frS == 1 || blocked.length > 0) {
+			if (user.frS == 1 || blocked) {
 				fc.error(`Запрос в друзья аккаунта ${accountID} аккаунту ${toAccountID} не отправлен: ${accountID} заблокирован ${toAccountID}`);
 				return '-1';
 			}

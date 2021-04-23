@@ -123,14 +123,15 @@ async function router(router: any, options: any) {
 			return '-1';
 		} else {
 			posts.map(post => {
-				let dateAgo = moment(post.uploadDate).fromNow(true);
+				let dateAgo = moment(post.uploadDate * 1000).fromNow(true);
 
 				// робтоп я тебя ненавижу...
 				postsList.push(`2~${post.post}~3~${post.accountID}~4~${post.likes}~5~0~7~${post.isSpam}~9~${dateAgo}~6~${post.postID}`);
 			});
 			fc.success(`Посты аккаунта ${accountID} получены`);
 
-			return postsList.join('|') + `#${posts.length}:${page}:10`;
+			let response = postsList.join('|') + `#${posts.length}:${page}:10`;
+			return response;
 		}
 	});
 }

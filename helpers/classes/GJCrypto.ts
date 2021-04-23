@@ -43,21 +43,19 @@ export default class GJCrypto {
 		return new Promise(async (resolve, reject) => {
 			let levelsArray = levelsMultiString.split(',');
 			let hash = '';
-			console.log(levelsMultiString);
 
 			for await (let lID of levelsArray) {
 				if (isNaN(parseInt(lID))) {
-					resolve(false);
+					return resolve(false);
 				}
 				let levelID = parseInt(lID);
-				console.log(levelID);
 
 				const level = await LevelModel.findOne({ levelID: levelID });
 
 				hash += String(level.levelID)[0] +
 					String(level.levelID).slice(String(level.levelID).length - 1) +
-					(String(level.starStars) || '0') +
-					(String(level.starCoins) || '0');
+					(String(+level.starStars) || '0') +
+					(String(+level.starCoins) || '0');
 			}
 
 			resolve(crypto.createHash('sha1').update(hash + 'xI25fpAapCQg').digest('hex'));

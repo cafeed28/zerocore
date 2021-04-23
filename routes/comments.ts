@@ -10,6 +10,10 @@ import { CommentModel, IComment } from '../helpers/models/comment';
 import { IUser, UserModel } from '../helpers/models/user';
 import { RoleModel } from '../helpers/models/role';
 import { RoleAssignModel } from '../helpers/models/roleAssign';
+import Commands from '../helpers/classes/Commands';
+import GJHelpers from '../helpers/classes/GJHelpers';
+import EPermissions from '../helpers/EPermissions';
+import ICommand from '../helpers/interfaces/ICommand';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/uploadGJComment21.php`, async (req: any, res: any) => {
@@ -25,6 +29,35 @@ async function router(router: any, options: any) {
 		const percent = body.percent || 0;
 
 		if (GJCrypto.gjpCheck(gjp, levelID)) {
+			const commentDec = Buffer.from(commentStr, 'base64').toString('utf8');
+			if (commentDec.startsWith(config.prefix)) {
+				const args = commentDec.slice(config.prefix.length).trim().split(/ +/);
+				const commandName = args.shift().toLowerCase();
+
+				if (Commands.has(commandName)) {
+					const command: ICommand = Commands.get(commandName);
+					let perms: number[] = [];
+					for await (let perm of command.requiredPerms) {
+						perms.push(await GJHelpers.getAccountPermission(accountID, perm));
+					}
+
+					if (perms.includes(0)) {
+						fc.error(`Команда ${commandName} на уровне ${levelID} не выполнена: доступ запрещен`);
+						return '-1';
+					}
+
+					try {
+						command.execute(accountID, levelID, args)
+						fc.success(`Команда ${commandName} на уровне ${levelID} выполнена`);
+						return '-1';
+					}
+					catch (e) {
+						fc.error(`Команда ${commandName} на уровне ${levelID} не выполнена:`, e);
+						return '-1';
+					}
+				}
+			}
+
 			const comment: IComment = {
 				userName: userName,
 				comment: commentStr,
@@ -97,7 +130,7 @@ async function router(router: any, options: any) {
 
 		if (!comments || !commentsCount) {
 			fc.error(`Комментарии уровня ${levelID} не получены: комментарии не найдены`);
-			return '-1';
+			return '-2';
 		} else {
 			for (const comment of comments) {
 				const user = await UserModel.findOne({ accountID: comment.accountID });
@@ -106,20 +139,22 @@ async function router(router: any, options: any) {
 				}
 
 				const roleAssign = await RoleAssignModel.findOne({ accountID: comment.accountID });
-				const userRole = await RoleModel.findOne({ roleID: roleAssign.roleID });
+				if (roleAssign) {
+					var userRole = await RoleModel.findOne({ roleID: roleAssign.roleID });
+				}
 
 				if (userRole) {
 					var prefix: any = userRole.prefix + ' - ';
-					var badgeLevel = userRole.badgeLevel;
+					var badgeLevel = GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
 					var commentColor = userRole.commentColor;
 				}
 
-				let dateAgo = moment(comment.uploadDate).fromNow(true);
+				let dateAgo = moment(comment.uploadDate * 1000).fromNow(true);
 
 				// надеюсь, в 2.2 будет json...
 				// робтоп, если ты это читаешь (ага конечно), знай, ты пидо рас блять где json ну нахуя этот формат ёбнутый
 
-				commentsList.push(`2~${comment.comment}~3~${comment.accountID}~4~${comment.likes}~5~0~7~${comment.isSpam}~9~${prefix || ''}${dateAgo}~6~${comment.commentID}~10~${comment.percent}`
+				commentsList.push(`2~${comment.comment}~3~${comment.accountID}~4~${comment.likes}~5~0~7~${+comment.isSpam}~9~${prefix || ''}${dateAgo}~6~${comment.commentID}~10~${comment.percent}`
 					+
 					`~11~${badgeLevel || 0}~12~${commentColor || 0}:1~${user.userName}~7~1~9~${user.icon}~10~${user.color1}~11~${user.color2}~14~${user.iconType}~15~${user.special}~16~${user.accountID}`);
 			};

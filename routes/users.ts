@@ -13,6 +13,7 @@ import { FriendRequestModel } from '../helpers/models/friendRequest';
 import { FriendModel } from '../helpers/models/friend';
 import { MessageModel } from '../helpers/models/message';
 import { AccountModel } from '../helpers/models/account';
+import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJUserInfo20.php`, async (req: any, res: any) => {
@@ -45,8 +46,10 @@ async function router(router: any, options: any) {
 			return '-1';
 		}
 
-		// badge
-		// reqState, msgState, commentState (че)
+		let badge = GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel);
+		let reqsState = user.frS;
+		let msgState = user.mS;
+		let commentState = user.cS;
 
 		let appendix;
 
@@ -58,7 +61,8 @@ async function router(router: any, options: any) {
 			let newFriends = await FriendModel.countDocuments({
 				$or: [
 					{ accountID1: accountID, isUnread2: 1 },
-					{ accountID2: accountID, isUnread1: 1 }]
+					{ accountID2: accountID, isUnread1: 1 }
+				]
 			});
 
 			appendix = ':' + GJHelpers.jsonToRobtop([{
@@ -68,15 +72,15 @@ async function router(router: any, options: any) {
 			}]);
 		}
 		else {
-			let incomingRequests: any = await FriendRequestModel.find({
+			let incomingRequests = await FriendRequestModel.findOne({
 				fromAccountID: targetAccountID, toAccountID: accountID
 			});
-			if (incomingRequests.length > 0) {
+			if (incomingRequests) {
 				friendState = 3;
 				appendix = ':' + GJHelpers.jsonToRobtop([{
 					'32': incomingRequests.requestID,
 					'35': incomingRequests.message,
-					'37': 'send this to cafeed28: кафiф#5693'
+					'37': incomingRequests.uploadDate
 				}]);
 			}
 
@@ -94,6 +98,8 @@ async function router(router: any, options: any) {
 			if (friend > 0) friendState = 1;
 		}
 
+		let rank = await UserModel.countDocuments({ stars: { $gt: user.stars }, isBanned: false });
+
 		fc.success(`Получение статистики пользователя ${body.targetAccountID} выполнено`);
 
 		return res.send(GJHelpers.jsonToRobtop([{
@@ -101,14 +107,14 @@ async function router(router: any, options: any) {
 			'2': targetAccountID,
 			'3': user.stars,
 			'4': user.demons,
-			'8': user.creatorPoints,
+			'8': user.isBanned ? 0 : user.creatorPoints,
 			'10': user.color1,
 			'11': user.color2,
 			'13': user.coins,
 			'16': targetAccountID,
 			'17': user.userCoins,
-			'18': '0', // msgState
-			'19': '0', // reqsState
+			'18': msgState,
+			'19': reqsState,
 			'20': user.youtube || '',
 			'21': user.accIcon,
 			'22': user.accShip,
@@ -118,15 +124,15 @@ async function router(router: any, options: any) {
 			'26': user.accRobot,
 			'28': user.accGlow,
 			'29': '1', // спасибо кволтон за комментирование кода, че это такое
-			'30': user.stars + 1,
-			'31': '1', // friendReqState
+			'30': user.isBanned ? 0 : rank + 1,
+			'31': friendState,
 			'43': user.accSpider,
 			'44': user.twitter || '',
 			'45': '', // twitch, когда выйдет blackTea от партура, удалю
 			'46': user.diamonds,
 			'47': user.accExplosion,
-			'49': '0', // badge
-			'50': '0' // commentState
+			'49': badge,
+			'50': commentState
 		}]) + appendix);
 	});
 

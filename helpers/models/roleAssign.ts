@@ -14,4 +14,4 @@ const RoleAssignSchema: Schema = new Schema({
 	roleID: Number
 });
 
-export const RoleAssignModel = mongoose.model<IRoleAssignModel>('roleAssigns', RoleAssignSchema);
+export const RoleAssignModel = mongoose.model<IRoleAssignModel>('roleassigns', RoleAssignSchema);

@@ -3,9 +3,10 @@ import axios from 'axios';
 
 import { AccountModel } from '../models/account';
 import { RoleAssignModel } from '../models/roleAssign';
-import { RoleModel } from '../models/role';
+import { IRole, RoleModel } from '../models/role';
 import { LevelModel } from '../models/level';
 import { SongModel } from '../models/song';
+import EPermissions from '../EPermissions';
 
 export default class GJHelpers {
 	static async isValid(userName: string, password: string): Promise<boolean> {
@@ -52,20 +53,21 @@ export default class GJHelpers {
 		});
 	}
 
-	static async getAccountPermission(accountID: number, permission: string): Promise<number> {
+	static async getAccountPermission(accountID: number, permission: EPermissions): Promise<number> {
 		return new Promise(async (resolve, reject) => {
 			const accRoles = await RoleAssignModel.find({ accountID: accountID });
-			let accRolesList: any[] = [];
-
+			let accRolesList: number[] = [];
+			
 			accRoles.forEach(role => { accRolesList.push(role.roleID); });
-
+			
+			let perm = EPermissions[permission];
 			let maxPerm = 0;
 
 			if (accRolesList.length != 0) {
 				let roles = await RoleModel.find({ roleID: { $in: accRolesList } });
 				roles.forEach((role: any) => {
-					if (role[permission] > maxPerm) {
-						maxPerm = role[permission];
+					if (role[perm] > maxPerm) {
+						maxPerm = role[perm];
 					}
 				});
 			}
@@ -74,7 +76,7 @@ export default class GJHelpers {
 		});
 	}
 
-	static async checkPermission(accountID: number, permission: string): Promise<boolean> {
+	static async checkPermission(accountID: number, permission: EPermissions): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			let maxPerm = await this.getAccountPermission(accountID, permission);
 			if (maxPerm > 0) resolve(true);
@@ -82,45 +84,46 @@ export default class GJHelpers {
 		});
 	}
 
-	static getDiffFromStars(stars: string): any {
-		let diffname = 'N/A: ' + stars;
+	static getDiffFromStars(stars: any): any {
+		stars = parseInt(stars);
+		let diffName = 'N/A: ' + stars;
 		let diff = 0;
 
-		let auto = 0;
-		let demon = 0;
+		let auto = false;
+		let demon = false;
 		switch (stars) {
-			case '1':
-				diffname = 'Auto';
+			case 1:
+				diffName = 'Auto';
 				diff = 50;
-				auto = 1;
+				auto = true;
 				break;
-			case '2':
-				diffname = 'Easy';
+			case 2:
+				diffName = 'Easy';
 				diff = 10;
 				break;
-			case '3':
-				diffname = 'Normal';
+			case 3:
+				diffName = 'Normal';
 				diff = 20;
 				break;
-			case '4':
-			case '5':
-				diffname = 'Hard';
+			case 4:
+			case 5:
+				diffName = 'Hard';
 				diff = 30;
 				break;
-			case '6':
-			case '7':
-				diffname = 'Harder';
+			case 6:
+			case 7:
+				diffName = 'Harder';
 				diff = 40;
 				break;
-			case '8':
-			case '9':
-				diffname = 'Insane';
+			case 8:
+			case 9:
+				diffName = 'Insane';
 				diff = 50;
 				break;
-			case '10':
-				diffname = 'Demon';
+			case 10:
+				diffName = 'Demon';
 				diff = 50;
-				demon = 1;
+				demon = true;
 				break;
 		};
 
@@ -128,14 +131,12 @@ export default class GJHelpers {
 			'diff': diff,
 			'auto': auto,
 			'demon': demon,
-			'name': diffname
+			'name': diffName
 		};
 	}
 
-	static async rateLevel(accountID: number, levelID: number, stars: number, diff: number, auto: number, demon: number): Promise<boolean> {
+	static async rateLevel(accountID: number, levelID: number, stars: number, diff: number, auto: boolean, demon: boolean): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
-			console.log(stars);
-			console.log(diff);
 			await LevelModel.updateOne({ levelID: levelID }, {
 				starDifficulty: diff,
 				starDemon: demon,
@@ -146,7 +147,7 @@ export default class GJHelpers {
 		});
 	}
 
-	static async featureLevel(accountID: number, levelID: number, feature: number): Promise<boolean> {
+	static async featureLevel(accountID: number, levelID: number, feature: boolean): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			await LevelModel.updateOne({ levelID: levelID }, {
 				starFeatured: feature
@@ -155,7 +156,16 @@ export default class GJHelpers {
 		});
 	}
 
-	static async verifyCoinsLevel(accountID: number, levelID: number, coins: number): Promise<boolean> {
+	static async epicLevel(accountID: number, levelID: number, epic: boolean): Promise<boolean> {
+		return new Promise(async (resolve, reject) => {
+			await LevelModel.updateOne({ levelID: levelID }, {
+				starEpic: epic
+			});
+			resolve(true);
+		});
+	}
+
+	static async verifyCoinsLevel(accountID: number, levelID: number, coins: boolean): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			await LevelModel.updateOne({ levelID: levelID }, {
 				starCoins: coins

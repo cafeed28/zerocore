@@ -48,8 +48,6 @@ async function router(router: any, options: any) {
 			var feaID = daily.feaID + 100001;
 		}
 
-		console.log(feaID);
-
 		const level = await LevelModel.findOne({ levelID: levelID })
 
 		if (!level) {
@@ -61,8 +59,8 @@ async function router(router: any, options: any) {
 		try {
 			levelString = await fs.readAsync(`data/levels/${levelID}`, 'utf8');
 		} catch (e) {
-			fc.error(e);
 			fc.error(`Скачивание уровня ${levelID} не выполнено: ошибка скачивания`);
+			fc.error(e);
 			return '-1';
 		}
 
@@ -91,51 +89,53 @@ async function router(router: any, options: any) {
 			'2': level.levelName,
 			'3': level.levelDesc,
 			'4': levelString,
-			'5': '1',
+			'5': 1,
 			'6': level.accountID,
-			'8': '10',
+			'8': 10,
 			'9': level.starDifficulty,
 			'10': level.downloads,
-			'11': '1',
+			'11': 1,
 			'12': level.audioTrack,
-			'13': '21',
+			'13': 21,
 			'14': level.likes,
 			'15': level.levelLength,
-			'17': level.starDemon,
+			'17': +level.starDemon,
 			'18': level.starStars,
-			'19': level.starFeatured,
-			'25': level.starAuto,
+			'19': +level.starFeatured,
+			'25': +level.starAuto,
 			'27': xorPass,
-			'28': '500',
-			'29': '300',
+			'28': level.uploadDate,
+			'29': level.updateDate,
 			'30': level.original,
-			'31': '1',
+			'31': 1,
 			'35': level.songID,
 			'36': level.extraString,
 			'37': level.coins,
-			'38': level.starCoins,
+			'38': +level.starCoins,
 			'39': level.requestedStars,
 			'40': level.ldm,
-			'42': level.starEpic,
+			'42': +level.starEpic,
 			'43': level.starDemonDiff,
 			'45': level.objects,
-			'46': '1',
-			'47': '2',
-			'48': '1',
+			'46': 1,
+			'47': 2,
+			'48': 1,
 		}]);
 
 		if (feaID) response += `:41:${feaID}`;
 
 		response += `#${GJCrypto.genSolo(levelString)}#`;
 
-		let someString = [
+		let someString: any = [
 			level.accountID,
 			level.starStars,
-			level.starDemon,
+			+level.starDemon,
 			level.levelID,
-			level.starCoins,
-			level.starFeatured, pass, 0 || feaID
-		].join(',');
+			+level.starCoins,
+			+level.starFeatured, pass, 0
+		]
+		if (feaID) someString[someString.length = feaID];
+		someString = someString.join(',');
 
 		response += GJCrypto.genSolo2(someString) + '#';
 		if (feaID) response += await GJHelpers.getUserString(level.accountID);
@@ -310,25 +310,25 @@ async function router(router: any, options: any) {
 					'3': level.levelDesc,
 					'5': level.levelVersion || 0,
 					'6': level.accountID,
-					'8': '10',
+					'8': 10,
 					'9': level.starDifficulty,
 					'10': level.downloads,
 					'12': level.audioTrack,
-					'13': '21',
+					'13': 21,
 					'14': level.likes,
 					'15': level.levelLength,
-					'17': level.starDemon,
-					'18': level.starStars,
-					'19': level.starFeatured,
-					'25': level.starAuto,
+					'17': +level.starDemon,
+					'18': +level.starStars,
+					'19': +level.starFeatured,
+					'25': +level.starAuto,
 					'30': level.original,
 					'31': '0',
 					'35': level.songID,
 					'37': level.coins,
-					'38': level.starCoins,
+					'38': +level.starCoins,
 					'39': level.requestedStars,
 					'40': level.ldm,
-					'42': level.starEpic,
+					'42': +level.starEpic,
 					'43': level.starDemonDiff,
 					'45': level.objects,
 					'46': '1',
@@ -347,7 +347,6 @@ async function router(router: any, options: any) {
 			}
 
 			const result = `${levelsList.join('|')}#${usersList.join('|')}#${songsList.join('~:~')}#${levelsCount}:${page * 10}:10#${hash}`;
-			console.log(result);
 
 			fc.success(`Получение уровней выполнено`);
 			return result;
@@ -418,6 +417,9 @@ async function router(router: any, options: any) {
 				extraString: extraString,
 				unlisted: unlisted,
 				ldm: ldm,
+
+				uploadDate: Math.round(Date.now() / 1000),
+				updateDate: Math.round(Date.now() / 1000),
 
 				IP: ip
 			}, { upsert: true });
