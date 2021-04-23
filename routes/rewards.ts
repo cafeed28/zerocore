@@ -8,7 +8,7 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 
 import { UserModel } from '../helpers/models/user';
 import XOR from '../helpers/classes/xor';
-import rand, { shuffle } from 'random-node-module';
+import rand from 'random-node-module';
 import { QuestModel } from '../helpers/models/quest';
 
 async function router(router: any, options: any) {
@@ -117,7 +117,7 @@ async function router(router: any, options: any) {
 			let timeleft = midnight - time;
 
 			let quests = await QuestModel.find();
-			quests = shuffle(quests);
+			quests = rand.shuffle(quests);
 
 			let quest1 = `${questID},${quests[0].type},${quests[0].amount},${quests[0].reward},${quests[0].questName}`;
 			let quest2 = `${questID + 1},${quests[1].type},${quests[1].amount},${quests[1].reward},${quests[1].questName}`;

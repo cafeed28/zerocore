@@ -149,7 +149,7 @@ async function router(router: any, options: any) {
 					var commentColor = userRole.commentColor;
 				}
 
-				let dateAgo = moment(comment.uploadDate * 1000).fromNow(true);
+				let dateAgo = moment(comment.uploadDate).fromNow(true);
 
 				// надеюсь, в 2.2 будет json...
 				// робтоп, если ты это читаешь (ага конечно), знай, ты пидо рас блять где json ну нахуя этот формат ёбнутый

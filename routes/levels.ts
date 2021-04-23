@@ -10,9 +10,10 @@ import GJCrypto from '../helpers/classes/GJCrypto';
 import GJHelpers from '../helpers/classes/GJHelpers';
 import XOR from '../helpers/classes/XOR';
 
-import { LevelModel } from '../helpers/models/level';
+import { ILevel, LevelModel } from '../helpers/models/level';
 import { DailyModel } from '../helpers/models/daily';
 import { GauntletModel } from '../helpers/models/gauntlet';
+import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
@@ -72,7 +73,7 @@ async function router(router: any, options: any) {
 		await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
 
 		let pass = level.password;
-		// if (GJHelpers.getAccountPermission(accountID, 'freeCopy')) pass = 1
+		if (GJHelpers.getAccountPermission(body.accountID, EPermissions.freeCopy)) pass = 1
 		if (pass != 0) {
 			var xorPass = Buffer.from(XOR.cipher(pass.toString(), 26364)).toString('base64');
 		}
@@ -198,6 +199,8 @@ async function router(router: any, options: any) {
 		let params: any = {};
 		let orderBy: any = {};
 
+		let diff = body.diff || '-';
+
 		if (!parseInt(body.str)) params.levelName = new RegExp(body.str, 'i');
 		else params.levelID = body.str; // search one by ID
 
@@ -227,12 +230,12 @@ async function router(router: any, options: any) {
 			}
 		}
 		else if (body.type == 1) {
-			orderBy = { downloads: 1 };
+			orderBy = { downloads: -1 };
 		}
 		else if (body.type == 2) {
 			orderBy = { likes: -1 };
 		}
-		else if (body.type == 3) {
+		else if (body.type == 3) { // trending
 			orderBy = { uploadDate: { $lt: Math.round(Date.now() / 1000) - (7 * 24 * 60 * 60) } };
 		}
 		else if (body.type == 4) {
@@ -241,6 +244,22 @@ async function router(router: any, options: any) {
 		else if (body.type == 5) {
 			params.accountID = body.str;
 			orderBy = { levelID: -1 };
+		}
+		else if (body.type == 7) { // magic
+			params.objects = { $gt: 9999 };
+		}
+		else if (body.type == 11) { // awarded
+			params.starStars = { $gt: 0 };
+			orderBy = { rateDate: -1, uploadDate: -1 };
+		}
+		else if (body.type == 12) { // followed
+			params.accountID = { $in: body.followed.split(',') };
+		}
+		else if (body.type == 13) { // friends
+			if (await GJCrypto.gjpCheck(body.gjp, body.accountID)) {
+				// todo: implement
+				params = {};
+			}
 		}
 
 		if (body.coins == 1) {
@@ -262,7 +281,7 @@ async function router(router: any, options: any) {
 		if (body.noStar) params.starStars = 0;
 
 		if (body.len && body.len != '-') {
-			params.levelLength = { $in: body.len.split(',') };
+			params.levelLength = { $in: parseInt(body.len.split(',')) };
 		}
 
 		if (body.gauntlet) {
@@ -282,7 +301,32 @@ async function router(router: any, options: any) {
 			params = { levelID: { $in: lvls.map(Number) } };
 		}
 
+		if (diff == -1) {
+			params.starDifficulty = 0;
+		}
+		else if (diff == -3) {
+			params.starAuto = true;
+		}
+		else if (diff == -2) {
+			let filter = parseInt(body.demonFilter) || 0;
+
+			params.starDemon = true;
+			if (filter == 1) params.starDemonDiff = 3;
+			if (filter == 2) params.starDemonDiff = 4;
+			if (filter == 3) params.starDemonDiff = 0;
+			if (filter == 4) params.starDemonDiff = 5;
+			if (filter == 5) params.starDemonDiff = 6;
+		}
+		else {
+			if (body.diff && body.diff != '-') {
+				body.diff = body.diff.replace(',', '0,') + '0';
+				body.diff = body.diff.split(',');
+				params.starDifficulty = { $in: body.diff };
+			}
+		}
+
 		console.log(params);
+		console.log(orderBy);
 
 		const levels = await LevelModel.find(params).sort(orderBy).skip(page * 10).limit(10);
 		const levelsCount = await LevelModel.countDocuments(params);
