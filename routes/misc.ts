@@ -102,7 +102,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/likeGJItem([0-9]{2,3?)?.php`, async (req: any, res: any) => {
+	router.post(`/${config.basePath}/likeGJItem211.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'itemID', 'like', 'type'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

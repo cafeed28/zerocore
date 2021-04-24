@@ -67,14 +67,13 @@ async function router(router: any, options: any) {
 			let chest2Content = `${r(drc.c2MinOrbs, drc.c2MaxOrbs)},${r(drc.c2MinDiamonds, drc.c2MaxDiamonds)},${r(drc.c2MInItemID, drc.c2MaxItemID)},${r(drc.c1MinKeys, drc.c1MaxKeys)}`;
 
 			let str = `1:${accountID}:${chk}:${udid}:${accountID}:${chest1Left}:${chest1Content}:${chest1Count}:${chest2Left}:${chest2Content}:${chest2Count}:${rewardType}`;
+			console.log(str);
 			let xor = XOR.cipher(str, 59182);
 			let result = Buffer.from(xor).toString('base64').replace('/', '_').replace('+', '-');
 
 			let hash = GJCrypto.genSolo4(result);
 
 			fc.success(`Получение ежедневных наград ${rewardType} для ${accountID} выполнено`);
-			console.log(result);
-			console.log(hash);
 			return `SaKuJ${result}|${hash}`;
 		}
 		else {
