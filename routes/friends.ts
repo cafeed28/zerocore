@@ -76,8 +76,10 @@ async function router(router: any, options: any) {
 		const type = body.type;
 
 		if (await GJCrypto.gjpCheck(gjp, accountID)) {
+			let list: IFriend[] | IBlock[] = [];
+
 			if (type == 0) {
-				var list = await BlockModel.find({
+				list = await FriendModel.find({
 					$or: [{
 						accountID1: parseInt(accountID)
 					}, {
@@ -86,12 +88,10 @@ async function router(router: any, options: any) {
 				});
 
 			} else if (type == 1) {
-				var list = await BlockModel.find({
+				list = await BlockModel.find({
 					accountID1: accountID
 				});
 			}
-
-			console.log(list);
 
 			if (list.length == 0) {
 				fc.error(`Получение списка пользователей типа ${type} не удалось: список пуст`);
@@ -100,7 +100,7 @@ async function router(router: any, options: any) {
 
 			let usersIDs: number[] = [];
 			let isUnread: boolean[] = [];
-			list.map((item: IBlock) => {
+			list.map((item: IBlock | IFriend) => {
 				let user = item.accountID1 != accountID ? item.accountID1 : item.accountID2;
 				isUnread[user] = item.accountID1 != accountID ? item.isUnread1 : item.isUnread2;
 
@@ -121,14 +121,14 @@ async function router(router: any, options: any) {
 					'15': user.special,
 					'16': user.accountID,
 					'17': user.userCoins,
-					'18': '0',
-					'41': isUnread[user.accountID],
+					'18': 0,
+					'41': +isUnread[user.accountID],
 				}]));
 			});
 
 			if (type == 0) {
-				await FriendModel.updateMany({ accountID2: accountID }, { isUnread1: 0 });
-				await FriendModel.updateMany({ accountID1: accountID }, { isUnread2: 0 });
+				await FriendModel.updateMany({ accountID2: accountID }, { isUnread1: false });
+				await FriendModel.updateMany({ accountID1: accountID }, { isUnread2: false });
 			}
 
 			fc.success(`Получение списка пользователей типа ${type} удалось`);

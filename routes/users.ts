@@ -60,8 +60,8 @@ async function router(router: any, options: any) {
 			let newMessages = await MessageModel.countDocuments({ recipientID: accountID, isUnread: true });
 			let newFriends = await FriendModel.countDocuments({
 				$or: [
-					{ accountID1: accountID, isUnread2: 1 },
-					{ accountID2: accountID, isUnread1: 1 }
+					{ accountID1: accountID, isUnread2: true },
+					{ accountID2: accountID, isUnread1: true }
 				]
 			});
 
