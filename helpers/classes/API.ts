@@ -7,11 +7,13 @@ export default class API {
 			res = await axios.get(url);
 		}
 		catch (e) {
-			return false;
+			throw e;
+			// return false;
 		}
 
 		if (res.status == 200) {
-			if (res.headers['content-type'].startsWith('audio') || res.headers['content-type'].startsWith('application/octet-stream')) {
+			let type: string = res.headers['content-type'];
+			if (type.startsWith('audio') || type.startsWith('application/octet-stream') || type.startsWith('application/binary')) {
 				return true;
 			}
 			else return false;

@@ -6,7 +6,7 @@
 </head>
 
 <body>
-	<h1>ТОЛЬКО ПРЯМЫЕ ССЫЛКИ!!! | ONLY DIRECT LINKS!!!</h1>
+	<h1>Толко прямые ссылки и ссылки с Dropbox</h1>
 
 	<label for="song_name">Song Name</label>
 	<input type="text" id="songName">
@@ -27,7 +27,7 @@
 			const status = document.getElementById('status');
 			status.innerText = `Loading...`;
 			const http = new XMLHttpRequest();
-			const url = '../../api/songs/upload';
+			const url = '../../api/songs';
 			const songName = document.getElementById('songName').value;
 			const authorName = document.getElementById('authorName').value;
 			const download = document.getElementById('download').value;

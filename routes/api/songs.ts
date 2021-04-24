@@ -36,7 +36,7 @@ async function router(router: any, options: any) {
 
 		const songName = APIHelpers.translitCyrillic(body.songName).trim();
 		const authorName = APIHelpers.translitCyrillic(body.authorName).trim();
-		const download = body.download.trim();
+		let download = body.download.trim();
 
 		if (songName == '' || authorName == '') {
 			fc.error(`Музыка ${authorName} - ${songName} не опубликована: пустое имя автора или музыки`);
@@ -63,6 +63,14 @@ async function router(router: any, options: any) {
 				'value': checkSong ? checkSong.songID : checkUrl.songID
 			};
 		} else {
+			if (download.includes('dropbox.com')) {
+				if (download.endsWith('dl=0')) {
+					download = download.slice(0, -1) + '1';
+				} else if (download.endsWith('dl=1')) {
+
+				} else download += '?dl=1';
+			}
+
 			if (download == '' || !await APIHelpers.verifySongUrl(download)) {
 				fc.error(`Музыка ${authorName} - ${songName} не опубликована: неверный URL`);
 				return {
@@ -72,7 +80,7 @@ async function router(router: any, options: any) {
 			}
 
 			const song: ISong = {
-				songID: (await SongModel.countDocuments()) + 5000000 + 1,
+				songID: (await SongModel.countDocuments()) + 500000 + 1,
 				name: songName,
 				authorID: 9,
 				authorName: authorName,

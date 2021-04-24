@@ -154,7 +154,7 @@ async function router(router: any, options: any) {
 
 		const song = await SongModel.findOne({ songID: songID });
 
-		if (!song && songID > 5000000) {
+		if (!song && songID > 500000) {
 			fc.error(`Получение информации музыки ${songID} не удалось: кастомная музыка не найдена`);
 			return '-1';
 		} else if (song) {
