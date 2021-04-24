@@ -42,6 +42,38 @@ Geometry Dash server emulator on NodeJS and MongoDB
 
  6. Установить все пакеты командой `npm install`
 
- 7. Собрать командой `npm run build`
+ 7. Создать файл `index.d.ts` в папке `node_modules/fancy-console/` с содержанием:
+ ```ts
+ export const cmd: Console;
+ export const clear: string;
+ export namespace styles {
+     const bold: string;
+     const italic: string;
+     const underline: string;
+     const strike: string;
+     const inverse: string;
+ }
+ export namespace colors {
+     const black: string;
+     const red: string;
+     const yellow: string;
+     const green: string;
+     const blue: string;
+     const purple: string;
+     const cyan: string;
+     const white: string;
+ }
+ export function colorize(message: any, color: any): void;
+ export function parse(string: any, args?: any): string;
+ export function format(message: any, args?: any): any;
+ export function crit(message: any, args?: any): void;
+ export function error(message: any, args?: any): void;
+ export function warn(message: any, args?: any): void;
+ export function info(message: any, args?: any): void;
+ export function success(message: any, args?: any): void;
+ export function log(message: any, args?: any): void;
+ ```
 
- 8. Запустить командой `npm run start`
+ 8. Собрать командой `npm run build`
+
+ 9. Запустить командой `npm run start`
