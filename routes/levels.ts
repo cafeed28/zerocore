@@ -410,6 +410,7 @@ async function router(router: any, options: any) {
 		const levelName = body.levelName;
 		const levelDesc = body.levelDesc;
 		const levelLength = body.levelLength;
+		const levelVersion = body.levelVersion;
 		const audioTrack = body.audioTrack;
 		const levelString = body.levelString;
 
@@ -448,6 +449,7 @@ async function router(router: any, options: any) {
 				levelName: levelName,
 				levelDesc: levelDesc,
 				levelLength: levelLength,
+				levelVersion: levelVersion,
 				audioTrack: audioTrack,
 				auto: auto,
 				password: password,

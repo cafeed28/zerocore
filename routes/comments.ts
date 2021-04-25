@@ -145,14 +145,13 @@ async function router(router: any, options: any) {
 
 				if (userRole) {
 					var prefix: any = userRole.prefix + ' - ';
-					var badgeLevel = GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
+					var badgeLevel = await GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
 					var commentColor = userRole.commentColor;
 				}
 
-				let dateAgo = moment(comment.uploadDate).fromNow(true);
+				let dateAgo = moment(comment.uploadDate * 1000).fromNow(true);
 
-				// надеюсь, в 2.2 будет json...
-				// робтоп, если ты это читаешь (ага конечно), знай, ты пидо рас блять где json ну нахуя этот формат ёбнутый
+				// робтоп когда json
 
 				commentsList.push(`2~${comment.comment}~3~${comment.accountID}~4~${comment.likes}~5~0~7~${+comment.isSpam}~9~${prefix || ''}${dateAgo}~6~${comment.commentID}~10~${comment.percent}`
 					+
