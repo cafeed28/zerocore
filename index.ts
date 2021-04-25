@@ -8,6 +8,8 @@ import config from './config';
 import fastify from 'fastify';
 import { connect, stop } from './helpers/classes/Mongoose';
 
+process.on('unhandledRejection', (r, p) => fc.error(`UnhandledRejection at ${p}, reason: ${r}`));
+
 console.log('ZeroCore starting...');
 
 const app = fastify();
@@ -23,14 +25,12 @@ app.addHook('preHandler', async (req, res) => {
 		return req.socket.destroy();
 	}
 
-	let date = new Date().toISOString().
-		replace(/T/, ' ').replace(/\..+/, '').replace(/-/g, '.');
+	let date = new Date()
 
 	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`); // [2021.02.28 16:28:40] GET 192.168.1.1 /
 
 	console.log('Content-type: ' + req.headers['content-type']);
 	console.log('Body:', req.body);
-	// console.log(JSON.stringify(req.body, null, 2));
 });
 
 // 404 handler
@@ -47,10 +47,6 @@ app.setErrorHandler((e, req, res) => {
 	console.log(e);
 
 	res.code(e.statusCode || 500).send({ status: 'error', code: e.statusCode, message: e.message });
-});
-
-app.addHook('onRoute', (opts) => {
-	// console.log(opts.path);
 });
 
 // router

@@ -189,7 +189,7 @@ async function router(router: any, options: any) {
 	router.post(`/${config.basePath}/getGJLevels21.php`, async (req: any, res: any) => {
 		const body = req.body;
 
-		const page = body.page;
+		const page = parseInt(body.page);
 
 		let levelsList = [];
 		let levelsMultiString = '';
