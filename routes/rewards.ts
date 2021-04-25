@@ -52,6 +52,7 @@ async function router(router: any, options: any) {
 				}
 				chest1Count++;
 				await user.updateOne({ chest1Count: chest1Count, chest1Time: time });
+				chest1Left = drc.c1Timeout;
 			}
 			else if (rewardType == 2) {
 				if (chest2Left != 0) {
@@ -60,6 +61,7 @@ async function router(router: any, options: any) {
 				}
 				chest2Count++;
 				await user.updateOne({ chest2Count: chest2Count, chest2Time: time });
+				chest2Left = drc.c2Timeout;
 			}
 
 			const r = rand.int;
