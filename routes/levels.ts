@@ -73,7 +73,7 @@ async function router(router: any, options: any) {
 		await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
 
 		let pass = level.password;
-		if (GJHelpers.getAccountPermission(body.accountID, EPermissions.freeCopy)) pass = 1
+		if (await GJHelpers.getAccountPermission(body.accountID, EPermissions.freeCopy) == 1) pass = 1
 		if (pass != 0) {
 			var xorPass = Buffer.from(XOR.cipher(pass.toString(), 26364)).toString('base64');
 		}
@@ -81,8 +81,7 @@ async function router(router: any, options: any) {
 
 		if (levelString.substr(0, 3) == 'kS1') {
 			levelString = Buffer.from(await zlib.gzip(levelString)).toString('base64');
-			levelString = levelString.replace('/', '_');
-			levelString = levelString.replace('+', '-');
+			levelString = levelString.replace('/', '_').replace('+', '-');
 		}
 
 		let response = GJHelpers.jsonToRobtop([{
@@ -90,7 +89,7 @@ async function router(router: any, options: any) {
 			'2': level.levelName,
 			'3': level.levelDesc,
 			'4': levelString,
-			'5': 1,
+			'5': level.levelVersion,
 			'6': level.accountID,
 			'8': 10,
 			'9': level.starDifficulty,
@@ -135,7 +134,7 @@ async function router(router: any, options: any) {
 			+level.starCoins,
 			+level.starFeatured, pass, 0
 		]
-		if (feaID) someString[someString.length = feaID];
+		if (feaID) someString[someString.length] = feaID;
 		someString = someString.join(',');
 
 		response += GJCrypto.genSolo2(someString) + '#';
@@ -242,7 +241,7 @@ async function router(router: any, options: any) {
 			orderBy = { levelID: -1 };
 		}
 		else if (body.type == 5) {
-			params.accountID = body.str;
+			params = { accountID: parseInt(body.str) };
 			orderBy = { levelID: -1 };
 		}
 		else if (body.type == 7) { // magic
