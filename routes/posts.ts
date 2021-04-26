@@ -10,7 +10,7 @@ import GJCrypto from '../helpers/classes/GJCrypto';
 import { IPost, PostModel } from '../helpers/models/post';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/uploadGJAccComment20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/uploadGJAccComment20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'userName', 'comment', 'accountID'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -58,7 +58,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/deleteGJAccComment20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/deleteGJAccComment20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'commentID', 'accountID'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -106,7 +106,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/getGJAccountComments20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJAccountComments20.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'page'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

@@ -10,7 +10,7 @@ import { AccountModel, IAccount } from '../helpers/models/account';
 import { UserModel } from '../helpers/models/user';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/accounts/loginGJAccount.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/accounts/loginGJAccount.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'password'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -31,7 +31,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/accounts/registerGJAccount.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/accounts/registerGJAccount.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'password', 'email'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -56,7 +56,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/accounts/updateGJAccSettings20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/accounts/updateGJAccSettings20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'accountID', 'mS', 'frS', 'cS', 'yt', 'twitter', 'twitch'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

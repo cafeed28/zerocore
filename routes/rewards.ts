@@ -12,7 +12,7 @@ import rand from 'random-node-module';
 import { QuestModel } from '../helpers/models/quest';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/getGJRewards.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJRewards.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'chk', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -84,7 +84,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/getGJChallenges.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJChallenges.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'chk', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

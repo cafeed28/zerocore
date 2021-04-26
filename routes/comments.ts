@@ -16,7 +16,7 @@ import EPermissions from '../helpers/EPermissions';
 import ICommand from '../helpers/interfaces/ICommand';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/uploadGJComment21.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/uploadGJComment21.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'userName', 'accountID', 'levelID', 'comment', 'secret'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -79,7 +79,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/deleteGJComment20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/deleteGJComment20.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'commentID', 'levelID', 'accountID', 'secret'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -108,7 +108,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/getGJComments21.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJComments21.php`, async (req: any, res: any) => {
 		const requredKeys = ['levelID', 'page'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

@@ -8,7 +8,7 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/rateGJStars.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/rateGJStars.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'gjp', 'secret'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -39,7 +39,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/suggestGJStars20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/suggestGJStars20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'levelID', 'accountID'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

@@ -11,7 +11,7 @@ import { BlockModel } from '../helpers/models/block';
 import { FriendModel } from '../helpers/models/friend';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/deleteGJMessages20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/deleteGJMessages20.php`, async (req: any, res: any) => {
 		const requredKeys = ['messageID', 'accountID', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -53,7 +53,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/downloadGJMessage20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/downloadGJMessage20.php`, async (req: any, res: any) => {
 		const requredKeys = ['messageID', 'accountID', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -96,7 +96,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/getGJMessages20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJMessages20.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'gjp', 'page'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -156,7 +156,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/uploadGJMessage20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/uploadGJMessage20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'accountID', 'gjp', 'subject', 'toAccountID', 'body'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

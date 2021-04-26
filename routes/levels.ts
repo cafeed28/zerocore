@@ -16,7 +16,7 @@ import { GauntletModel } from '../helpers/models/gauntlet';
 import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
 		const requredKeys = ['levelID'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -145,7 +145,7 @@ async function router(router: any, options: any) {
 		return response;
 	});
 
-	router.post(`/${config.basePath}/getGJDailyLevel.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJDailyLevel.php`, async (req: any, res: any) => {
 		const body = req.body;
 
 		let type = body.weekly || 0;
@@ -185,7 +185,7 @@ async function router(router: any, options: any) {
 		return result;
 	});
 
-	router.post(`/${config.basePath}/getGJLevels21.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJLevels21.php`, async (req: any, res: any) => {
 		const body = req.body;
 
 		const page = parseInt(body.page);
@@ -396,7 +396,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/uploadGJLevel21.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/uploadGJLevel21.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'levelName', 'levelDesc', 'audioTrack', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

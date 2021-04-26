@@ -10,7 +10,7 @@ import { FriendModel } from '../helpers/models/friend';
 import { IUser, UserModel } from '../helpers/models/user';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/getGJScores20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJScores20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'accountID', 'gjp', 'type'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

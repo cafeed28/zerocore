@@ -16,7 +16,7 @@ import { AccountModel } from '../helpers/models/account';
 import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/getGJUserInfo20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJUserInfo20.php`, async (req: any, res: any) => {
 		const requredKeys = ['targetAccountID'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -136,7 +136,7 @@ async function router(router: any, options: any) {
 		}]) + appendix);
 	});
 
-	router.post(`/${config.basePath}/getGJUsers20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJUsers20.php`, async (req: any, res: any) => {
 		const requredKeys = ['page', 'str'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -174,7 +174,7 @@ async function router(router: any, options: any) {
 		return usersList.join('|') + `#${users.length}:${page}:10`;
 	});
 
-	router.post(`/${config.basePath}/updateGJUserScore22.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/updateGJUserScore22.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'userName', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -280,7 +280,7 @@ async function router(router: any, options: any) {
 		return id;
 	});
 
-	router.post(`/${config.basePath}/getGJScores.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJScores.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'accountID', 'type'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

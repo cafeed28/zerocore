@@ -18,7 +18,7 @@ import { SongModel } from '../helpers/models/song';
 import EPermissions from '../helpers/EPermissions';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/getAccountURL.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getAccountURL.php`, async (req: any, res: any) => {
 		const requredKeys: any[] = ['accountID', 'secret', 'type'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -27,7 +27,7 @@ async function router(router: any, options: any) {
 	});
 
 	// idk why i should use this path, robtop why?
-	router.post(`/${config.basePath}/getAccountURL.php/database/accounts/backupGJAccountNew.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getAccountURL.php/database/accounts/backupGJAccountNew.php`, async (req: any, res: any) => {
 		const requredKeys = ['userName', 'password', 'saveData'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -68,7 +68,7 @@ async function router(router: any, options: any) {
 	});
 
 	// same as backup, robtop, why
-	router.post(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew.php`, async (req: any, res: any) => {
 		const requredKeys = ['userName', 'password'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -102,7 +102,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/likeGJItem211.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/likeGJItem211.php`, async (req: any, res: any) => {
 		const requredKeys = ['gjp', 'accountID', 'itemID', 'like', 'type'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -145,7 +145,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.post(`/${config.basePath}/getGJSongInfo.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJSongInfo.php`, async (req: any, res: any) => {
 		const requredKeys = ['songID', 'secret'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -187,7 +187,7 @@ async function router(router: any, options: any) {
 		return songString;
 	});
 
-	router.post(`/${config.basePath}/requestUserAccess.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/requestUserAccess.php`, async (req: any, res: any) => {
 		const requredKeys = ['accountID', 'gjp', 'secret'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;

@@ -8,7 +8,7 @@ import { MapPackModel } from '../helpers/models/mappacks';
 import { GauntletModel } from '../helpers/models/gauntlet';
 
 async function router(router: any, options: any) {
-	router.post(`/${config.basePath}/getGJMapPacks21.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJMapPacks21.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'page'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -42,7 +42,7 @@ async function router(router: any, options: any) {
 		return result;
 	});
 
-	router.post(`/${config.basePath}/getGJGauntlets21.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/getGJGauntlets21.php`, async (req: any, res: any) => {
 		const body = req.body;
 
 		const page = body.page;
