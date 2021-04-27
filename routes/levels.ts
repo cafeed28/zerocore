@@ -14,6 +14,7 @@ import { ILevel, LevelModel } from '../helpers/models/level';
 import { DailyModel } from '../helpers/models/daily';
 import { GauntletModel } from '../helpers/models/gauntlet';
 import EPermissions from '../helpers/EPermissions';
+import { FriendModel } from '../helpers/models/friend';
 
 async function router(router: any, options: any) {
 	router.all(`/${config.basePath}/downloadGJLevel22.php`, async (req: any, res: any) => {
@@ -207,9 +208,14 @@ async function router(router: any, options: any) {
 		if (body.str)
 			if (body.str.includes(',')) params = { levelID: { $in: body.str.split(',').map(Number) } };
 
-		if (body.featured == 1) params.starFeatured = 1;
-		if (body.original == 1) params.original = 0;
-		if (body.epic == 1) params.epic = 1;
+		if (body.featured == 1) params.starFeatured = true;
+		// if (body.original == 1) params.original = true;
+		if (body.coins == 1) {
+			params.starCoins = true;
+			params.coins = { $gt: 0 };
+		}
+		if (body.epic == 1) params.starEpic = true;
+		if (body.star == 1) params.starStars = { $gt: 0 };
 
 		if (body.uncompleted == 1 && body.completedLevels) {
 			let completed = body.completedLevels.replace(/[^0-9,]/g, '').split(',');
@@ -256,8 +262,10 @@ async function router(router: any, options: any) {
 		}
 		else if (body.type == 13) { // friends
 			if (await GJCrypto.gjpCheck(body.gjp, body.accountID)) {
-				// todo: implement
-				params = {};
+				const friends = await FriendModel.find({ accountID1: body.accountID });
+				const friendsIDs = friends.map(f => f.accountID2);
+
+				params.accountID = { $in: friendsIDs };
 			}
 		}
 

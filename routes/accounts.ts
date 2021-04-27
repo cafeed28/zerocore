@@ -56,7 +56,7 @@ async function router(router: any, options: any) {
 		}
 	});
 
-	router.all(`/${config.basePath}/accounts/updateGJAccSettings20.php`, async (req: any, res: any) => {
+	router.all(`/${config.basePath}/updateGJAccSettings20.php`, async (req: any, res: any) => {
 		const requredKeys = ['secret', 'gjp', 'accountID', 'mS', 'frS', 'cS', 'yt', 'twitter', 'twitch'];
 		const body = req.body;
 		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
