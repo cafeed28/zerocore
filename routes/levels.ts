@@ -345,7 +345,7 @@ app.all(`/${config.basePath}/getGJLevels21`, async (req: any, res: any) => {
 		return res.send('-1')
 	} else {
 		for (const level of levels) {
-			if (level.unlisted == 1) continue;
+			if (level.unlisted == 1 && !params.levelID) continue;
 
 			levelsMultiString += level.levelID + ',';
 
