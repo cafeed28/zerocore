@@ -56,8 +56,6 @@ app.all(`/${config.basePath}/suggestGJStars20`, async (req: any, res: any) => {
 		if (await GJHelpers.checkPermission(accountID, EPermissions.rateLevelStar)) {
 			let diff: any = GJHelpers.getDiffFromStars(stars);
 
-			console.log(diff);
-
 			await GJHelpers.rateLevel(accountID, levelID, stars, diff['diff'], diff['auto'], diff['demon']);
 			await GJHelpers.verifyCoinsLevel(accountID, levelID, true);
 

@@ -18,9 +18,9 @@ export interface ILevel {
 	objects: number,
 	coins: number,
 	requestedStars: number,
-	unlisted: number,
+	unlisted: number, // change to boolean
 	ldm: number,
-	
+
 	starStars?: number,
 	starCoins?: boolean,
 	starDifficulty?: number,
@@ -60,7 +60,7 @@ const LevelSchema: Schema = new Schema({
 	requestedStars: Number,
 	unlisted: Number,
 	ldm: Number,
-	
+
 	starStars: { type: Number, default: 0 },
 	starCoins: { type: Boolean, default: false },
 	starDifficulty: { type: Number, default: 0 },

@@ -7,6 +7,7 @@ import { IRole, RoleModel } from '../models/role';
 import { LevelModel } from '../models/level';
 import { SongModel } from '../models/song';
 import EPermissions from '../EPermissions';
+import { UserModel } from '../models/user';
 
 export default class GJHelpers {
 	static async isValid(userName: string, password: string): Promise<boolean> {
@@ -143,6 +144,7 @@ export default class GJHelpers {
 				starAuto: auto,
 				starStars: stars
 			});
+			await this.updateCreatorPoints(levelID);
 			resolve(true);
 		});
 	}
@@ -171,6 +173,26 @@ export default class GJHelpers {
 				starCoins: coins
 			});
 			resolve(true);
+		});
+	}
+
+	static async updateCreatorPoints(levelID: number): Promise<void> {
+		return new Promise(async (resolve, reject) => {
+			const level = await LevelModel.findOne({ levelID });
+			let accountID = level.accountID;
+			const userLevels = await LevelModel.find({ accountID, unlisted: 0 });
+
+			let cp = 0;
+
+			for await (let level of userLevels) {
+				if (level.starStars) cp += 1;
+				if (level.starFeatured) cp += 2;
+				else if (level.starEpic) cp += 3;
+			}
+
+			console.log(cp);
+			await UserModel.updateOne({ accountID: accountID }, { creatorPoints: cp });
+			return resolve();
 		});
 	}
 

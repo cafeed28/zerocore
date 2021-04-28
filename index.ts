@@ -10,7 +10,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import { connect, stop } from './helpers/classes/Mongoose';
 
-process.on('unhandledRejection', (r, p) => fc.error(`UnhandledRejection at ${p}, reason: ${r}`));
+// process.on('unhandledRejection', (r, p) => fc.error(`UnhandledRejection at ${p}, reason: ${r}`));
 
 console.log('ZeroCore starting...');
 
@@ -58,9 +58,9 @@ app.use((e: any, req: any, res: any, next: any) => {
 	fc.error(`${e.statusCode || 500} Internal error: ${e.message}`);
 	fc.error(`Stacktrace:`, e.stack);
 
-	console.log(e);
+	console.error(e);
 
-	res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode, message: e.message });
+	res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode });
 });
 
 // start

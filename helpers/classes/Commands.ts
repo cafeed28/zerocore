@@ -64,6 +64,7 @@ const feature: ICommand = { // set feature if rated
                 return reject(false);
             }
 
+            await GJHelpers.updateCreatorPoints(levelID);
             await GJHelpers.featureLevel(accountID, levelID, !!parseInt(args[0]));
             await GJHelpers.verifyCoinsLevel(accountID, levelID, true);
             resolve(true);
@@ -82,6 +83,7 @@ const epic: ICommand = { // set epic if rated
                 return reject(false);
             }
 
+            await GJHelpers.updateCreatorPoints(levelID);
             await GJHelpers.epicLevel(accountID, levelID, !!parseInt(args[0]));
             await GJHelpers.verifyCoinsLevel(accountID, levelID, true);
             resolve(true);
