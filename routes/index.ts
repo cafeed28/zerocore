@@ -1,7 +1,8 @@
-async function router(router: any, options: any) {
-	router.all(`/`, async (req: any, res: any) => {
-		return 'well cum';
-	});
-}
+import express from 'express';
+const app = express.Router();
 
-export { router };
+app.all(`/`, async (req: any, res: any) => {
+	return res.send('well cum')
+});
+
+export { app as router };

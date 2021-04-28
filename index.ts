@@ -4,57 +4,64 @@ import fs from 'fs-jetpack';
 import nodefs from 'fs';
 import fc from 'fancy-console';
 import config from './config';
+import bodyParser from 'body-parser';
 
-import fastify from 'fastify';
+// import fastify from 'fastify';
+import express from 'express';
 import { connect, stop } from './helpers/classes/Mongoose';
 
 process.on('unhandledRejection', (r, p) => fc.error(`UnhandledRejection at ${p}, reason: ${r}`));
 
 console.log('ZeroCore starting...');
 
-const app = fastify();
+// const app = fastify();
+const app = express();
 
-app.register(require('fastify-formbody'));
-app.register(require('fastify-helmet'), { contentSecurityPolicy: false });
+// app.register(require('fastify-formbody'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // logger and ip bans
-app.addHook('preHandler', async (req, res) => {
+app.use((req, res, next) => {
 	let ip = req.ip;
 	if (config.bannedIps.includes(ip)) {
 		console.log(`${ip} banned lol`);
 		return req.socket.destroy();
 	}
 
-	let date = new Date()
+	let date = new Date();
 
-	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`); // [2021.02.28 16:28:40] GET 192.168.1.1 /
+	if (req.url.endsWith('.php')) req.url = req.url.substring(0, req.url.indexOf('.php'));
+
+	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`);
 
 	console.log('Content-type: ' + req.headers['content-type']);
 	console.log('Body:', req.body);
-});
-
-// 404 handler
-app.setNotFoundHandler((req, res) => {
-	fc.error(`Not found: ${req.method} ${req.url}`);
-	res.code(404).send({ status: 'error', code: '404' });
-});
-
-// any error handler
-app.setErrorHandler((e, req, res) => {
-	fc.error(`${res.statusCode || 500} Internal error: ${e.message}`);
-	fc.error(`Stacktrace:\n${e.stack}`);
-
-	console.log(e);
-
-	res.code(e.statusCode || 500).send({ status: 'error', code: e.statusCode, message: e.message });
+	next();
 });
 
 // router
 const routes = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] });
 for (const route of routes) {
 	const routeImport = require('.\\' + route);
-	app.register(routeImport.router);
+	app.use(routeImport.router);
 }
+
+// 404 handler
+app.use((req, res) => {
+	fc.error(`Not found: ${req.method} ${req.url}`);
+	return res.status(404).send({ status: 'error', code: 404 });
+});
+
+// any error handler
+app.use((e: any, req: any, res: any, next: any) => {
+	fc.error(`${e.statusCode || 500} Internal error: ${e.message}`);
+	fc.error(`Stacktrace:`, e.stack);
+
+	console.log(e);
+
+	res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode, message: e.message });
+});
 
 // start
 const start = async () => {

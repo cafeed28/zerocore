@@ -9,7 +9,7 @@ export default class WebHelper {
 	static checkRequired(body: any, requredKeys: any, res: any): boolean {
 		if (!this.checkKeys(body, requredKeys)) {
 			fc.error(`Запрос должен иметь эти ключи: ${requredKeys.join(', ')}`);
-			res.code(400).send('-1');
+			res.status(400).send('-1');
 			return false;
 		}
 		return true;

@@ -57,9 +57,9 @@ export default class GJHelpers {
 		return new Promise(async (resolve, reject) => {
 			const accRoles = await RoleAssignModel.find({ accountID: accountID });
 			let accRolesList: number[] = [];
-			
+
 			accRoles.forEach(role => { accRolesList.push(role.roleID); });
-			
+
 			let perm = EPermissions[permission];
 			let maxPerm = 0;
 
