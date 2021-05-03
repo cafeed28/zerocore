@@ -21,4 +21,4 @@ const ActionSchema: Schema = new Schema({
     itemType: { type: Number, default: 0 }
 });
 
-export const ActionModel = mongoose.model<IActionModel>('accounts', ActionSchema);
+export const ActionModel = mongoose.model<IActionModel>('actions', ActionSchema);
