@@ -18,6 +18,8 @@ import { DailyModel } from '../helpers/models/daily';
 import { GauntletModel } from '../helpers/models/gauntlet';
 import EPermissions from '../helpers/EPermissions';
 import { FriendModel } from '../helpers/models/friend';
+import { ActionModel, IAction } from '../helpers/models/actions';
+import EActions from '../helpers/EActions';
 
 app.all(`/${config.basePath}/downloadGJLevel22`, async (req: any, res: any) => {
 	const requredKeys = ['levelID'];
@@ -73,7 +75,17 @@ app.all(`/${config.basePath}/downloadGJLevel22`, async (req: any, res: any) => {
 		return res.send('-1')
 	}
 
-	await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
+	let dlAction = await ActionModel.find({ actionType: EActions.levelDownload, itemID: levelID });
+	if (!dlAction) {
+		await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
+		const action: IAction = {
+			actionType: EActions.levelDownload,
+			IP: req.ip,
+			timestamp: Date.now(),
+			itemID: levelID
+		}
+		await ActionModel.create(action);
+	}
 
 	let pass = level.password;
 	if (await GJHelpers.getAccountPermission(body.accountID, EPermissions.freeCopy) == 1) pass = 1
@@ -482,7 +494,7 @@ app.all(`/${config.basePath}/uploadGJLevel21`, async (req: any, res: any) => {
 		try {
 			await fs.writeAsync(`data/levels/${levelID}`, levelString);
 		} catch (e) {
-			fc.error(`Уровень на аккаунте ${body.userName} не опубликован: неизвестная ошибка\n${e.stack}`);
+			fc.error(`Уровень на аккаунте ${body.userName} не опубликован: неизвестная ошибка`, e.stack);
 			return res.send('-1')
 		}
 
@@ -510,6 +522,64 @@ app.all(`/${config.basePath}/uploadGJLevel21`, async (req: any, res: any) => {
 		return res.send(`${levelID}`);
 	} else {
 		fc.error(`Уровень на аккаунте ${body.userName} не опубликован: ошибка авторизации`);
+		return res.send('-1')
+	}
+});
+
+app.all(`/${config.basePath}/deleteGJLevelUser20`, async (req: any, res: any) => {
+	const requredKeys = ['accountID', 'levelID', 'gjp'];
+	const body = req.body;
+	if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+
+	const gjp = body.gjp || 0;
+	const accountID = body.accountID;
+
+	const levelID = body.levelID;
+
+	if (await GJCrypto.gjpCheck(gjp, accountID)) {
+		try {
+			await fs.removeAsync(`data/levels/${levelID}`)
+		} catch (e) {
+			fc.error(`Уровень с аккаунта ${body.userName} не удалён: неизвестная ошибка`, e.stack)
+			return res.send('-1')
+		}
+
+		await LevelModel.deleteOne({ levelID: levelID })
+
+		const action: IAction = {
+			actionType: EActions.levelDelete,
+			IP: req.ip,
+			timestamp: Date.now(),
+			accountID: accountID,
+			itemID: levelID
+		};
+
+		await ActionModel.create(action);
+
+		axios.post(config.webhook, {
+			"content": null,
+			"embeds": [
+				{
+					"title": "Deleted Level",
+					"color": 3715756,
+					"fields": [
+						{
+							"name": `${accountID} deleted a level`,
+							"value": `${levelID}`
+						}
+					],
+					"footer": {
+						"text": "ZeroCore Webhook"
+					},
+					"timestamp": new Date().toISOString()
+				}
+			]
+		});
+
+		fc.success(`Уровень с аккаунта ${body.userName} удалён`);
+		return res.send(`${levelID}`);
+	} else {
+		fc.error(`Уровень с аккаунта ${body.userName} не удалён: ошибка авторизации`);
 		return res.send('-1')
 	}
 });

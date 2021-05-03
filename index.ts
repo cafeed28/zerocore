@@ -6,18 +6,13 @@ import fc from 'fancy-console';
 import config from './config';
 import bodyParser from 'body-parser';
 
-// import fastify from 'fastify';
 import express from 'express';
 import { connect, stop } from './helpers/classes/Mongoose';
 
-// process.on('unhandledRejection', (r, p) => fc.error(`UnhandledRejection at ${p}, reason: ${r}`));
-
 console.log('ZeroCore starting...');
 
-// const app = fastify();
 const app = express();
 
-// app.register(require('fastify-formbody'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -34,9 +29,6 @@ app.use((req, res, next) => {
 	if (req.url.endsWith('.php')) req.url = req.url.substring(0, req.url.indexOf('.php'));
 
 	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`);
-
-	console.log('Content-type: ' + req.headers['content-type']);
-	console.log('Body:', req.body);
 	next();
 });
 

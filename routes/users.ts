@@ -17,6 +17,8 @@ import { FriendModel } from '../helpers/models/friend';
 import { MessageModel } from '../helpers/models/message';
 import { AccountModel } from '../helpers/models/account';
 import EPermissions from '../helpers/EPermissions';
+import { ActionModel, IAction } from '../helpers/models/actions';
+import EActions from '../helpers/EActions';
 
 app.all(`/${config.basePath}/getGJUserInfo20`, async (req: any, res: any) => {
 	const requredKeys = ['targetAccountID'];
@@ -277,6 +279,13 @@ app.all(`/${config.basePath}/updateGJUserScore22`, async (req: any, res: any) =>
 			}
 		]
 	});
+
+	const action: IAction = {
+		actionType: EActions.itemLike,
+		IP: req.ip,
+		timestamp: Date.now()
+	}
+	await ActionModel.create(action);
 
 	fc.success(`Обновление статистики пользователя ${body.userName} выполнено`);
 	return res.send(id);

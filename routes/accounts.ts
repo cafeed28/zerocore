@@ -11,6 +11,8 @@ import GJCrypto from '../helpers/classes/GJCrypto';
 
 import { AccountModel, IAccount } from '../helpers/models/account';
 import { UserModel } from '../helpers/models/user';
+import { ActionModel, IAction } from '../helpers/models/actions';
+import EActions from '../helpers/EActions';
 
 app.all(`/${config.basePath}/accounts/loginGJAccount`, async (req: any, res: any) => {
 	const requredKeys = ['secret', 'userName', 'password'];
@@ -25,6 +27,15 @@ app.all(`/${config.basePath}/accounts/loginGJAccount`, async (req: any, res: any
 	} else {
 		if (await bcrypt.compare(body.password, account.password)) {
 			fc.success(`Вход в аккаунт ${body.userName} выполнен`);
+
+			const action: IAction = {
+				actionType: EActions.accountLogin,
+				IP: req.ip,
+				timestamp: Date.now(),
+				accountID: account.accountID
+			}
+			await ActionModel.create(action);
+
 			return `${account.accountID},${account.accountID}`;
 		} else {
 			fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`);

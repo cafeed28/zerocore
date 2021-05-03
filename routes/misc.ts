@@ -19,6 +19,8 @@ import { CommentModel } from '../helpers/models/comment';
 import { PostModel } from '../helpers/models/post';
 import { SongModel } from '../helpers/models/song';
 import EPermissions from '../helpers/EPermissions';
+import EActions from '../helpers/EActions';
+import { ActionModel, IAction } from '../helpers/models/actions';
 
 app.all(`/${config.basePath}/getAccountURL`, async (req: any, res: any) => {
 	const requredKeys: any[] = ['accountID', 'secret', 'type'];
@@ -138,6 +140,15 @@ app.all(`/${config.basePath}/likeGJItem211`, async (req: any, res: any) => {
 		else likes--;
 
 		await item.updateOne({ likes: likes });
+
+		const action: IAction = {
+			actionType: EActions.itemLike,
+			IP: req.ip,
+			timestamp: Date.now(),
+			itemID: itemID,
+			itemType: type
+		}
+		await ActionModel.create(action);
 
 		fc.success(`Лайк на предмет типа ${type} с ID ${itemID} поставлен`);
 		return res.send('1')
