@@ -29,7 +29,7 @@ app.all(`/${config.basePath}/getAccountURL`, async (req: any, res: any) => {
 });
 
 // idk why i should use this path, robtop why?
-app.all(`/${config.basePath}/getAccountURL.php/database/accounts/backupGJAccountNew`, async (req: any, res: any) => {
+app.all(`/${config.basePath}/getAccountURL/database/accounts/backupGJAccountNew`, async (req: any, res: any) => {
 	const requredKeys = ['userName', 'password', 'saveData'];
 	const body = req.body;
 	if (!WebHelper.checkRequired(body, requredKeys, res)) return;
@@ -70,7 +70,7 @@ app.all(`/${config.basePath}/getAccountURL.php/database/accounts/backupGJAccount
 });
 
 // same as backup, robtop, why
-app.all(`/${config.basePath}/getAccountURL.php/database/accounts/syncGJAccountNew`, async (req: any, res: any) => {
+app.all(`/${config.basePath}/getAccountURL/database/accounts/syncGJAccountNew`, async (req: any, res: any) => {
 	const requredKeys = ['userName', 'password'];
 	const body = req.body;
 	if (!WebHelper.checkRequired(body, requredKeys, res)) return;

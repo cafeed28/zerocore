@@ -60,7 +60,7 @@ app.use((e: any, req: any, res: any, next: any) => {
 
 	console.error(e);
 
-	res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode });
+	return res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode });
 });
 
 // start

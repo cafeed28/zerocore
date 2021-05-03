@@ -4,17 +4,24 @@ const app = express.Router();
 import fc from 'fancy-console';
 import config from '../../config';
 
-import { IUser, UserModel } from '../../helpers/models/user';
+import { UserModel } from '../../helpers/models/user';
 
 app.get(`/${config.basePath}/api/users`, async (req: any, res: any) => {
     const users = await UserModel.find();
 
     return res.send(users.map(user => {
-        let u = user;
-        u.__v = u.IP = u.chest1Time = u.chest2Time = u.chest1Count = u.chest2Count = undefined;
-        u._id = null;
-        return u;
+        user.__v = user.IP = user.chest1Time = user.chest2Time = user.chest1Count = user.chest2Count = undefined;
+        user._id = null;
+        return user;
     }));
+});
+
+app.get(`/${config.basePath}/api/users/:id`, async (req: any, res: any) => {
+    const user = await UserModel.findOne({ accountID: req.params.id });
+    user.__v = user.IP = user.chest1Time = user.chest2Time = user.chest1Count = user.chest2Count = undefined;
+    user._id = null;
+
+    return res.send(user);
 });
 
 export { app as router };

@@ -139,22 +139,26 @@ app.all(`/${config.basePath}/getGJComments21`, async (req: any, res: any) => {
 			if (!users.includes(user.accountID)) {
 				usersList.push(`${user.accountID}:${user.userName}:${user.accountID}`);
 			}
-
 			const roleAssign = await RoleAssignModel.findOne({ accountID: comment.accountID });
+
+			let userRole;
 			if (roleAssign) {
-				var userRole = await RoleModel.findOne({ roleID: roleAssign.roleID });
+				userRole = await RoleModel.findOne({ roleID: roleAssign.roleID });
 			}
 
+			let prefix;
+			let badgeLevel;
+			let commentColor;
+
 			if (userRole) {
-				var prefix: any = userRole.prefix + ' - ';
-				var badgeLevel = await GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
-				var commentColor = userRole.commentColor;
+				prefix = userRole.prefix + ' - ';
+				badgeLevel = await GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
+				commentColor = userRole.commentColor;
 			}
 
 			let dateAgo = moment(comment.uploadDate * 1000).fromNow(true);
 
 			// робтоп когда json
-
 			commentsList.push(`2~${comment.comment}~3~${comment.accountID}~4~${comment.likes}~5~0~7~${+comment.isSpam}~9~${prefix || ''}${dateAgo}~6~${comment.commentID}~10~${comment.percent}`
 				+
 				`~11~${badgeLevel || 0}~12~${commentColor || 0}:1~${user.userName}~7~1~9~${user.icon}~10~${user.color1}~11~${user.color2}~14~${user.iconType}~15~${user.special}~16~${user.accountID}`);
@@ -195,14 +199,20 @@ app.all(`/${config.basePath}/getGJCommentHistory`, async (req: any, res: any) =>
 
 		for (const comment of comments) {
 			const roleAssign = await RoleAssignModel.findOne({ accountID: comment.accountID });
+
+			let userRole;
 			if (roleAssign) {
-				var userRole = await RoleModel.findOne({ roleID: roleAssign.roleID });
+				userRole = await RoleModel.findOne({ roleID: roleAssign.roleID });
 			}
 
+			let prefix;
+			let badgeLevel;
+			let commentColor;
+
 			if (userRole) {
-				var prefix: any = userRole.prefix + ' - ';
-				var badgeLevel = await GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
-				var commentColor = userRole.commentColor;
+				prefix = userRole.prefix + ' - ';
+				badgeLevel = await GJHelpers.getAccountPermission(comment.accountID, EPermissions.badgeLevel);
+				commentColor = userRole.commentColor;
 			}
 
 			let dateAgo = moment(comment.uploadDate * 1000).fromNow(true);
