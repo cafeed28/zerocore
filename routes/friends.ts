@@ -157,7 +157,7 @@ app.all(`/${config.basePath}/acceptGJFriendRequest20`, async (req: any, res: any
 		});
 
 		const friend: IFriend = {
-			ID: (await FriendModel.countDocuments()) + 1,
+			ID: (await FriendModel.find({}).sort({ _id: -1 }).limit(1))[0].ID + 1,
 			accountID1: accountID,
 			accountID2: toAccountID
 		};
@@ -251,7 +251,7 @@ app.all(`/${config.basePath}/uploadFriendRequest20`, async (req: any, res: any) 
 		}
 
 		const request: IFriendRequest = {
-			requestID: (await FriendRequestModel.countDocuments()) + 1,
+			requestID: (await FriendRequestModel.find({}).sort({ _id: -1 }).limit(1))[0].requestID + 1,
 			fromAccountID: accountID,
 			toAccountID: toAccountID,
 			message: message,

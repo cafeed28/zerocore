@@ -452,10 +452,10 @@ app.all(`/${config.basePath}/uploadGJLevel21`, async (req: any, res: any) => {
 			fc.error(`Уровень на аккаунте ${body.userName} не опубликован: имя или уровень пустой`);
 			return res.send('-1')
 		}
-		console.log('levelID: ' + levelID);
 
 		if (levelID == 0) {
-			levelID = (await LevelModel.countDocuments()) + 1;
+			// unreadable
+			levelID = (await LevelModel.find({}).sort({ _id: -1 }).limit(1))[0].levelID + 1;
 		} else {
 			let level = await LevelModel.findOne({ levelID: levelID });
 			if (level && level.accountID != accountID) {
@@ -540,7 +540,7 @@ app.all(`/${config.basePath}/deleteGJLevelUser20`, async (req: any, res: any) =>
 		try {
 			await fs.removeAsync(`data/levels/${levelID}`)
 		} catch (e) {
-			fc.error(`Уровень с аккаунта ${body.userName} не удалён: неизвестная ошибка`, e.stack)
+			fc.error(`Уровень с аккаунта ${accountID} не удалён: неизвестная ошибка`, e.stack)
 			return res.send('-1')
 		}
 
@@ -576,10 +576,10 @@ app.all(`/${config.basePath}/deleteGJLevelUser20`, async (req: any, res: any) =>
 			]
 		});
 
-		fc.success(`Уровень с аккаунта ${body.userName} удалён`);
+		fc.success(`Уровень с аккаунта ${accountID} удалён`);
 		return res.send(`${levelID}`);
 	} else {
-		fc.error(`Уровень с аккаунта ${body.userName} не удалён: ошибка авторизации`);
+		fc.error(`Уровень с аккаунта ${accountID} не удалён: ошибка авторизации`);
 		return res.send('-1')
 	}
 });

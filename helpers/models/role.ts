@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IRole {
 	roleName: string,
-	roleID: Number,
+	roleID: number,
 
 	freeCopy?: boolean,
 	rateLevelDiff?: boolean,

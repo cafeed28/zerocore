@@ -28,7 +28,7 @@ app.all(`/${config.basePath}/uploadGJAccComment20`, async (req: any, res: any) =
 			post: comment,
 			accountID: accountID,
 			uploadDate: Math.round(Date.now() / 1000),
-			postID: (await PostModel.countDocuments()) + 1
+			postID: (await PostModel.find({}).sort({ _id: -1 }).limit(1))[0].postID + 1
 		};
 		await PostModel.create(post);
 

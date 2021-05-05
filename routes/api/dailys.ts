@@ -110,7 +110,7 @@ app.post(`/${config.basePath}/api/daily`, async (req: any, res: any) => {
 			levelID: levelID,
 			timestamp: Math.round(new Date().getTime() / 1000),
 			type: type,
-			feaID: (await DailyModel.countDocuments()) + 1
+			feaID: (await DailyModel.find({}).sort({ _id: -1 }).limit(1))[0].feaID + 1
 		};
 
 		await DailyModel.create(daily);

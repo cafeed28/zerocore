@@ -67,7 +67,7 @@ app.all(`/${config.basePath}/uploadGJComment21`, async (req: any, res: any) => {
 			accountID: accountID,
 			percent: percent,
 			uploadDate: Math.round(Date.now() / 1000),
-			commentID: (await CommentModel.countDocuments()) + 1,
+			commentID: (await CommentModel.find({}).sort({ _id: -1 }).limit(1))[0].commentID + 1,
 			likes: 0,
 			isSpam: 0
 		};

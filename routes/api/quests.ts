@@ -83,7 +83,7 @@ app.post(`/${config.basePath}/api/quests`, async (req: any, res: any) => {
 		const reward = body.reward.trim();
 
 		const quest: IQuest = {
-			questID: (await QuestModel.countDocuments()) + 1,
+			questID: (await QuestModel.find({}).sort({ _id: -1 }).limit(1))[0].questID + 1,
 			questName: questName,
 			type: type,
 			amount: amount,

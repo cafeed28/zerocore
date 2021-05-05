@@ -86,7 +86,7 @@ app.post(`/${config.basePath}/api/mappacks`, async (req: any, res: any) => {
 		const colors2 = body.colors2.trim();
 
 		const pack: IMapPack = {
-			packID: (await MapPackModel.countDocuments()) + 1,
+			packID: (await MapPackModel.find({}).sort({ _id: -1 }).limit(1))[0].packID + 1,
 			packName: packName,
 			levels: levels,
 			stars: stars,
@@ -172,7 +172,7 @@ app.post(`/${config.basePath}/api/gauntlets`, async (req: any, res: any) => {
 	}
 
 	const pack: IGauntlet = {
-		packID: (await GauntletModel.countDocuments()) + 1,
+		packID: (await GauntletModel.find({}).sort({ _id: -1 }).limit(1))[0].packID + 1,
 		levelID1: levels[0],
 		levelID2: levels[1],
 		levelID3: levels[2],

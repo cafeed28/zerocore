@@ -78,7 +78,7 @@ app.post(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
 		})
 	} else {
 		const role: IRole = {
-			roleID: (await RoleModel.countDocuments()) + 1,
+			roleID: (await RoleModel.find({}).sort({ _id: -1 }).limit(1))[0].roleID + 1,
 			roleName: roleName,
 
 			freeCopy: !!parseInt(body.freeCopy),
@@ -176,7 +176,7 @@ app.post(`/${config.basePath}/api/assignrole`, async (req: any, res: any) => {
 		})
 	} else {
 		const assign: IRoleAssign = {
-			assignID: (await RoleAssignModel.countDocuments()) + 1,
+			assignID: (await RoleAssignModel.find({}).sort({ _id: -1 }).limit(1))[0].assignID + 1,
 			accountID: accountID,
 			roleID: roleID
 		};

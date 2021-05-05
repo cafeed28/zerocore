@@ -82,7 +82,7 @@ app.post(`/${config.basePath}/api/songs`, async (req: any, res: any) => {
 		}
 
 		const song: ISong = {
-			songID: (await SongModel.countDocuments()) + 500000 + 1,
+			songID: (await SongModel.find({}).sort({ _id: -1 }).limit(1))[0].songID + 500000 + 1,
 			name: songName,
 			authorID: 9,
 			authorName: authorName,

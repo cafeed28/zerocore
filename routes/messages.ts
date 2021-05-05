@@ -202,7 +202,7 @@ app.all(`/${config.basePath}/uploadGJMessage20`, async (req: any, res: any) => {
 				senderID: accountID,
 				recipientID: recipientID,
 				userName: sender.userName,
-				messageID: (await MessageModel.countDocuments()) + 1,
+				messageID: (await MessageModel.find({}).sort({ _id: -1 }).limit(1))[0].messageID + 1,
 				uploadDate: Math.round(Date.now() / 1000),
 			};
 

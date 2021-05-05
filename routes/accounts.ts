@@ -56,7 +56,7 @@ app.all(`/${config.basePath}/accounts/registerGJAccount`, async (req: any, res: 
 		return res.send('-2')
 	} else {
 		const account: IAccount = {
-			accountID: (await AccountModel.countDocuments()) + 1,
+			accountID: (await AccountModel.find({}).sort({ _id: -1 }).limit(1))[0].accountID + 1,
 			userName: body.userName,
 			password: await bcrypt.hash(body.password, 10),
 			email: body.email
