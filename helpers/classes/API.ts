@@ -1,6 +1,23 @@
 import axios from 'axios';
+import jwt from 'jsonwebtoken'
+import config from '../../config';
+import { IAccount } from '../models/account';
+import { AuthModel } from '../models/auth';
 
 export default class API {
+	static generateToken(account: IAccount) {
+		return jwt.sign(
+			{ account },
+			config.tokenSecret, { expiresIn: '48h' }
+		)
+	}
+
+	static async checkToken(token: string) {
+		let auth = await AuthModel.findOne({ token: token })
+		if (auth) return auth.accountID
+		return 0
+	}
+
 	static async verifySongUrl(url: string) {
 		let res;
 		try {

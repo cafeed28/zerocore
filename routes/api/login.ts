@@ -5,6 +5,7 @@ import fc from 'fancy-console';
 import config from '../../config';
 
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 import WebHelper from '../../helpers/classes/WebHelper';
 import GJCrypto from '../../helpers/classes/GJCrypto';
@@ -44,15 +45,20 @@ app.post(`/${config.basePath}/api/auth/login`, async (req: any, res: any) => {
         return res.status(401);
     }
 
-    const auth: IAuth = {
-        token: 'a',
-        expiresAt: Date.now(),
-        accountID: account.accountID
+    let auth: IAuth = await AuthModel.findOne({ accountID: account.accountID });
+    if (!auth) {
+        auth = {
+            token: API.generateToken(account),
+            expiresAt: Date.now() + 172800,
+            accountID: account.accountID
+        }
+
+        await AuthModel.create(auth);
     }
 
-    await AuthModel.create(auth);
-
-    return res.status(200);
+    return res.status(200).json({
+        token: auth.token
+    });
 });
 
 

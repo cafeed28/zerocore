@@ -257,8 +257,8 @@ app.all(`/${config.basePath}/updateGJUserScore22`, async (req: any, res: any) =>
 		accExplosion: accExplosion,
 
 		IP: ip,
-		lastPlayed: Math.round(new Date().getTime() / 1000),
-	}, { upsert: true });
+		lastPlayed: Math.round(new Date().getTime() / 1000)
+	}, { upsert: true, setDefaultsOnInsert: true });
 
 	axios.post(config.webhook, {
 		"content": null,

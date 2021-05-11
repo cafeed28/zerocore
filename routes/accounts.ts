@@ -36,7 +36,8 @@ app.all(`/${config.basePath}/accounts/loginGJAccount`, async (req: any, res: any
 			}
 			await ActionModel.create(action);
 
-			return `${account.accountID},${account.accountID}`;
+			console.log(account.accountID)
+			return res.send(`${account.accountID},${account.accountID}`);
 		} else {
 			fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`);
 			return res.send('-12')

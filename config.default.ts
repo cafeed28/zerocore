@@ -1,5 +1,6 @@
 export default {
 	secret: 'secret', // secret for validating client
+	tokenSecret: 'tokenSecret', // secret for generating auth tokens
 	basePath: 'zerocore', // host.com/basePath/api/roles
 	port: 80, // port
 	mongodbAddress: 'localhost:27017',

@@ -3,6 +3,7 @@ const app = express.Router();
 
 import fc from 'fancy-console';
 import fs from 'fs-jetpack';
+import nodefs from 'fs'
 import config from '../config';
 
 import zlib from 'node-gzip';
@@ -63,7 +64,7 @@ app.all(`/${config.basePath}/downloadGJLevel22`, async (req: any, res: any) => {
 
 	let levelString = '';
 	try {
-		levelString = await fs.readAsync(`data/levels/${levelID}`, 'utf8');
+		levelString = await nodefs.promises.readFile(`data/levels/${levelID}`, 'utf8');
 	} catch (e) {
 		fc.error(`Скачивание уровня ${levelID} не выполнено: ошибка скачивания`);
 		fc.error(e);

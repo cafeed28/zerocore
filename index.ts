@@ -13,8 +13,8 @@ console.log('ZeroCore starting...');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '2mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }));
 
 // logger and ip bans
 app.use((req, res, next) => {

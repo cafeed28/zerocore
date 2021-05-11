@@ -70,7 +70,7 @@ app.all(`/${config.basePath}/getGJScores20`, async (req: any, res: any) => {
 
 		console.log(result);
 		fc.success(`Получение топа игроков удалось`);
-		return result.join('|');
+		return res.send(result.join('|'));
 	}
 	else {
 		if (type == 'top') {

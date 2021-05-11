@@ -7,7 +7,7 @@ import config from '../../config';
 import axios from 'axios';
 
 import WebHelper from '../../helpers/classes/WebHelper';
-import APIHelpers from '../../helpers/classes/API';
+import API from '../../helpers/classes/API';
 import GJHelpers from '../../helpers/classes/GJHelpers';
 
 import { IRole, RoleModel } from '../../helpers/models/role';
@@ -30,34 +30,35 @@ app.get(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
 });
 
 app.post(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
-	const requredKeys = ['roleName', 'userName', 'password'];
+	const requredKeys = ['roleName', 'token'];
 	const body = req.body;
 	if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
-	const roleName = APIHelpers.translitCyrillic(body.roleName).trim();
+	const roleName = API.translitCyrillic(body.roleName).trim();
+	const token = body.token.trim();
 
-	const userName = body.userName.trim();
-	const password = body.password.trim();
-	if (!await GJHelpers.isValid(userName, password)) {
-		fc.error(`Роль ${roleName} не создана: ошибка аутентификации (${userName})`);
+	const accountID = await API.checkToken(token)
+	const account = await AccountModel.findOne({
+		accountID
+	});
+
+	if (!account) {
+		fc.error(`Роль ${roleName} не создана: ошибка аутентификации`);
 		return res.send({
 			'status': 'error',
 			'code': 'authError'
 		})
 	}
 
-	const account = await AccountModel.findOne({
-		userName: userName
-	});
 	if (await GJHelpers.getAccountPermission(account.accountID, EPermissions.badgeLevel) != 2) {
-		fc.error(`Роль ${roleName} не создана: нет прав (${userName})`);
+		fc.error(`Роль ${roleName} не создана: нет прав (${account.userName})`);
 		return res.send({
 			'status': 'error',
 			'code': 'permError'
 		})
 	}
 
-	if (roleName == '') {
+	if (!roleName) {
 		fc.error(`Роль не создана: пустое название`);
 		return res.send({
 			'status': 'error',
@@ -89,7 +90,7 @@ app.post(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
 			moveLevelAcc: !!parseInt(body.moveLevelAcc),
 			changeLevelDesc: !!parseInt(body.changeLevelDesc),
 
-			badgeLevel: APIHelpers.clamp(parseInt(body.badgeLevel), 0, 2),
+			badgeLevel: API.clamp(parseInt(body.badgeLevel), 0, 2),
 			requestMod: !!parseInt(body.requestMod),
 
 			commentColor: body.commentColor || '255,255,255',
@@ -102,7 +103,7 @@ app.post(`/${config.basePath}/api/roles`, async (req: any, res: any) => {
 			"content": null,
 			"embeds": [
 				{
-					"title": `Role Created by ${userName}`,
+					"title": `Role Created by ${account.userName}`,
 					"color": 3715756,
 					"fields": [
 						{
