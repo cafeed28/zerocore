@@ -1,20 +1,20 @@
 # ZeroCore
 Geometry Dash server emulator on NodeJS and MongoDB
 
-# Настройка и запуск 
-1. Для начала необходимо настроить MongoDB, хорошая статья: https://www.digitalocean.com/community/tutorials/how-to-secure-mongodb-on-ubuntu-20-04-ru
+# Setting up and Startup
+1. First, setup MongoDB: https://www.digitalocean.com/community/tutorials/how-to-secure-mongodb-on-ubuntu-20-04-ru
 
-2. Создать коллекцию командой `db.createCollection('zerocore')`
+2. Create a collection `db.createCollection('zerocore')`
 
-3. Создать пользователя командой `db.createUser({ user: 'zerocore', pwd: 'password', roles: [{ role: 'readWrite', db: 'zerocore' }] })`
+3. Create a user `db.createUser({ user: 'zerocore', pwd: 'password', roles: [{ role: 'readWrite', db: 'zerocore' }] })`
 
-4. Переименновать `config.default.ts` в `config.ts` и настроить его (там всё понятно и прокомментированно)
+4. Rename `config.default.ts` to `config.ts` and configure it
 
-5. Настроить `dailyRewardsConfig.ts`, если нужно (там всё понятно и прокомментированно). Советую оставить по умолчанию
+5. Configure `dailyRewardsConfig.ts`, if need, but better leave default
 
-6. Установить все пакеты командой `npm install`
+6. Install all packages `npm install`
 
-7. Создать файл `index.d.ts` в папке `node_modules/fancy-console/` с содержанием:
+7. Create file `index.d.ts` in `node_modules/fancy-console/` with a content:
 ```ts
 export const cmd: Console;
 export const clear: string;
@@ -46,6 +46,6 @@ export function success(message: any, args?: any): void;
 export function log(message: any, args?: any): void;
 ```
 
-8. Собрать командой `npm run build`
+8. Build `npm run build`
 
-9. Запустить командой `npm run start`
+9. Run `npm run start`
