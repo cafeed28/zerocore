@@ -8,6 +8,7 @@ export interface IRole {
 	rateLevelDiff?: boolean,
 	rateLevelStar?: boolean,
 	sendLevelRate?: boolean,
+	setDailyWeeklyLevel?: boolean,
 
 	moveLevelAcc?: boolean,
 	changeLevelDesc?: boolean,

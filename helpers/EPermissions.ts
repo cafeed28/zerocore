@@ -4,6 +4,7 @@ enum EPermissions {
     rateLevelDiff,
     rateLevelStar,
     rateLevelFeatureEpic,
+    setDailyWeeklyLevel,
     moveLevelAcc,
     changeLevelDesc,
     badgeLevel

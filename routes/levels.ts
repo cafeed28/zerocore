@@ -76,7 +76,7 @@ app.all(`/${config.basePath}/downloadGJLevel22`, async (req: any, res: any) => {
 		return res.send('-1')
 	}
 
-	let dlAction = await ActionModel.find({ actionType: EActions.levelDownload, itemID: levelID });
+	let dlAction = await ActionModel.findOne({ actionType: EActions.levelDownload, itemID: levelID });
 	if (!dlAction) {
 		await LevelModel.findOneAndUpdate({ levelID: levelID }, { downloads: level.downloads + 1 });
 		const action: IAction = {

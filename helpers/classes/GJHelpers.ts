@@ -8,6 +8,7 @@ import { LevelModel } from '../models/level';
 import { SongModel } from '../models/song';
 import EPermissions from '../EPermissions';
 import { UserModel } from '../models/user';
+import { DailyModel, IDaily } from '../models/daily';
 
 export default class GJHelpers {
 	static async isValid(userName: string, password: string): Promise<boolean> {
@@ -174,6 +175,24 @@ export default class GJHelpers {
 			});
 			resolve(true);
 		});
+	}
+
+	/* Ехал нигер через Нигер
+	   Видит нигер в реке нигер
+	   Сунул нигер руку в Нигер
+	   Нигер нигер нигер нигер */
+	static async setDailyLevel(levelID: number, weekly: boolean): Promise<boolean> {
+		return new Promise(async (resolve, reject) => {
+			const daily: IDaily = {
+				feaID: (await DailyModel.countDocuments()) + 1,
+				levelID: levelID,
+				timestamp: Math.floor(Date.now() / 1000),
+				type: +weekly
+			}
+
+			await DailyModel.create(daily)
+			resolve(true)
+		})
 	}
 
 	static async updateCreatorPoints(levelID: number): Promise<void> {

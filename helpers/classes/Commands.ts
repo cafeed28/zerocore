@@ -92,4 +92,16 @@ const epic: ICommand = { // set epic if rated
 }
 commands.set(epic.name, epic);
 
+const daily: ICommand = { // set daily
+    name: 'daily',
+    requiredPerms: [EPermissions.setDailyWeeklyLevel],
+    execute: (accountID, levelID, args) => {
+        return new Promise(async (resolve, reject) => {
+            await GJHelpers.setDailyLevel(levelID, false);
+            resolve(true);
+        });
+    }
+}
+commands.set(daily.name, daily);
+
 export default commands;
