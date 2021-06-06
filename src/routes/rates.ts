@@ -1,7 +1,7 @@
 import tinyhttp from '@opengalaxium/tinyhttp'
 
 import fc from 'fancy-console';
-import config from '../config';
+import config from '../config'
 
 import WebHelper from '../helpers/classes/WebHelper';
 
@@ -79,5 +79,6 @@ function routes(app: tinyhttp) {
 		}
 	});
 }
+
 
 export { routes }

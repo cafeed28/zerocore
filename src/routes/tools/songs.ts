@@ -1,6 +1,6 @@
 import tinyhttp from '@opengalaxium/tinyhttp'
 
-import config from '../../config';
+import config from '../../config'
 import fs from 'fs';
 
 function routes(app: tinyhttp) {

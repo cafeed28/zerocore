@@ -37,10 +37,8 @@ app.use((req, res, next) => {
 const routes = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] });
 for (const routePath of routes) {
 	const route = require('.\\' + routePath);
-	console.log(routePath)
 	route.routes(app)
 }
-console.log(app.routes)
 
 // 404 handler
 // app.use((req, res) => {

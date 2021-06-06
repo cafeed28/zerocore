@@ -80,7 +80,6 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -107,10 +106,15 @@ dist
 *.deprecated.js
 
 # Data
-src/data/levels/*
-src/data/saves/*
+dist/data/levels/*
+dist/data/saves/*
 start.bat
-config.ts
+dist/config.js
+dist/config.js.map
+
+# src
+src/
+tsconfig.json
 
 .vscode/
 .idea/

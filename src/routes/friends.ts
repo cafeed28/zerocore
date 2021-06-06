@@ -1,7 +1,7 @@
 import tinyhttp from '@opengalaxium/tinyhttp'
 
 import fc from 'fancy-console';
-import config from '../config';
+import config from '../config'
 
 import moment from 'moment';
 

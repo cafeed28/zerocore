@@ -1,13 +1,12 @@
 {
 	"name": "zerocore",
-	"version": "1.2.2-beta",
+	"version": "1.2.3-beta",
 	"repository": "https://github.com/cafeed28/zerocore/",
-	"main": "index.ts",
+	"main": "dist/index.js",
 	"scripts": {
-		"build": "tsc -p tsconfig.json && xcopy \"views\" \"dist/views\" /E /H /C /I /Y",
+		"build": "tsc -p tsconfig.json && xcopy \"src/views\" \"dist/views\" /E /H /C /I /Y",
 		"start": "cd dist & node --trace-warnings index",
-		"build-and-start": "npm run build && npm run start",
-		"setup": "npm install & mkdir \"dist/data\" & mkdir \"dist/data/levels\" & mkdir \"dist/data/saves\""
+		"make-package": "npm pack"
 	},
 	"keywords": [],
 	"author": "cafeed28",

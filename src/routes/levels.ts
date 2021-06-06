@@ -3,7 +3,7 @@ import tinyhttp from '@opengalaxium/tinyhttp'
 import fc from 'fancy-console';
 import fs from 'fs-jetpack';
 import nodefs from 'fs'
-import config from '../config';
+import config from '../config'
 
 import zlib from 'node-gzip';
 import axios from 'axios';

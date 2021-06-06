@@ -1,6 +1,6 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken'
-import config from '../../config';
+import config from '../../config'
 import { IAccount } from '../models/account';
 import { AuthModel } from '../models/auth';
 

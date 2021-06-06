@@ -2,7 +2,7 @@ import tinyhttp from '@opengalaxium/tinyhttp'
 
 import fc from 'fancy-console';
 import moment from 'moment';
-import config from '../config';
+import config from '../config'
 
 import WebHelper from '../helpers/classes/WebHelper';
 import GJCrypto from '../helpers/classes/GJCrypto';
