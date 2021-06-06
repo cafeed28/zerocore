@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "cafeed28",
-	"license": "ISC",
+	"license": "GPL3",
 	"dependencies": {
 		"@opengalaxium/tinyhttp": "^1.0.1",
 		"axios": "^0.21.1",
