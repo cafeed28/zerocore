@@ -1,5 +1,4 @@
-import express from 'express';
-const app = express.Router();
+import tinyhttp from '@opengalaxium/tinyhttp'
 
 import fc from 'fancy-console';
 import config from '../config';
@@ -10,68 +9,67 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 import { MapPackModel } from '../helpers/models/mappacks';
 import { GauntletModel } from '../helpers/models/gauntlet';
 
-app.all(`/${config.basePath}/getGJMapPacks21`, async (req: any, res: any) => {
-	const requredKeys = ['secret', 'page'];
-	const body = req.body;
-	if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+function routes(app: tinyhttp) {
+	app.all(`/${config.basePath}/getGJMapPacks21`, async (req: any, res: any) => {
+		const requredKeys = ['secret', 'page'];
+		const body = req.body;
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
-	const page = body.page;
-	const offset = page * 10;
+		const page = body.page;
+		const offset = page * 10;
 
-	let packsList = [];
-	let lvlsMulti: number[] = [];
+		let packsList = [];
+		let lvlsMulti: number[] = [];
 
-	let packs = await MapPackModel
-		.find()
-		.sort({ packID: 1 })
-		.skip(offset)
-		.limit(10);
+		let packs = await MapPackModel
+			.find()
+			.sort({ packID: 1 })
+			.skip(offset)
+			.limit(10);
 
-	let packsCount = await MapPackModel.countDocuments();
+		let packsCount = await MapPackModel.countDocuments();
 
-	for (let pack of packs) {
-		lvlsMulti.push(pack.packID);
+		for (let pack of packs) {
+			lvlsMulti.push(pack.packID);
 
-		let colors2 = pack.colors2 == 'none' ? pack.color : pack.colors2;
+			let colors2 = pack.colors2 == 'none' ? pack.color : pack.colors2;
 
-		packsList.push(`1:${pack.packID}:2:${pack.packName}:3:${pack.levels}:4:${pack.stars}:5:${pack.coins}:6:${pack.difficulty}:7:${pack.color}:8:${colors2}`);
-	}
+			packsList.push(`1:${pack.packID}:2:${pack.packName}:3:${pack.levels}:4:${pack.stars}:5:${pack.coins}:6:${pack.difficulty}:7:${pack.color}:8:${colors2}`);
+		}
 
-	let hash = await GJCrypto.genPack(lvlsMulti.join(','));
-	let result = `${packsList.join('|')}#${packsCount}:${offset}:10#${hash}`;
+		let hash = await GJCrypto.genPack(lvlsMulti.join(','));
+		let result = `${packsList.join('|')}#${packsCount}:${offset}:10#${hash}`;
 
-	fc.success(`Получение маппаков выполнено`);
-	return res.send(result);
-});
+		fc.success(`Получение маппаков выполнено`);
+		return res.send(result);
+	});
 
-app.all(`/${config.basePath}/getGJGauntlets21`, async (req: any, res: any) => {
-	const body = req.body;
+	app.all(`/${config.basePath}/getGJGauntlets21`, async (req: any, res: any) => {
+		const body = req.body;
 
-	const page = body.page;
-	const offset = page * 10;
+		let gauntletsList = [];
+		let gauntletLevels = '';
 
-	let gauntletsList = [];
-	let gauntletLevels = '';
+		let gauntlets = await GauntletModel
+			.find({ levelID5: { $ne: 0 } })
+			.sort({ gauntletID: 1 });
 
-	let gauntlets = await GauntletModel
-		.find({ levelID5: { $ne: 0 } })
-		.sort({ gauntletID: 1 });
+		let gauntletsCount = await GauntletModel.countDocuments();
 
-	let gauntletsCount = await GauntletModel.countDocuments();
+		for (let gauntlet of gauntlets) {
+			let levels = `${gauntlet.levelID1},${gauntlet.levelID2},${gauntlet.levelID3},${gauntlet.levelID4},${gauntlet.levelID5}`;
+			gauntletLevels += gauntlet.packID + levels;
 
-	for (let gauntlet of gauntlets) {
-		let levels = `${gauntlet.levelID1},${gauntlet.levelID2},${gauntlet.levelID3},${gauntlet.levelID4},${gauntlet.levelID5}`;
-		gauntletLevels += gauntlet.packID + levels;
+			gauntletsList.push(`1:${gauntlet.packID}:3:${levels}`);
+		}
 
-		gauntletsList.push(`1:${gauntlet.packID}:3:${levels}`);
-	}
+		let hash = GJCrypto.genSolo2(gauntletLevels);
+		let result = `${gauntletsList.join('|')}#${hash}`;
+		console.log(result);
 
-	let hash = GJCrypto.genSolo2(gauntletLevels);
-	let result = `${gauntletsList.join('|')}#${hash}`;
-	console.log(result);
+		fc.success(`Получение гаунтлетов выполнено`);
+		return res.send(result);
+	});
+}
 
-	fc.success(`Получение гаунтлетов выполнено`);
-	return res.send(result);
-});
-
-export { app as router };
+export { routes }

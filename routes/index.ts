@@ -1,8 +1,9 @@
-import express from 'express';
-const app = express.Router();
+import tinyhttp from '@opengalaxium/tinyhttp'
 
-app.all(`/`, async (req: any, res: any) => {
-	return res.send('well cum')
-});
+function routes(app: tinyhttp) {
+	app.all(`/`, async (req: any, res: any) => {
+		return res.send('well cum')
+	});
+}
 
-export { app as router };
+export { routes }

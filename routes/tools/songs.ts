@@ -1,13 +1,12 @@
-import express from 'express';
-const app = express.Router();
+import tinyhttp from '@opengalaxium/tinyhttp'
 
 import config from '../../config';
 import fs from 'fs';
 
-app.all(`/${config.basePath}/tools/songs/upload`, async (req: any, res: any) => {
-	fs.readFile('views/songs/upload.html', 'utf8', (e, data) => {
-		return res.type('text/html').send(data);
+function routes(app: tinyhttp) {
+	app.all(`/${config.basePath}/tools/songs/upload`, async (req: any, res: any) => {
+		res.render('songs/upload.html')
 	});
-});
+}
 
-export { app as router };
+export { routes }

@@ -4,21 +4,22 @@ import fs from 'fs-jetpack';
 import nodefs from 'fs';
 import fc from 'fancy-console';
 import config from './config';
-import bodyParser from 'body-parser';
 
-import express from 'express';
+import tinyhttp from '@opengalaxium/tinyhttp';
+import { parser } from '@opengalaxium/tinyhttp';
+
 import { connect, stop } from './helpers/classes/Mongoose';
 
 console.log('ZeroCore starting...');
 
-const app = express();
+const app = new tinyhttp();
 
-app.use(bodyParser.json({ limit: '2mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }));
+app.use(parser.json);
+app.use(parser.urlencoded);
 
 // logger and ip bans
 app.use((req, res, next) => {
-	let ip = req.ip;
+	let ip = req.socket.remoteAddress;
 	if (config.bannedIps.includes(ip)) {
 		console.log(`${ip} banned lol`);
 		return req.socket.destroy();
@@ -34,26 +35,28 @@ app.use((req, res, next) => {
 
 // router
 const routes = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] });
-for (const route of routes) {
-	const routeImport = require('.\\' + route);
-	app.use(routeImport.router);
+for (const routePath of routes) {
+	const route = require('.\\' + routePath);
+	console.log(routePath)
+	route.routes(app)
 }
+console.log(app.routes)
 
 // 404 handler
-app.use((req, res) => {
-	fc.error(`Not found: ${req.method} ${req.url}`);
-	return res.status(404).send({ status: 'error', code: 404 });
-});
+// app.use((req, res) => {
+// 	fc.error(`Not found: ${req.method} ${req.url}`);
+// 	return res.send({ status: 'error', code: 404 }, 404);
+// });
 
 // any error handler
-app.use((e: any, req: any, res: any, next: any) => {
-	fc.error(`${e.statusCode || 500} Internal error: ${e.message}`);
-	fc.error(`Stacktrace:`, e.stack);
+// app.use((e, req, res, next) => {
+// 	fc.error(`${e.statusCode || 500} Internal error: ${e.message}`);
+// 	fc.error(`Stacktrace:`, e.stack);
 
-	console.error(e);
+// 	console.error(e);
 
-	return res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode });
-});
+// 	return res.status(e.statusCode || 500).send({ status: 'error', code: e.statusCode });
+// });
 
 // start
 const start = async () => {
@@ -63,7 +66,7 @@ const start = async () => {
 		await connect(`mongodb://${config.mongodbUser}:${config.mongodbPassword}@${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`);
 
 		// server
-		await app.listen(config.port, '0.0.0.0');
+		await app.run(config.port, '0.0.0.0');
 		fc.success('ZeroCore started and listening on port ' + config.port);
 	} catch (e) {
 		fc.error('Failed to start ZeroCore');

@@ -1,5 +1,4 @@
-import express from 'express';
-const app = express.Router();
+import tinyhttp from '@opengalaxium/tinyhttp'
 
 import fc from 'fancy-console';
 import config from '../config';
@@ -12,144 +11,146 @@ import GJHelpers from '../helpers/classes/GJHelpers';
 import { FriendModel } from '../helpers/models/friend';
 import { IUser, UserModel } from '../helpers/models/user';
 
-app.all(`/${config.basePath}/getGJScores20`, async (req: any, res: any) => {
-	const requredKeys = ['secret', 'accountID', 'gjp', 'type'];
-	const body = req.body;
-	if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+function routes(app: tinyhttp) {
+	app.all(`/${config.basePath}/getGJScores20`, async (req: any, res: any) => {
+		const requredKeys = ['secret', 'accountID', 'gjp', 'type'];
+		const body = req.body;
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
 
-	let accountID = body.accountID;
-	const gjp = body.gjp;
-	const type = body.type;
+		let accountID = body.accountID;
+		const gjp = body.gjp;
+		const type = body.type;
 
-	if (accountID) {
-		if (!await GJCrypto.gjpCheck(gjp, accountID)) {
-			fc.error(`Получение топа игроков не удалось: ошибка авторизации`);
-			return res.send('-1')
+		if (accountID) {
+			if (!await GJCrypto.gjpCheck(gjp, accountID)) {
+				fc.error(`Получение топа игроков не удалось: ошибка авторизации`);
+				return res.send('-1')
+			}
 		}
-	}
-	else {
-		accountID = body.udid;
-		if (!isNaN(accountID)) {
-			return res.send('-1')
-		}
-	}
-
-	if (type == 'friends') {
-		const friends = await FriendModel.find({
-			$or: [
-				{ accountID1: accountID },
-				{ accountID2: accountID },
-			]
-		});
-
-		let friendsIDs = [];
-		friendsIDs.push(accountID);
-
-		for (let friend of friends) {
-			let accID = friend.accountID2 == accountID ? friend.accountID1 : friend.accountID2;
-			friendsIDs.push(accID);
+		else {
+			accountID = body.udid;
+			if (!isNaN(accountID)) {
+				return res.send('-1')
+			}
 		}
 
-		const users = await UserModel.find({
-			accountID: { $in: friendsIDs }
-		}).sort({ stars: -1 });
-
-		let result = [];
-
-		let i = 0;
-		for (let user of users) {
-			i++;
-
-			result.push(`1:${user.userName}:2:${user.accountID}:13:${user.coins}:17:${user.userCoins}:6:${i}:9:${user.icon}:10:${user.color1}:11:${user.color2}:14:${user.iconType}:15:${user.special}:16:${user.accountID}:3:${user.stars}:8:${Math.floor(user.creatorPoints)}:4:${user.demons}:7:${user.accountID}:46:${user.diamonds}`);
-		}
-
-		if (!result.length) {
-			fc.error(`Получение топа игроков не удалось: нет результата`);
-			return res.send('-1')
-		}
-
-		console.log(result);
-		fc.success(`Получение топа игроков удалось`);
-		return res.send(result.join('|'));
-	}
-	else {
-		if (type == 'top') {
-			var users = await UserModel.find({
-				isBanned: false,
-				stars: { $gt: 0 }
-			}).sort({ stars: -1 }).limit(100);
-		}
-		else if (type == 'creators') {
-			var users = await UserModel.find({
-				isBanned: false
-			}).sort({ creatorPoints: -1 }).limit(100);
-		}
-		else if (type == 'relative') {
-			var user = await UserModel.findOne({
-				accountID: accountID
+		if (type == 'friends') {
+			const friends = await FriendModel.find({
+				$or: [
+					{ accountID1: accountID },
+					{ accountID2: accountID },
+				]
 			});
-			let stars = user.stars;
 
-			if (body.count) var count = Math.floor(parseInt(body.count) / 2);
-			else var count = Math.floor(25);
+			let friendsIDs = [];
+			friendsIDs.push(accountID);
 
-			// MongoDB Union :joy: :overdrive_ebalo:
-			let users1 = await UserModel.find(
-				{
-					stars: { $lte: stars },
-					isBanned: false
-				}
-			).sort({ stars: -1 });
-
-			let users2 = await UserModel.find(
-				{
-					stars: { $gte: stars },
-					isBanned: false
-				}
-			).sort({ stars: 1 });
-
-			var users = users1;
-			for (let user of users2) {
-				users.push(user);
+			for (let friend of friends) {
+				let accID = friend.accountID2 == accountID ? friend.accountID1 : friend.accountID2;
+				friendsIDs.push(accID);
 			}
 
-			let compare = (a: IUser, b: IUser) => {
-				if (a.stars > b.stars) return -1;
-				if (a.stars < b.stars) return 1;
-				return 0;
+			const users = await UserModel.find({
+				accountID: { $in: friendsIDs }
+			}).sort({ stars: -1 });
+
+			let result = [];
+
+			let i = 0;
+			for (let user of users) {
+				i++;
+
+				result.push(`1:${user.userName}:2:${user.accountID}:13:${user.coins}:17:${user.userCoins}:6:${i}:9:${user.icon}:10:${user.color1}:11:${user.color2}:14:${user.iconType}:15:${user.special}:16:${user.accountID}:3:${user.stars}:8:${Math.floor(user.creatorPoints)}:4:${user.demons}:7:${user.accountID}:46:${user.diamonds}`);
 			}
 
-			users = users.sort(compare);
+			if (!result.length) {
+				fc.error(`Получение топа игроков не удалось: нет результата`);
+				return res.send('-1')
+			}
 
-			// удалить дубликаты
-			users = users.reduce((unique, o) => {
-				if (!unique.some((obj: IUser) => obj.accountID == o.accountID)) {
-					unique.push(o);
+			console.log(result);
+			fc.success(`Получение топа игроков удалось`);
+			return res.send(result.join('|'));
+		}
+		else {
+			if (type == 'top') {
+				var users = await UserModel.find({
+					isBanned: false,
+					stars: { $gt: 0 }
+				}).sort({ stars: -1 }).limit(100);
+			}
+			else if (type == 'creators') {
+				var users = await UserModel.find({
+					isBanned: false
+				}).sort({ creatorPoints: -1 }).limit(100);
+			}
+			else if (type == 'relative') {
+				var user = await UserModel.findOne({
+					accountID: accountID
+				});
+				let stars = user.stars;
+
+				if (body.count) var count = Math.floor(parseInt(body.count) / 2);
+				else var count = Math.floor(25);
+
+				// MongoDB Union :joy: :overdrive_ebalo:
+				let users1 = await UserModel.find(
+					{
+						stars: { $lte: stars },
+						isBanned: false
+					}
+				).sort({ stars: -1 });
+
+				let users2 = await UserModel.find(
+					{
+						stars: { $gte: stars },
+						isBanned: false
+					}
+				).sort({ stars: 1 });
+
+				var users = users1;
+				for (let user of users2) {
+					users.push(user);
 				}
-				return unique;
-			}, []);
 
-			console.log(users);
+				let compare = (a: IUser, b: IUser) => {
+					if (a.stars > b.stars) return -1;
+					if (a.stars < b.stars) return 1;
+					return 0;
+				}
+
+				users = users.sort(compare);
+
+				// удалить дубликаты
+				users = users.reduce((unique, o) => {
+					if (!unique.some((obj: IUser) => obj.accountID == o.accountID)) {
+						unique.push(o);
+					}
+					return unique;
+				}, []);
+
+				console.log(users);
+			}
+
+			let result = [];
+
+			let i = 0;
+			for (let user of users) {
+				i++;
+
+				result.push(`1:${user.userName}:2:${user.accountID}:13:${user.coins}:17:${user.userCoins}:6:${i}:9:${user.icon}:10:${user.color1}:11:${user.color2}:14:${user.iconType}:15:${user.special}:16:${user.accountID}:3:${user.stars}:8:${Math.floor(user.creatorPoints)}:4:${user.demons}:7:${user.accountID}:46:${user.diamonds}`);
+			}
+
+			if (!result.length) {
+				fc.error(`Получение топа игроков не удалось: нет результата`);
+				return res.send('-1')
+			}
+
+			console.log(result);
+			fc.success(`Получение топа игроков удалось`);
+			return res.send(result.join('|'));
 		}
+	});
+}
 
-		let result = [];
-
-		let i = 0;
-		for (let user of users) {
-			i++;
-
-			result.push(`1:${user.userName}:2:${user.accountID}:13:${user.coins}:17:${user.userCoins}:6:${i}:9:${user.icon}:10:${user.color1}:11:${user.color2}:14:${user.iconType}:15:${user.special}:16:${user.accountID}:3:${user.stars}:8:${Math.floor(user.creatorPoints)}:4:${user.demons}:7:${user.accountID}:46:${user.diamonds}`);
-		}
-
-		if (!result.length) {
-			fc.error(`Получение топа игроков не удалось: нет результата`);
-			return res.send('-1')
-		}
-
-		console.log(result);
-		fc.success(`Получение топа игроков удалось`);
-		return res.send(result.join('|'));
-	}
-});
-
-export { app as router };
+export { routes }
