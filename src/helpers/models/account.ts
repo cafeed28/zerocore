@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IAccount {
 	accountID: number,
@@ -14,6 +14,6 @@ const AccountSchema: Schema = new Schema({
 	userName: String,
 	password: String,
 	email: String
-});
+})
 
-export const AccountModel = mongoose.model<IAccountModel>('accounts', AccountSchema);
+export const AccountModel = mongoose.model<IAccountModel>('accounts', AccountSchema)

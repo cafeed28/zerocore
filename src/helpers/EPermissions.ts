@@ -10,4 +10,4 @@ enum EPermissions {
     badgeLevel
 }
 
-export default EPermissions;
+export default EPermissions

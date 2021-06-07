@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IDaily {
 	levelID: number,
@@ -14,6 +14,6 @@ const DailySchema: Schema = new Schema({
 	feaID: Number,
 	timestamp: Number,
 	type: Number
-});
+})
 
-export const DailyModel = mongoose.model<IDailyModel>('dailys', DailySchema);
+export const DailyModel = mongoose.model<IDailyModel>('dailys', DailySchema)

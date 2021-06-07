@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IRole {
 	roleName: string,
@@ -39,6 +39,6 @@ const RoleSchema: Schema = new Schema({
 
 	commentColor: { type: String, default: '255,255,255' },
 	prefix: { type: String, default: '' }
-});
+})
 
-export const RoleModel = mongoose.model<IRoleModel>('roles', RoleSchema);
+export const RoleModel = mongoose.model<IRoleModel>('roles', RoleSchema)

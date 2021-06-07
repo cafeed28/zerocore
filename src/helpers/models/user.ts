@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IUser {
 	userName: string,
@@ -90,6 +90,6 @@ const UserSchema: Schema = new Schema({
 	IP: String,
 	lastPlayed: Number,
 	isBanned: { type: Boolean, default: false }
-});
+})
 
-export const UserModel = mongoose.model<IUserModel>('users', UserSchema);
+export const UserModel = mongoose.model<IUserModel>('users', UserSchema)

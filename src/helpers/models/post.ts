@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IPost {
 	userName: string,
@@ -20,6 +20,6 @@ const PostSchema: Schema = new Schema({
 	likes: { type: Number, default: 0 },
 	isSpam: { type: Boolean, default: false },
 	postID: Number
-});
+})
 
-export const PostModel = mongoose.model<IPostModel>('posts', PostSchema);
+export const PostModel = mongoose.model<IPostModel>('posts', PostSchema)

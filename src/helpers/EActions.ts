@@ -6,4 +6,4 @@ enum EActions {
     userScoreUpdate     // ip | timestamp | accID
 }
 
-export default EActions;
+export default EActions

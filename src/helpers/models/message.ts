@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IMessage {
 	userName: string,
@@ -22,6 +22,6 @@ const MessageSchema: Schema = new Schema({
 	messageID: Number,
 	uploadDate: Number,
 	isUnread: { type: Boolean, default: true }
-});
+})
 
-export const MessageModel = mongoose.model<IMessageModel>('messages', MessageSchema);
+export const MessageModel = mongoose.model<IMessageModel>('messages', MessageSchema)

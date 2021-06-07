@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IFriendRequest {
 	requestID: number,
@@ -18,6 +18,6 @@ const FriendRequestSchema: Schema = new Schema({
 	toAccountID: Number,
 	message: String,
 	uploadDate: Number
-});
+})
 
-export const FriendRequestModel = mongoose.model<IFriendRequestModel>('friendRequest', FriendRequestSchema);
+export const FriendRequestModel = mongoose.model<IFriendRequestModel>('friendRequest', FriendRequestSchema)

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IMapPack {
 	packID: number,
@@ -22,6 +22,6 @@ const MapPackSchema: Schema = new Schema({
 	difficulty: Number,
 	color: String,
 	colors2: { type: String, default: 'none' }
-});
+})
 
-export const MapPackModel = mongoose.model<IMapPackModel>('mappacks', MapPackSchema);
+export const MapPackModel = mongoose.model<IMapPackModel>('mappacks', MapPackSchema)

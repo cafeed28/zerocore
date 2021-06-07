@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IGauntlet {
 	packID: number,
@@ -20,6 +20,6 @@ const GauntletSchema: Schema = new Schema({
 	levelID3: Number,
 	levelID4: Number,
 	levelID5: Number
-});
+})
 
-export const GauntletModel = mongoose.model<IGauntletModel>('gauntlets', GauntletSchema);
+export const GauntletModel = mongoose.model<IGauntletModel>('gauntlets', GauntletSchema)

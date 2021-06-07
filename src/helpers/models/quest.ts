@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IQuest {
 	questID: number,
@@ -16,6 +16,6 @@ const QuestSchema: Schema = new Schema({
 	type: Number,
 	amount: Number,
 	reward: Number
-});
+})
 
-export const QuestModel = mongoose.model<IQuestModel>('quests', QuestSchema);
+export const QuestModel = mongoose.model<IQuestModel>('quests', QuestSchema)

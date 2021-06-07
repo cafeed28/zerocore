@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IRoleAssign {
 	assignID: number,
@@ -12,6 +12,6 @@ const RoleAssignSchema: Schema = new Schema({
 	assignID: Number,
 	accountID: Number,
 	roleID: Number
-});
+})
 
-export const RoleAssignModel = mongoose.model<IRoleAssignModel>('roleassigns', RoleAssignSchema);
+export const RoleAssignModel = mongoose.model<IRoleAssignModel>('roleassigns', RoleAssignSchema)

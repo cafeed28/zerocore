@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
-import EActions from "../EActions";
+import mongoose, { Schema, Document } from "mongoose"
+import EActions from "../EActions"
 
 export interface IAction {
     actionType: EActions,
@@ -19,6 +19,6 @@ const ActionSchema: Schema = new Schema({
     accountID: { type: Number, default: 0 },
     itemID: { type: Number, default: 0 },
     itemType: { type: Number, default: 0 }
-});
+})
 
-export const ActionModel = mongoose.model<IActionModel>('actions', ActionSchema);
+export const ActionModel = mongoose.model<IActionModel>('actions', ActionSchema)

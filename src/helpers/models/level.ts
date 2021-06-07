@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface ILevel {
 	accountID: number,
@@ -76,6 +76,6 @@ const LevelSchema: Schema = new Schema({
 	updateDate: { type: Number, default: 0 },
 
 	IP: String
-});
+})
 
-export const LevelModel = mongoose.model<ILevelModel>('levels', LevelSchema);
+export const LevelModel = mongoose.model<ILevelModel>('levels', LevelSchema)

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IBlock {
 	accountID1: number,
@@ -14,6 +14,6 @@ const BlockSchema: Schema = new Schema({
 	accountID2: Number,
 	isUnread1: Boolean,
 	isUnread2: Boolean
-});
+})
 
-export const BlockModel = mongoose.model<IBlockModel>('blocks', BlockSchema);
+export const BlockModel = mongoose.model<IBlockModel>('blocks', BlockSchema)

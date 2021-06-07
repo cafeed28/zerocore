@@ -1,32 +1,32 @@
 import tinyhttp from '@opengalaxium/tinyhttp'
 
-import fc from 'fancy-console';
+import fc from 'fancy-console'
 import config from '../config'
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'
 
-import WebHelper from '../helpers/classes/WebHelper';
-import GJCrypto from '../helpers/classes/GJCrypto';
+import WebHelper from '../helpers/classes/WebHelper'
+import GJCrypto from '../helpers/classes/GJCrypto'
 
-import { AccountModel, IAccount } from '../helpers/models/account';
-import { UserModel } from '../helpers/models/user';
-import { ActionModel, IAction } from '../helpers/models/actions';
-import EActions from '../helpers/EActions';
+import { AccountModel, IAccount } from '../helpers/models/account'
+import { UserModel } from '../helpers/models/user'
+import { ActionModel, IAction } from '../helpers/models/actions'
+import EActions from '../helpers/EActions'
 
 function routes(app: tinyhttp) {
 	app.all(`/${config.basePath}/accounts/loginGJAccount`, async (req: any, res: any) => {
-		const requredKeys = ['secret', 'userName', 'password'];
-		const body = req.body;
-		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+		const requredKeys = ['secret', 'userName', 'password']
+		const body = req.body
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return
 
-		const account = await AccountModel.findOne({ userName: body.userName });
+		const account = await AccountModel.findOne({ userName: body.userName })
 
 		if (!account) {
-			fc.error(`Вход в аккаунт ${body.userName} не выполнен: аккаунта не существует`);
+			fc.error(`Вход в аккаунт ${body.userName} не выполнен: аккаунта не существует`)
 			return res.send('-1')
 		} else {
 			if (await bcrypt.compare(body.password, account.password)) {
-				fc.success(`Вход в аккаунт ${body.userName} выполнен`);
+				fc.success(`Вход в аккаунт ${body.userName} выполнен`)
 
 				const action: IAction = {
 					actionType: EActions.accountLogin,
@@ -34,26 +34,26 @@ function routes(app: tinyhttp) {
 					timestamp: Date.now(),
 					accountID: account.accountID
 				}
-				await ActionModel.create(action);
+				await ActionModel.create(action)
 
 				console.log(account.accountID)
-				return res.send(`${account.accountID},${account.accountID}`);
+				return res.send(`${account.accountID},${account.accountID}`)
 			} else {
-				fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`);
+				fc.error(`Вход в аккаунт ${body.userName} не выполнен: неверный пароль`)
 				return res.send('-12')
 			}
 		}
-	});
+	})
 
 	app.all(`/${config.basePath}/accounts/registerGJAccount`, async (req: any, res: any) => {
-		const requredKeys = ['secret', 'userName', 'password', 'email'];
-		const body = req.body;
-		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+		const requredKeys = ['secret', 'userName', 'password', 'email']
+		const body = req.body
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return
 
-		const checkUser = await AccountModel.findOne({ userName: body.userName });
+		const checkUser = await AccountModel.findOne({ userName: body.userName })
 
 		if (checkUser) {
-			fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`);
+			fc.error(`Аккаунт ${body.userName} не создан: такой аккаунт уже существует`)
 			return res.send('-2')
 		} else {
 			const account: IAccount = {
@@ -61,28 +61,28 @@ function routes(app: tinyhttp) {
 				userName: body.userName,
 				password: await bcrypt.hash(body.password, 10),
 				email: body.email
-			};
+			}
 
-			await AccountModel.create(account);
+			await AccountModel.create(account)
 
-			fc.success(`Аккаунт ${body.userName} создан`);
+			fc.success(`Аккаунт ${body.userName} создан`)
 			return res.send('1')
 		}
-	});
+	})
 
 	app.all(`/${config.basePath}/updateGJAccSettings20`, async (req: any, res: any) => {
-		const requredKeys = ['secret', 'gjp', 'accountID', 'mS', 'frS', 'cS', 'yt', 'twitter', 'twitch'];
-		const body = req.body;
-		if (!WebHelper.checkRequired(body, requredKeys, res)) return;
+		const requredKeys = ['secret', 'gjp', 'accountID', 'mS', 'frS', 'cS', 'yt', 'twitter', 'twitch']
+		const body = req.body
+		if (!WebHelper.checkRequired(body, requredKeys, res)) return
 
-		const gjp = body.gjp;
-		const accountID = body.accountID;
-		const mS = body.mS;
-		const frS = body.frS;
-		const cS = body.cS;
-		const yt = body.yt;
-		const twitter = body.twitter;
-		const twitch = body.twitch;
+		const gjp = body.gjp
+		const accountID = body.accountID
+		const mS = body.mS
+		const frS = body.frS
+		const cS = body.cS
+		const yt = body.yt
+		const twitter = body.twitter
+		const twitch = body.twitch
 
 		if (await GJCrypto.gjpCheck(gjp, accountID)) {
 			await UserModel.findOneAndUpdate({
@@ -94,15 +94,15 @@ function routes(app: tinyhttp) {
 				youtube: yt,
 				twitter: twitter,
 				twitch: twitch
-			});
+			})
 
-			fc.success(`Настройки пользователя ${accountID} обновлены`);
+			fc.success(`Настройки пользователя ${accountID} обновлены`)
 			return res.send('1')
 		} else {
-			fc.error(`Настройки пользователя ${accountID} не обновлены: ошибка авторизации`);
+			fc.error(`Настройки пользователя ${accountID} не обновлены: ошибка авторизации`)
 			return res.send('-1')
 		}
-	});
+	})
 }
 
 export { routes }

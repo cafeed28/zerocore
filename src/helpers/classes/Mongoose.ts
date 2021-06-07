@@ -1,6 +1,6 @@
-import fc from 'fancy-console';
+import fc from 'fancy-console'
 
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const connect = async (conString: string) => {
 	try {
@@ -8,7 +8,7 @@ const connect = async (conString: string) => {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useFindAndModify: false
-		});
+		})
 	}
 	catch (e) {
 		throw e
@@ -16,18 +16,18 @@ const connect = async (conString: string) => {
 }
 
 const stop = async () => {
-	await mongoose.connection.close();
+	await mongoose.connection.close()
 }
 
-const connection = mongoose.connection;
+const connection = mongoose.connection
 
 connection.on('error', (e) => {
-	fc.error('MongoDB Connection error:', e.message);
-	process.exit(1);
-});
+	fc.error('MongoDB Connection error:', e.message)
+	process.exit(1)
+})
 
 connection.once('open', () => {
-	fc.success('MongoDB connected');
-});
+	fc.success('MongoDB connected')
+})
 
-export { connect, stop };
+export { connect, stop }

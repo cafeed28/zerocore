@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IComment {
 	userName: string,
@@ -24,6 +24,6 @@ const CommentSchema: Schema = new Schema({
 	likes: { type: Number, default: 0 },
 	isSpam: { type: Number, default: 0 },
 	commentID: Number
-});
+})
 
-export const CommentModel = mongoose.model<ICommentModel>('comments', CommentSchema);
+export const CommentModel = mongoose.model<ICommentModel>('comments', CommentSchema)

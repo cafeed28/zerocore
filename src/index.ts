@@ -1,42 +1,43 @@
-require('source-map-support').install();
+require('source-map-support').install()
 
-import fs from 'fs-jetpack';
-import nodefs from 'fs';
-import fc from 'fancy-console';
-import config from './config';
+import fs from 'fs-jetpack'
+import nodefs from 'fs'
+import fc from 'fancy-console'
+import config from './config'
 
-import tinyhttp from '@opengalaxium/tinyhttp';
-import { parser } from '@opengalaxium/tinyhttp';
+import tinyhttp from '@opengalaxium/tinyhttp'
+import { parser } from '@opengalaxium/tinyhttp'
 
-import { connect, stop } from './helpers/classes/Mongoose';
+import { connect, stop } from './helpers/classes/Mongoose'
 
-console.log('ZeroCore starting...');
+console.log('ZeroCore starting...')
 
-const app = new tinyhttp();
+const app = new tinyhttp()
 
-app.use(parser.json);
-app.use(parser.urlencoded);
+app.use(parser.json)
+app.use(parser.urlencoded)
 
 // logger and ip bans
 app.use((req, res, next) => {
-	let ip = req.socket.remoteAddress;
+	let ip = req.socket.remoteAddress
 	if (config.bannedIps.includes(ip)) {
-		console.log(`${ip} banned lol`);
-		return req.socket.destroy();
+		console.log(`${ip} banned lol`)
+		return req.socket.destroy()
 	}
 
-	let date = new Date();
+	let date = new Date()
 
-	if (req.url.endsWith('.php')) req.url = req.url.substring(0, req.url.indexOf('.php'));
+	if (req.url.endsWith('.php')) req.url = req.url.substring(0, req.url.indexOf('.php'))
 
-	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`);
-	next();
-});
+	console.log(`\n[${date}] ${req.method} ${ip} ${req.url}`)
+	console.log(req.body)
+	next()
+})
 
 // router
-const routes = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] });
+const routes = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] })
 for (const routePath of routes) {
-	const route = require('.\\' + routePath);
+	const route = require('.\\' + routePath)
 	route.routes(app)
 }
 
@@ -60,17 +61,17 @@ for (const routePath of routes) {
 const start = async () => {
 	try {
 		// MongoDB
-		console.log('Connecting to MongoDB...');
-		await connect(`mongodb://${config.mongodbUser}:${config.mongodbPassword}@${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`);
+		console.log('Connecting to MongoDB...')
+		await connect(`mongodb://${config.mongodbUser}:${config.mongodbPassword}@${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`)
 
 		// server
-		await app.run(config.port, '0.0.0.0');
-		fc.success('ZeroCore started and listening on port ' + config.port);
+		await app.run(config.port, '0.0.0.0')
+		fc.success('ZeroCore started and listening on port ' + config.port)
 	} catch (e) {
-		fc.error('Failed to start ZeroCore');
-		fc.error(e);
-		process.exit(1);
+		fc.error('Failed to start ZeroCore')
+		fc.error(e)
+		process.exit(1)
 	}
 }
 
-start();
+start()

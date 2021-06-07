@@ -1,4 +1,4 @@
-import EPermissions from "../EPermissions";
+import EPermissions from "../EPermissions"
 
 export default interface ICommand {
 	name: string,
