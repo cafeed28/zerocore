@@ -12,7 +12,7 @@
 	"author": "cafeed28",
 	"license": "GPL3",
 	"dependencies": {
-		"@opengalaxium/tinyhttp": "^1.0.3",
+		"@opengalaxium/tinyhttp": "^1.0.4",
 		"axios": "^0.21.1",
 		"bcrypt": "^5.0.0",
 		"chalk": "^4.1.0",
