@@ -13,6 +13,7 @@ import { QuestModel, IQuest } from '../../helpers/models/quest'
 import { GauntletModel, IGauntlet } from '../../helpers/models/gauntlet'
 import { AccountModel } from '../../helpers/models/account'
 import EPermissions from '../../helpers/EPermissions'
+import API from '../../helpers/classes/API'
 
 function routes(app: tinyhttp) {
 	app.get(`/${config.basePath}/api/quests`, async (req: any, res: any) => {
@@ -92,25 +93,9 @@ function routes(app: tinyhttp) {
 
 			await QuestModel.create(quest)
 
-			axios.post(config.webhook, {
-				"content": null,
-				"embeds": [
-					{
-						"title": `Quest Created by ${userName}`,
-						"color": 3715756,
-						"fields": [
-							{
-								"name": `${questName}`,
-								"value": `${quest.questID}`
-							}
-						],
-						"footer": {
-							"text": "ZeroCore Webhook"
-						},
-						"timestamp": new Date().toISOString()
-					}
-				]
-			})
+			if (!await API.sendDiscordLog(`Quest Created by ${userName}`, questName, quest.questID)) {
+				fc.error(`Ошибка sendDiscordLog`)
+			}
 
 			fc.success(`Квест ${questName} создан`)
 			return res.send({

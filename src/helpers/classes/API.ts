@@ -38,6 +38,35 @@ export default class API {
 		return false
 	}
 
+	static async sendDiscordLog(title: any, fieldName: any, fieldValue: any) {
+		try {
+			await axios.post(config.webhook, {
+				content: null,
+				embeds: [
+					{
+						title: title,
+						color: 3715756,
+						fields: [
+							{
+								name: fieldName,
+								value: fieldValue,
+							},
+						],
+						footer: {
+							text: "ZeroCore Webhook",
+						},
+						timestamp: new Date().toISOString(),
+					},
+				],
+			})
+
+			return true
+		}
+		catch (e) {
+			throw e
+		}
+	}
+
 	static translitCyrillic(text: string) {
 		var arrRu = ['Я', 'я', 'Ю', 'ю', 'Ч', 'ч', 'Ш', 'ш', 'Щ',
 			'щ', 'Ж', 'ж', 'А', 'а', 'Б', 'б', 'В', 'в', 'Г', 'г', 'Д',

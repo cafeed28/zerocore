@@ -3,12 +3,11 @@ import tinyhttp from '@opengalaxium/tinyhttp'
 import fc from 'fancy-console'
 import config from '../../config'
 
-import axios from 'axios'
-
 import WebHelper from '../../helpers/classes/WebHelper'
 import APIHelpers from '../../helpers/classes/API'
 
 import { ISong, SongModel } from '../../helpers/models/song'
+import API from '../../helpers/classes/API'
 
 function routes(app: tinyhttp) {
 	app.get(`/${config.basePath}/api/songs`, async (req: any, res: any) => {
@@ -29,7 +28,6 @@ function routes(app: tinyhttp) {
 			'value': songList
 		})
 	})
-
 
 	app.post(`/${config.basePath}/api/songs`, async (req: any, res: any) => {
 		const requredKeys = ['songName', 'authorName', 'download']
@@ -92,25 +90,9 @@ function routes(app: tinyhttp) {
 
 			await SongModel.create(song)
 
-			axios.post(config.webhook, {
-				"content": null,
-				"embeds": [
-					{
-						"title": "Song Uploaded",
-						"color": 3715756,
-						"fields": [
-							{
-								"name": `${authorName} - ${songName}`,
-								"value": `${song.songID}`
-							}
-						],
-						"footer": {
-							"text": "ZeroCore Webhook"
-						},
-						"timestamp": new Date().toISOString()
-					}
-				]
-			})
+			if (!await API.sendDiscordLog(`Song Uploaded`, `${authorName} - ${songName}`, song.songID)) {
+				fc.error(`Ошибка sendDiscordLog`)
+			}
 
 			fc.success(`Музыка ${authorName} - ${songName} опубликована`)
 			return res.send({

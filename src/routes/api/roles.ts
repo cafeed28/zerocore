@@ -99,25 +99,9 @@ function routes(app: tinyhttp) {
 
 			await RoleModel.create(role)
 
-			axios.post(config.webhook, {
-				"content": null,
-				"embeds": [
-					{
-						"title": `Role Created by ${account.userName}`,
-						"color": 3715756,
-						"fields": [
-							{
-								"name": `${roleName}`,
-								"value": `${role.roleID}`
-							}
-						],
-						"footer": {
-							"text": "ZeroCore Webhook"
-						},
-						"timestamp": new Date().toISOString()
-					}
-				]
-			})
+			if (!await API.sendDiscordLog(`Role Created by ${account.userName}`, roleName, role.roleID)) {
+				fc.error(`Ошибка sendDiscordLog`)
+			}
 
 			fc.success(`Роль ${roleName} создана`)
 			return res.send({
@@ -185,25 +169,9 @@ function routes(app: tinyhttp) {
 
 			await RoleAssignModel.create(assign)
 
-			axios.post(config.webhook, {
-				"content": null,
-				"embeds": [
-					{
-						"title": `Role ${roleID} Assigned to ${accountID} by ${userName}`,
-						"color": 3715756,
-						"fields": [
-							{
-								"name": `${roleID}`,
-								"value": `${assign.assignID}`
-							}
-						],
-						"footer": {
-							"text": "ZeroCore Webhook"
-						},
-						"timestamp": new Date().toISOString()
-					}
-				]
-			})
+			if (!await API.sendDiscordLog(`Role ${roleID} Assigned to ${accountID} by ${userName}`, roleID, assign.assignID)) {
+				fc.error(`Ошибка sendDiscordLog`)
+			}
 
 			fc.success(`Роль ${roleID} назначена аккаунту ${accountID}`)
 			return res.send({

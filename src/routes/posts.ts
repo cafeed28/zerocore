@@ -10,6 +10,7 @@ import WebHelper from '../helpers/classes/WebHelper'
 import GJCrypto from '../helpers/classes/GJCrypto'
 
 import { IPost, PostModel } from '../helpers/models/post'
+import API from '../helpers/classes/API'
 
 function routes(app: tinyhttp) {
 	app.all(`/${config.basePath}/uploadGJAccComment20`, async (req: any, res: any) => {
@@ -32,25 +33,9 @@ function routes(app: tinyhttp) {
 			}
 			await PostModel.create(post)
 
-			axios.post(config.webhook, {
-				"content": null,
-				"embeds": [
-					{
-						"title": "Created Post",
-						"color": 3715756,
-						"fields": [
-							{
-								"name": `${userName}`,
-								"value": `${Buffer.from(comment, 'base64').toString('utf8')}`
-							}
-						],
-						"footer": {
-							"text": "ZeroCore Webhook"
-						},
-						"timestamp": new Date().toISOString()
-					}
-				]
-			})
+			if (!await API.sendDiscordLog('Created Post', userName, Buffer.from(comment, 'base64').toString('utf8'))) {
+				fc.error(`Ошибка sendDiscordLog`)
+			}
 
 			fc.success(`Пост на аккаунте ${body.userName} создан`)
 			return res.send('1')
@@ -78,25 +63,9 @@ function routes(app: tinyhttp) {
 				fc.error(`Пост с аккаунта ${body.accountID} не удален: пост не найден`)
 				return res.send('-1')
 			} else {
-				axios.post(config.webhook, {
-					"content": null,
-					"embeds": [
-						{
-							"title": "Deleted Post",
-							"color": 3715756,
-							"fields": [
-								{
-									"name": `Account ID: ${accountID}`,
-									"value": `Post ID: ${postID}`
-								}
-							],
-							"footer": {
-								"text": "ZeroCore Webhook"
-							},
-							"timestamp": new Date().toISOString()
-						}
-					]
-				})
+				if (!await API.sendDiscordLog('Deleted Post', `Account ID: ${accountID}`, `Post ID: ${postID}`)) {
+					fc.error(`Ошибка sendDiscordLog`)
+				}
 
 				fc.success(`Пост с аккаунта ${body.accountID} удален`)
 				return res.send('1')

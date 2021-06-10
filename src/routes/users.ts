@@ -18,6 +18,7 @@ import { AccountModel } from '../helpers/models/account'
 import EPermissions from '../helpers/EPermissions'
 import { ActionModel, IAction } from '../helpers/models/actions'
 import EActions from '../helpers/EActions'
+import API from '../helpers/classes/API'
 
 function routes(app: tinyhttp) {
 	app.all(`/${config.basePath}/getGJUserInfo20`, async (req: any, res: any) => {
@@ -260,25 +261,9 @@ function routes(app: tinyhttp) {
 			lastPlayed: Math.round(new Date().getTime() / 1000)
 		}, { upsert: true, setDefaultsOnInsert: true })
 
-		axios.post(config.webhook, {
-			"content": null,
-			"embeds": [
-				{
-					"title": "Updated Stats",
-					"color": 3715756,
-					"fields": [
-						{
-							"name": `${body.userName} updated a stats`,
-							"value": `${stars} stars | ${diamonds} diamonds | ${coins} coins | ${userCoins} user coins | ${demons} demons`
-						}
-					],
-					"footer": {
-						"text": "ZeroCore Webhook"
-					},
-					"timestamp": new Date().toISOString()
-				}
-			]
-		})
+		if (!await API.sendDiscordLog('Updated Stats', `${body.userName} updated a stats`, `${stars} stars | ${diamonds} diamonds | ${coins} coins | ${userCoins} user coins | ${demons} demons`)) {
+			fc.error(`Ошибка sendDiscordLog`)
+		}
 
 		const action: IAction = {
 			actionType: EActions.itemLike,

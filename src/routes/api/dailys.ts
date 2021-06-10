@@ -12,6 +12,7 @@ import { DailyModel, IDaily } from '../../helpers/models/daily'
 import { LevelModel } from '../../helpers/models/level'
 import { AccountModel } from '../../helpers/models/account'
 import EPermissions from '../../helpers/EPermissions'
+import API from '../../helpers/classes/API'
 
 function routes(app: tinyhttp) {
 	app.get(`/${config.basePath}/api/daily`, async (req: any, res: any) => {
@@ -115,25 +116,9 @@ function routes(app: tinyhttp) {
 
 			await DailyModel.create(daily)
 
-			axios.post(config.webhook, {
-				"content": null,
-				"embeds": [
-					{
-						"title": `Daily Appointed by ${userName}`,
-						"color": 3715756,
-						"fields": [
-							{
-								"name": `${level.levelName}, ID: ${levelID}`,
-								"value": `Type: ${type}`
-							}
-						],
-						"footer": {
-							"text": "ZeroCore Webhook"
-						},
-						"timestamp": new Date().toISOString()
-					}
-				]
-			})
+			if (!await API.sendDiscordLog(`Daily Appointed by ${userName}`, `${level.levelName}, ID: ${levelID}`, `Type: ${type}`)) {
+				fc.error(`Ошибка sendDiscordLog`)
+			}
 
 			fc.success(`Дейли ${level.levelName} с ID ${levelID} назначен (${userName})`)
 			return res.json({

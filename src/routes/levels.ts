@@ -20,6 +20,7 @@ import EPermissions from "../helpers/EPermissions"
 import { FriendModel } from "../helpers/models/friend"
 import { ActionModel, IAction } from "../helpers/models/actions"
 import EActions from "../helpers/EActions"
+import API from '../helpers/classes/API'
 
 function routes(app: tinyhttp) {
     app.all(`/${config.basePath}/downloadGJLevel22`, async (req: any, res: any) => {
@@ -564,25 +565,9 @@ function routes(app: tinyhttp) {
                 return res.send("-1")
             }
 
-            axios.post(config.webhook, {
-                content: null,
-                embeds: [
-                    {
-                        title: "Uploaded Level",
-                        color: 3715756,
-                        fields: [
-                            {
-                                name: `${body.userName} uploaded a level ${levelID}`,
-                                value: `Song: ${songID}`,
-                            },
-                        ],
-                        footer: {
-                            text: "ZeroCore Webhook",
-                        },
-                        timestamp: new Date().toISOString(),
-                    },
-                ],
-            })
+            if (!await API.sendDiscordLog('Uploaded Level', `${accountID} uploaded a level ${levelID}`, `Song: ${songID}`)) {
+                fc.error(`Ошибка sendDiscordLog`)
+            }
 
             fc.success(`Уровень на аккаунте ${body.userName} опубликован`)
             return res.send(`${levelID}`)
@@ -606,7 +591,8 @@ function routes(app: tinyhttp) {
 
         if (await GJCrypto.gjpCheck(gjp, accountID)) {
             try {
-                await fs.removeAsync(`data/levels/${levelID}`)
+                // await fs.removeAsync(`data/levels/${levelID}`)
+                await fs.renameAsync(`data/levels/${levelID}`, `data/levels/deleted/${levelID}`)
             } catch (e) {
                 fc.error(
                     `Уровень с аккаунта ${accountID} не удалён: неизвестная ошибка`,
@@ -627,25 +613,9 @@ function routes(app: tinyhttp) {
 
             await ActionModel.create(action)
 
-            axios.post(config.webhook, {
-                content: null,
-                embeds: [
-                    {
-                        title: "Deleted Level",
-                        color: 3715756,
-                        fields: [
-                            {
-                                name: `${accountID} deleted a level`,
-                                value: `${levelID}`,
-                            },
-                        ],
-                        footer: {
-                            text: "ZeroCore Webhook",
-                        },
-                        timestamp: new Date().toISOString(),
-                    },
-                ],
-            })
+            if (!await API.sendDiscordLog('Deleted Level', `${accountID} deleted a level`, levelID)) {
+                fc.error(`Ошибка sendDiscordLog`)
+            }
 
             fc.success(`Уровень с аккаунта ${accountID} удалён`)
             return res.send(`${levelID}`)
