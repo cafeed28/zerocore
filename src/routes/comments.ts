@@ -179,18 +179,15 @@ function routes(app: tinyhttp) {
 		const page = body.page
 		const mode = body.mode || 0
 
-		let orderBy: any = { commentID: 1 }
-		if (mode == 1) orderBy = { likes: 1 }
+		let orderBy: any = { commentID: -1 }
+		if (mode == 1) orderBy = { likes: -1 }
 
 		let commentsList = []
-		let usersList = []
 
-		let users: number[] = []
-
-		const comments = await CommentModel.find({ accountID: accountID }).sort(orderBy).skip(page * 10).limit(10)
+		const comments = await CommentModel.find({ accountID: accountID }).skip(page * 10).limit(10).sort(orderBy)
 		const commentsCount = await CommentModel.countDocuments({ accountID: accountID })
 
-		if (!comments || !commentsCount) {
+		if (!comments) {
 			fc.error(`Комментарии аккаунта ${accountID} не получены: комментарии не найдены`)
 			return res.send('-2')
 		} else {
@@ -225,7 +222,7 @@ function routes(app: tinyhttp) {
 			};
 			fc.success(`Комментарии аккаунта ${accountID} получены`)
 
-			const result = `${commentsList.join('|')}#${users}#${commentsCount}:${page}:10`
+			const result = `${commentsList.join('|')}#${commentsCount}:${page}:10`
 			return res.send(result)
 		}
 	})

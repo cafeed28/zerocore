@@ -18,25 +18,25 @@ function routes(app: tinyhttp) {
 	app.get(`/${config.basePath}/api/daily`, async (req: any, res: any) => {
 		const d = Math.round(new Date().getTime() / 1000)
 
-		const daily = await DailyModel.findOne({
+		const daily = await DailyModel.find({
 			timestamp: {
 				$lt: d
 			},
 			type: 0
-		})
+		}).sort({ timestamp: -1 })
 
-		const weekly = await DailyModel.findOne({
+		const weekly = await DailyModel.find({
 			timestamp: {
 				$lt: d
 			},
 			type: 1
-		})
+		}).sort({ timestamp: -1 })
 
 		return res.json({
 			'status': 'success',
 			'value': {
-				'daily': daily,
-				'weekly': weekly
+				'daily': daily[0],
+				'weekly': weekly[0]
 			}
 		})
 	})

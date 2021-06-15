@@ -33,27 +33,27 @@ function routes(app: tinyhttp) {
         const time = Math.round(new Date().getTime() / 1000)
         // робтоп сука ну нахера так делать
         if (levelID == "-1") {
-            let daily = await DailyModel.findOne({
+            let daily = await DailyModel.find({
                 timestamp: {
                     $lt: time,
                 },
                 type: 0,
-            })
+            }).sort({ timestamp: -1 })
 
-            levelID = daily.levelID
-            var feaID = daily.feaID
+            levelID = daily[0].levelID
+            var feaID = daily[0].feaID
         }
         // можно же было просто после getGJDailyLevel скачивать уровени с id который тебе вернули, а не -1 и -2
         else if (levelID == "-2") {
-            let daily = await DailyModel.findOne({
+            let daily = await DailyModel.find({
                 timestamp: {
                     $lt: time,
                 },
                 type: 1,
-            })
+            }).sort({ timestamp: -1 })
 
-            levelID = daily.levelID
-            var feaID = daily.feaID + 100001
+            levelID = daily[0].levelID
+            var feaID = daily[0].feaID + 100001
         }
 
         const level = await LevelModel.findOne({ levelID: levelID })
@@ -71,7 +71,6 @@ function routes(app: tinyhttp) {
                 `data/levels/${levelID}`,
                 "utf8"
             )
-            console.log(levelString)
         } catch (e) {
             fc.error(
                 `Скачивание уровня ${levelID} не выполнено: ошибка скачивания`
@@ -181,15 +180,19 @@ function routes(app: tinyhttp) {
             pass,
             0,
         ]
-        if (feaID) someString[someString.length] = feaID
-        someString = someString.join(",")
+        // if (feaID) someString[someString.length] = feaID
+        // someString = someString.join(',')
 
-        response += GJCrypto.genSolo2(someString) + "#"
-        if (feaID) response += await GJHelpers.getUserString(level.accountID)
-        else response += someString
+        response += GJCrypto.genSolo2(someString) + '#'
+        if (feaID) {
+            let userString = await GJHelpers.getUserString(level.accountID)
+            response += userString
+        }
+        else {
+            response += someString
+        }
 
         fc.success(`Скачивание уровня ${levelID} выполнено`)
-        console.log(response)
         return res.send(response)
     })
 
@@ -214,12 +217,14 @@ function routes(app: tinyhttp) {
 
         const time = Math.round(new Date().getTime() / 1000)
 
-        let daily = await DailyModel.findOne({
+        console.log(time + ' ' + midnight)
+
+        let daily = await DailyModel.find({
             timestamp: {
                 $lt: time,
             },
             type: type,
-        })
+        }).sort({ timestamp: -1 })
 
         if (!daily) {
             fc.error(
@@ -228,7 +233,7 @@ function routes(app: tinyhttp) {
             return res.send("-1")
         }
 
-        let dailyID = daily.levelID
+        let dailyID = daily[0].levelID
 
         if (type == 1) {
             //weekly
@@ -240,6 +245,7 @@ function routes(app: tinyhttp) {
         // робтоп ты под чем писал это, ты получаешь айди дейли и потом качаешь уровень -1 или -2
         let result = `${dailyID}|${timeleft}`
         fc.success("Получение ежедневных уровней выполнено")
+        console.log(result)
         return res.send(result)
     })
 

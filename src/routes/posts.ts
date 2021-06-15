@@ -88,6 +88,7 @@ function routes(app: tinyhttp) {
 		let postsList: string[] = []
 
 		const posts = await PostModel.find({ accountID: accountID }).skip(page * 10).limit(10).sort({ postID: -1 })
+		const postsCount = await PostModel.countDocuments({ accountID: accountID })
 
 		if (!posts) {
 			fc.error(`Посты аккаунта ${accountID} не получены: посты не найдены`)
@@ -101,7 +102,7 @@ function routes(app: tinyhttp) {
 			})
 			fc.success(`Посты аккаунта ${accountID} получены`)
 
-			let response = postsList.join('|') + `#${posts.length}:${page}:10`
+			let response = `${postsList.join('|')}#${postsCount}:${page}:10`
 			return res.send(response)
 		}
 	})
