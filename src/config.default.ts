@@ -10,5 +10,6 @@ export default {
     bannedIps: [ // ip's that blocked (remove content if you don't need it)
         '1.2.3.4'
     ],
-    prefix: '!' // prefix in comment commands
+    prefix: '!', // prefix in comment commands
+    debug: false // show debug and trace logs
 }

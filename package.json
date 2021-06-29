@@ -1,6 +1,6 @@
 {
   "name": "zerocore-recode",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "main": "index.js",
   "author": "cafeed28",
   "license": "MIT",
@@ -8,16 +8,18 @@
     "dev": "cd src && ts-node app.ts"
   },
   "dependencies": {
-    "@opengalaxium/tinyhttp": "^1.0.7",
+    "@types/body-parser": "^1.19.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
     "dayjs": "^1.10.5",
     "fs-jetpack": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.14",
     "mongoose-sequence": "^5.3.1",
     "pino": "^6.11.3",
-    "pino-pretty": "^5.0.2"
+    "pino-pretty": "^5.0.2",
+    "polka": "1.0.0-next.15"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

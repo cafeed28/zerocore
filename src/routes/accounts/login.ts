@@ -1,7 +1,7 @@
 import config from '../../config'
 import log from '../../logger'
 
-import { ExpressIncomingMessage, ExpressServerResponse } from '@opengalaxium/tinyhttp'
+import { Request, Response } from 'polka'
 import { AccountModel } from '../../mongodb/models/account'
 
 import bcrypt from 'bcrypt'
@@ -10,15 +10,20 @@ import EActions from '../../helpers/EActions'
 
 let path = `/${config.basePath}/accounts/loginGJAccount.php`
 let required = ['userName', 'password']
-let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) => {
+let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     const account = await AccountModel.findOne({ userName: body.userName })
 
     if (!account) {
-        log.info(`account ${body.userName} not found`)
-        return -1
+        log.info(`Account ${body.userName} not found`)
+        return '-1'
     } else {
+        if (account.isBanned) {
+            log.info(`Account ${body.userName} disabled`)
+            return '-12'
+        }
+
         if (await bcrypt.compare(body.password, account.password)) {
             await ActionModel.create({
                 actionType: EActions.accountLogin,
@@ -27,11 +32,14 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
                 accountID: account.accountID
             })
 
-            log.info(`logged in ${body.userName}`)
+            log.info(`Logged in ${body.userName}`)
             return `${account.accountID},${account.accountID}`
         } else {
-            log.info(`account ${body.userName}: incorrect password`)
-            return -12
+            log.info(`Account ${body.userName}: incorrect password`)
+            return '-1'
+            // -13 Already linked to different Steam account
+            // replace to
+            // Incorrect password
         }
     }
 }

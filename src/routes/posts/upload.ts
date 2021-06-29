@@ -1,14 +1,14 @@
 import config from '../../config'
 import log from '../../logger'
 
-import { ExpressIncomingMessage, ExpressServerResponse } from '@opengalaxium/tinyhttp'
+import { Request, Response } from 'polka'
 import { PostModel } from '../../mongodb/models/post'
 
 import GJCrypto from '../../helpers/GJCrypto'
 
 let path = `/${config.basePath}/uploadGJAccComment20.php`
 let required = ['gjp', 'userName', 'commentID', 'accountID']
-let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) => {
+let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     const gjp = body.gjp
@@ -22,11 +22,11 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
             uploadDate: Math.round(Date.now() / 1000),
         })
 
-        log.info(`${userName} created a post`)
-        return res.send('1')
+        log.info(`Account ${userName} created a post`)
+        return '1'
     } else {
-        log.info(`${userName}: incorrect GJP`)
-        return res.send('-1')
+        log.info(`Account ${userName}: incorrect GJP`)
+        return '-1'
     }
 }
 

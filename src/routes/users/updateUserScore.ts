@@ -1,7 +1,7 @@
 import config from '../../config'
 import log from '../../logger'
 
-import { ExpressIncomingMessage, ExpressServerResponse } from '@opengalaxium/tinyhttp'
+import { Request, Response } from 'polka'
 import { AccountModel } from '../../mongodb/models/account'
 import { UserModel } from '../../mongodb/models/user'
 import { ActionModel } from '../../mongodb/models/action'
@@ -11,7 +11,7 @@ import GJCrypto from '../../helpers/GJCrypto'
 
 let path = `/${config.basePath}/updateGJUserScore22.php`
 let required = ['userName', 'accountID', 'stars', 'demons', 'icon', 'color1', 'color2', 'gjp']
-let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) => {
+let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     const userName = body.userName.replace(/[^A-Za-z0-9 ]/, '')
@@ -40,7 +40,7 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
     if (body.udid) {
         if (!isNaN(body.udid)) {
             log.info(`cannot update ${body.userName} user stats: udid is numeric`)
-            return res.send('-1')
+            return -1
         }
     }
 
@@ -48,12 +48,12 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
 
     if (!await AccountModel.findOne({ accountID: id })) {
         log.info(`cannot update ${body.userName} user stats: account not found`)
-        return res.send('-1')
+        return -1
     }
 
     if (!await GJCrypto.gjpCheck(body.gjp, id)) {
         log.info(`cannot update ${body.userName} user stats: incorrect GJP`)
-        return res.send('-1')
+        return -1
     }
 
     const ip = req.socket.remoteAddress
@@ -93,7 +93,7 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
     })
 
     log.info(`updating ${body.userName} user stats success`)
-    return res.send(id)
+    return id
 }
 
 export { path, required, callback }

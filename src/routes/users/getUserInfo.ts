@@ -1,7 +1,7 @@
 import config from '../../config'
 import log from '../../logger'
 
-import { ExpressIncomingMessage, ExpressServerResponse } from '@opengalaxium/tinyhttp'
+import { Request, Response } from 'polka'
 
 import { BlockModel } from '../../mongodb/models/block'
 import { UserModel } from '../../mongodb/models/user'
@@ -15,7 +15,7 @@ import EPermissions from '../../helpers/EPermissions'
 
 let path = `/${config.basePath}/getGJUserInfo20.php`
 let required = ['targetAccountID']
-let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) => {
+let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     const gjp = body.gjp
@@ -25,7 +25,7 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
     if (accountID != 0 && gjp) {
         if (!await GJCrypto.gjpCheck(gjp, accountID)) {
             log.info(`${accountID}: incorrect GJP`)
-            return res.send('-1')
+            return -1
         }
     }
 
@@ -33,22 +33,20 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
 
     if (blocked) {
         log.info(`${accountID} blocked by ${targetAccountID}`)
-        return res.send('-1')
+        return -1
     }
 
     const user = await UserModel.findOne({ accountID: body.targetAccountID })
 
     if (!user) {
         log.info(`${targetAccountID}: user not found`)
-        return res.send('-1')
+        return -1
     }
 
     let badge = GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel)
     let reqsState = user.frS
     let msgState = user.mS
     let commentState = user.cS
-
-    let appendix
 
     let friendState = 0
 
@@ -62,11 +60,11 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
             ]
         })
 
-        appendix = ':' + GJHelpers.jsonToRobtop([{
-            '38': newMessages,
-            '39': newFriendRequests,
-            '40': newFriends
-        }])
+        var state = ':' + GJHelpers.jsonToRobtop({
+            38: newMessages,
+            39: newFriendRequests,
+            40: newFriends
+        })
     }
     else {
         let incomingRequests = await FriendRequestModel.findOne({
@@ -74,11 +72,11 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
         })
         if (incomingRequests) {
             friendState = 3
-            appendix = ':' + GJHelpers.jsonToRobtop([{
-                '32': incomingRequests.requestID,
-                '35': incomingRequests.message,
-                '37': incomingRequests.uploadDate
-            }])
+            var state = ':' + GJHelpers.jsonToRobtop({
+                32: incomingRequests.requestID,
+                35: incomingRequests.message,
+                37: incomingRequests.uploadDate
+            })
         }
 
         let outcomingRequests = await FriendRequestModel.countDocuments({
@@ -97,40 +95,40 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
 
     let rank = await UserModel.countDocuments({ stars: { $gt: user.stars }, isBanned: false })
 
-    log.info(`${targetAccountID} get user info success`)
+    log.info(`User ${targetAccountID} info received`)
 
-    return res.send(GJHelpers.jsonToRobtop([{
-        '1': user.userName,
-        '2': targetAccountID,
-        '3': user.stars,
-        '4': user.demons,
-        '8': user.isBanned ? 0 : user.creatorPoints,
-        '10': user.color1,
-        '11': user.color2,
-        '13': user.coins,
-        '16': targetAccountID,
-        '17': user.userCoins,
-        '18': msgState,
-        '19': reqsState,
-        '20': user.youtube || '',
-        '21': user.accIcon,
-        '22': user.accShip,
-        '23': user.accBall,
-        '24': user.accBird,
-        '25': user.accDart,
-        '26': user.accRobot,
-        '28': user.accGlow,
-        '29': '1', // спасибо кволтон за комментирование кода, че это такое
-        '30': user.isBanned ? 0 : rank + 1,
-        '31': friendState,
-        '43': user.accSpider,
-        '44': user.twitter || '',
-        '45': user.twitch || '',
-        '46': user.diamonds,
-        '47': user.accExplosion,
-        '49': badge,
-        '50': commentState
-    }]) + appendix)
+    return GJHelpers.jsonToRobtop({
+        1: user.userName,
+        2: targetAccountID,
+        3: user.stars,
+        4: user.demons,
+        8: user.isBanned ? 0 : user.creatorPoints,
+        10: user.color1,
+        11: user.color2,
+        13: user.coins,
+        16: targetAccountID,
+        17: user.userCoins,
+        18: msgState,
+        19: reqsState,
+        20: user.youtube || '',
+        21: user.accIcon,
+        22: user.accShip,
+        23: user.accBall,
+        24: user.accBird,
+        25: user.accDart,
+        26: user.accRobot,
+        28: user.accGlow,
+        29: 1, // idk
+        30: user.isBanned ? 0 : rank + 1,
+        31: friendState,
+        43: user.accSpider,
+        44: user.twitter || '',
+        45: user.twitch || '',
+        46: user.diamonds,
+        47: user.accExplosion,
+        49: badge,
+        50: commentState
+    }) + state
 }
 
 export { path, required, callback }

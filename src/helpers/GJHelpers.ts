@@ -29,23 +29,8 @@ export default class GJHelpers {
 		}
 	}
 
-	static jsonToRobtop(json: any): string {
-		let result = []
-
-		for (let i = 0; i < json.length; i++) {
-			let object = json[i]
-
-			let keys = Object.keys(object)
-			let values = Object.values(object)
-
-			let array = []
-			for (let x = 0; x < values.length; x++) {
-				array.push(keys[x] + ':' + values[x])
-			}
-
-			result.push(array.join(':'))
-		}
-		return result.join('|')
+	static jsonToRobtop(json: object, split = ':'): string {
+		return Object.keys(json).map(key => `${key}${split}${json[key]}`).join(split)
 	}
 
 	static async getUserString(accountID: number): Promise<string> {
@@ -168,7 +153,7 @@ export default class GJHelpers {
 	   Сунул нигер руку в Нигер
 	   Нигер нигер нигер нигер */
 
-	// [20.06.2021 08:09] кафiф нахуй этот комментарий обьясни?
+	// [20.06.2021 08:09] кафiф нахуя этот комментарий обьясни?
 	static async setDailyLevel(levelID: number, weekly: boolean): Promise<boolean> {
 		await DailyModel.create({
 			feaID: (await DailyModel.countDocuments()) + 1,

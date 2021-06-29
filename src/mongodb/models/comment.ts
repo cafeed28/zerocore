@@ -1,6 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose'
+import AutoIncrementFactory from 'mongoose-sequence'
 
 export interface IComment {
+	commentID?: number,
 	userName: string,
 	comment: string,
 	accountID: number,
@@ -8,8 +10,7 @@ export interface IComment {
 	percent: number,
 	uploadDate: number,
 	likes?: number,
-	isSpam?: number,
-	commentID: number
+	isSpam?: number
 }
 
 interface ICommentModel extends IComment, Document { }
@@ -25,5 +26,7 @@ const CommentSchema: Schema = new Schema({
 	isSpam: { type: Number, default: 0 },
 	commentID: Number
 })
+
+CommentSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'commentID' })
 
 export const CommentModel = mongoose.model<ICommentModel>('comments', CommentSchema)

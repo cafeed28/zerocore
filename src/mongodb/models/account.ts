@@ -5,7 +5,8 @@ export interface IAccount {
 	accountID: number,
 	userName: string,
 	password: string,
-	email: string
+	email: string,
+	isBanned: boolean
 }
 
 interface IAccountModel extends IAccount, Document { }
@@ -14,7 +15,8 @@ const AccountSchema: Schema = new Schema({
 	accountID: Number,
 	userName: String,
 	password: String,
-	email: String
+	email: String,
+	isBanned: { type: Boolean, default: false }
 })
 
 AccountSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'accountID' })

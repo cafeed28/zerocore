@@ -3,28 +3,24 @@ import log from './logger'
 import { connect } from './mongodb/connect'
 import config from './config'
 
-import tinyhttp from '@opengalaxium/tinyhttp'
-import { parser } from '@opengalaxium/tinyhttp'
+import polka, { IOptions } from 'polka'
+import http from 'http'
+import bodyParser from 'body-parser'
 import WebHelper from './helpers/WebHelper'
 
-const app = new tinyhttp({ log: false })
+const options: IOptions = {
+    onError: WebHelper.errorHandler
+}
 
-app.use(parser.json)
-app.use(parser.urlencoded)
+const app = polka(options)
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 app.use((req, res, next) => {
     log.info(`${req.method} ${req.socket.remoteAddress} ${req.url}`)
     log.debug(req.body)
     next()
-})
-
-app.setErrorHandler((err, req, res) => {
-    if (err.message.toLowerCase() == 'not found') {
-        log.info(`${req.method} ${req.url} Not Found`)
-        return res.send('Not Found')
-    }
-    else {
-        log.error('## TINYHTTP ERROR ##', err)
-    }
 })
 
 const routesFiles = fs.find('./routes', { recursive: true, matching: ['*.ts', '*.js'] })
@@ -35,7 +31,9 @@ for (const routePath of routesFiles) {
     app.all(route.path, async (req, res) => {
         if (!WebHelper.checkKeys(req.body, route.required)) {
             log.info(`request dosen't contain required parameters`)
-            return res.send('Bad Request', 400)
+            return res
+                .writeHead(400, http.STATUS_CODES[400])
+                .end(http.STATUS_CODES[400])
         }
         // if (route.required.includes('secret') && req.body.secret != config.secret) {
         //     log.info('secret mismatch')
@@ -43,10 +41,13 @@ for (const routePath of routesFiles) {
         // }
         try {
             let response = await route.callback(req, res)
-            res.send(response);
+            res.end(response);
         }
         catch (err) {
             log.error('## CALLBACK ERROR ##', err)
+            return res
+                .writeHead(500, http.STATUS_CODES[500])
+                .end(http.STATUS_CODES[500])
         }
     })
 }
@@ -59,7 +60,7 @@ const start = async () => {
         await connect(`mongodb://${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`)
 
         // server
-        await app.run(config.port, '0.0.0.0')
+        await app.listen(config.port, '0.0.0.0')
         log.info('ZeroCore started and listening on port ' + config.port)
     } catch (e) {
         log.fatal('Failed to start ZeroCore')

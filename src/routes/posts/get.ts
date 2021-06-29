@@ -3,14 +3,15 @@ import log from '../../logger'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
-import { ExpressIncomingMessage, ExpressServerResponse } from '@opengalaxium/tinyhttp'
+import { Request, Response } from 'polka'
 import { PostModel } from '../../mongodb/models/post'
+import GJHelpers from '../../helpers/GJHelpers'
 
 dayjs.extend(relativeTime)
 
 let path = `/${config.basePath}/getGJAccountComments20.php`
 let required = ['accountID', 'page']
-let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) => {
+let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     const accountID = body.accountID
@@ -22,18 +23,28 @@ let callback = async (req: ExpressIncomingMessage, res: ExpressServerResponse) =
     const postsCount = await PostModel.countDocuments({ accountID })
 
     if (!posts) {
-        log.info(`${accountID} 0 posts`)
-        return res.send('#0:0:10')
-    } else {
-        posts.map(post => {
-            let dateAgo = dayjs(post.uploadDate * 1000).fromNow(true)
-
-            postsList.push(`2~${post.post}~3~${post.accountID}~4~${post.likes}~5~0~7~${post.isSpam}~9~${dateAgo}~6~${post.postID}`)
-        })
-
-        log.info(`success`)
-        return res.send(`${postsList.join('|')}#${postsCount}:${page}:10`)
+        log.info(`Account ${accountID}: 0 posts`)
+        return '-1'
     }
+
+    posts.map(post => {
+        let dateAgo = dayjs(post.uploadDate * 1000).fromNow(true)
+
+        postsList.push(
+            GJHelpers.jsonToRobtop({
+                2: post.post,
+                3: post.accountID,
+                4: post.likes,
+                5: 0,
+                7: post.isSpam,
+                8: dateAgo,
+                9: post.postID
+            }, '~')
+        )
+    })
+
+    log.info(`Account ${accountID} posts returned`)
+    return `${postsList.join('|')}#${postsCount}:${page}:10`
 }
 
 export { path, required, callback }
