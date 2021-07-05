@@ -19,7 +19,7 @@ let callback = async (req: Request, res: Response) => {
     if (await GJCrypto.gjpCheck(gjp, accountID)) {
         await PostModel.create({
             userName, accountID, post,
-            uploadDate: Math.round(Date.now() / 1000),
+            uploadDate: Math.round(Date.now() / 1000)
         })
 
         log.info(`Account ${userName} created a post`)

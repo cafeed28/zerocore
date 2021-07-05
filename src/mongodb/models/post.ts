@@ -1,12 +1,13 @@
 import mongoose, { Schema, Document } from 'mongoose'
+import AutoIncrementFactory from 'mongoose-sequence'
 
 export interface IPost {
 	userName: string,
 	post: string,
 	accountID: number,
 	uploadDate: number,
-	likes?: number,
-	isSpam?: boolean,
+	likes: number,
+	isSpam: boolean,
 	postID: number,
 }
 
@@ -21,5 +22,7 @@ const PostSchema: Schema = new Schema({
 	isSpam: { type: Boolean, default: false },
 	postID: Number
 })
+
+PostSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'postID' })
 
 export const PostModel = mongoose.model<IPostModel>('posts', PostSchema)

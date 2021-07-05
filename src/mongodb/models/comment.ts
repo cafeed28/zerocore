@@ -2,15 +2,15 @@ import mongoose, { Schema, Document } from 'mongoose'
 import AutoIncrementFactory from 'mongoose-sequence'
 
 export interface IComment {
-	commentID?: number,
+	commentID: number,
 	userName: string,
 	comment: string,
 	accountID: number,
 	levelID: number,
 	percent: number,
 	uploadDate: number,
-	likes?: number,
-	isSpam?: number
+	likes: number,
+	isSpam: number
 }
 
 interface ICommentModel extends IComment, Document { }

@@ -33,16 +33,16 @@ export interface IUser {
 	accGlow: number,
 	accExplosion: number,
 
-	mS?: number,
-	frS?: number,
-	cS?: number,
-	youtube?: string,
-	twitter?: string,
-	twitch?: string, // поменяю на discord когда выйдет blackTea от партура
+	mS: number,
+	frS: number,
+	cS: number,
+	youtube: string,
+	twitter: string,
+	twitch: string, // поменяю на discord когда выйдет blackTea от партура
 
 	IP: string,
 	lastPlayed: number,
-	isBanned?: boolean
+	isBanned: boolean
 }
 
 interface IUserModel extends IUser, Document { }

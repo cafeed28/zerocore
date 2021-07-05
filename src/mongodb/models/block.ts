@@ -3,8 +3,8 @@ import mongoose, { Schema, Document } from 'mongoose'
 export interface IBlock {
 	accountID1: number,
 	accountID2: number,
-	isUnread1?: boolean,
-	isUnread2?: boolean
+	isUnread1: boolean,
+	isUnread2: boolean
 }
 
 interface IBlockModel extends IBlock, Document { }

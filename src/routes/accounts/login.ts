@@ -18,29 +18,28 @@ let callback = async (req: Request, res: Response) => {
     if (!account) {
         log.info(`Account ${body.userName} not found`)
         return '-1'
+    }
+    if (account.isBanned) {
+        log.info(`Account ${body.userName} disabled`)
+        return '-12'
+    }
+
+    if (await bcrypt.compare(body.password, account.password)) {
+        await ActionModel.create({
+            actionType: EActions.accountLogin,
+            IP: req.socket.remoteAddress,
+            timestamp: Date.now(),
+            accountID: account.accountID
+        })
+
+        log.info(`Logged in ${body.userName}`)
+        return `${account.accountID},${account.accountID}`
     } else {
-        if (account.isBanned) {
-            log.info(`Account ${body.userName} disabled`)
-            return '-12'
-        }
-
-        if (await bcrypt.compare(body.password, account.password)) {
-            await ActionModel.create({
-                actionType: EActions.accountLogin,
-                IP: req.socket.remoteAddress,
-                timestamp: Date.now(),
-                accountID: account.accountID
-            })
-
-            log.info(`Logged in ${body.userName}`)
-            return `${account.accountID},${account.accountID}`
-        } else {
-            log.info(`Account ${body.userName}: incorrect password`)
-            return '-1'
-            // -13 Already linked to different Steam account
-            // replace to
-            // Incorrect password
-        }
+        log.info(`Account ${body.userName}: incorrect password`)
+        return '-1'
+        // -13 Already linked to different Steam account
+        // replace to
+        // Incorrect password
     }
 }
 

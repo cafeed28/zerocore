@@ -4,9 +4,9 @@ export interface ILevel {
 	accountID: number,
 	levelID: number,
 	levelName: string,
-	levelLength?: number,
-	levelVersion?: number,
-	levelDesc?: string,
+	levelLength: number,
+	levelVersion: number,
+	levelDesc: string,
 	extraString: string,
 
 	audioTrack: number,
@@ -21,19 +21,20 @@ export interface ILevel {
 	unlisted: number, // change to boolean
 	ldm: number,
 
-	starStars?: number,
-	starCoins?: boolean,
-	starDifficulty?: number,
-	starDemon?: boolean,
-	starFeatured?: boolean,
-	starAuto?: boolean,
-	starEpic?: boolean,
-	starDemonDiff?: number,
-	downloads?: number,
-	likes?: number,
+	starStars: number,
+	starCoins: boolean,
+	starDifficulty: number,
+	starDemon: boolean,
+	starFeatured: boolean,
+	starAuto: boolean,
+	starEpic: boolean,
+	starDemonDiff: number,
+	downloads: number,
+	likes: number,
 
-	uploadDate?: number,
-	updateDate?: number,
+	uploadDate: number,
+	updateDate
+	: number,
 
 	IP: string
 }

@@ -21,7 +21,7 @@ let callback = async (req: Request, res: Response) => {
         return `#0:${body.page}:10`
     }
     users.map(user => {
-        usersList.push(GJHelpers.jsonToRobtop([{
+        usersList.push(GJHelpers.jsonToRobtop({
             1: user.userName,
             2: user.accountID,
             3: user.stars,
@@ -35,7 +35,7 @@ let callback = async (req: Request, res: Response) => {
             15: user.special,
             16: user.accountID,
             17: user.userCoins
-        }]))
+        }))
     })
     log.info(`Users list recieved`)
 

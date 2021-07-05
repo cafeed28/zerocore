@@ -3,7 +3,7 @@ import XOR from './XOR'
 import crypto from 'crypto'
 
 import { LevelModel } from '../mongodb/models/level'
-import { MapPackModel } from '../mongodb/models/mappacks'
+import { MapPackModel } from '../mongodb/models/mappack'
 
 export default class GJCrypto {
 	static async gjpCheck(gjp: String, accountID: any) {

@@ -5,9 +5,9 @@ export interface IAction {
     actionType: EActions,
     IP: string,
     timestamp: number,
-    accountID?: number,
-    itemID?: number,
-    itemType?: number
+    accountID: number,
+    itemID: number,
+    itemType: number
 }
 
 interface IActionModel extends IAction, Document { }

@@ -4,8 +4,8 @@ export interface IFriend {
 	ID: number,
 	accountID1: number,
 	accountID2: number,
-	isUnread1?: boolean,
-	isUnread2?: boolean
+	isUnread1: boolean,
+	isUnread2: boolean
 }
 
 interface IFriendModel extends IFriend, Document { }

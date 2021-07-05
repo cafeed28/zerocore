@@ -9,9 +9,7 @@ export interface IGauntlet {
 	levelID5: number
 }
 
-interface IGauntletModel extends IGauntlet, Document {
-
-}
+interface IGauntletModel extends IGauntlet, Document { }
 
 const GauntletSchema: Schema = new Schema({
 	packID: Number,

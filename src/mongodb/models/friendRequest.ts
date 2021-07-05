@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IFriendRequest {
 	requestID: number,
-	isUnread?: number,
+	isUnread: number,
 	fromAccountID: number,
 	toAccountID: number,
 	message: string,

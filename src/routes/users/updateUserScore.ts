@@ -14,7 +14,7 @@ let required = ['userName', 'accountID', 'stars', 'demons', 'icon', 'color1', 'c
 let callback = async (req: Request, res: Response) => {
     const body = req.body
 
-    const userName = body.userName.replace(/[^A-Za-z0-9 ]/, '')
+    const userName = body.userName
     const stars = body.stars
     const demons = body.demons
     const icon = body.icon
@@ -40,7 +40,7 @@ let callback = async (req: Request, res: Response) => {
     if (body.udid) {
         if (!isNaN(body.udid)) {
             log.info(`cannot update ${body.userName} user stats: udid is numeric`)
-            return -1
+            return '-1'
         }
     }
 
@@ -48,12 +48,12 @@ let callback = async (req: Request, res: Response) => {
 
     if (!await AccountModel.findOne({ accountID: id })) {
         log.info(`cannot update ${body.userName} user stats: account not found`)
-        return -1
+        return '-1'
     }
 
     if (!await GJCrypto.gjpCheck(body.gjp, id)) {
         log.info(`cannot update ${body.userName} user stats: incorrect GJP`)
-        return -1
+        return '-1'
     }
 
     const ip = req.socket.remoteAddress

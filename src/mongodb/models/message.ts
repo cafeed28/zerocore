@@ -8,7 +8,7 @@ export interface IMessage {
 	subject: string,
 	messageID: number,
 	uploadDate: number,
-	isUnread?: boolean
+	isUnread: boolean
 }
 
 interface IMessageModel extends IMessage, Document { }

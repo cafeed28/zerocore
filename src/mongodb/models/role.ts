@@ -4,17 +4,17 @@ export interface IRole {
 	roleName: string,
 	roleID: number,
 
-	freeCopy?: boolean,
-	rateLevelDiff?: boolean,
-	rateLevelStar?: boolean,
-	sendLevelRate?: boolean,
-	setDailyWeeklyLevel?: boolean,
+	freeCopy: boolean,
+	rateLevelDiff: boolean,
+	rateLevelStar: boolean,
+	sendLevelRate: boolean,
+	setDailyWeeklyLevel: boolean,
 
-	moveLevelAcc?: boolean,
-	changeLevelDesc?: boolean,
+	moveLevelAcc: boolean,
+	changeLevelDesc: boolean,
 
-	badgeLevel?: number,
-	requestMod?: boolean,
+	badgeLevel: number,
+	requestMod: boolean,
 
 	commentColor: string,
 	prefix: string

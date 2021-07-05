@@ -44,7 +44,8 @@ for (const routePath of routesFiles) {
             res.end(response);
         }
         catch (err) {
-            log.error('## CALLBACK ERROR ##', err)
+            log.error('## CALLBACK ERROR ##')
+            log.error(err)
             return res
                 .writeHead(500, http.STATUS_CODES[500])
                 .end(http.STATUS_CODES[500])
