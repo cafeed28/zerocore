@@ -1,30 +1,31 @@
-import tinyhttp from "@opengalaxium/tinyhttp"
+import tinyhttp from '@opengalaxium/tinyhttp'
 
-import fc from "fancy-console"
-import fs from "fs-jetpack"
-import nodefs from "fs"
-import config from "../config"
+import fc from 'fancy-console'
+import fs from 'fs-jetpack'
+import nodefs from 'fs'
+import config from '../config'
 
-import zlib from "node-gzip"
-import axios from "axios"
+import zlib from 'node-gzip'
+import axios from 'axios'
 
-import WebHelper from "../helpers/classes/WebHelper"
-import GJCrypto from "../helpers/classes/GJCrypto"
-import GJHelpers from "../helpers/classes/GJHelpers"
-import XOR from "../helpers/classes/XOR"
+import WebHelper from '../helpers/classes/WebHelper'
+import GJCrypto from '../helpers/classes/GJCrypto'
+import GJHelpers from '../helpers/classes/GJHelpers'
+import XOR from '../helpers/classes/XOR'
 
-import { ILevel, LevelModel } from "../helpers/models/level"
-import { DailyModel } from "../helpers/models/daily"
-import { GauntletModel } from "../helpers/models/gauntlet"
-import EPermissions from "../helpers/EPermissions"
-import { FriendModel } from "../helpers/models/friend"
-import { ActionModel, IAction } from "../helpers/models/actions"
-import EActions from "../helpers/EActions"
+import { ILevel, LevelModel } from '../helpers/models/level'
+import { DailyModel } from '../helpers/models/daily'
+import { GauntletModel } from '../helpers/models/gauntlet'
+import EPermissions from '../helpers/EPermissions'
+import { FriendModel } from '../helpers/models/friend'
+import { ActionModel, IAction } from '../helpers/models/actions'
+import EActions from '../helpers/EActions'
 import API from '../helpers/classes/API'
+import { IFriend } from '../mongodb/models/friend'
 
 function routes(app: tinyhttp) {
     app.all(`/${config.basePath}/downloadGJLevel22`, async (req: any, res: any) => {
-        const requredKeys = ["levelID"]
+        const requredKeys = ['levelID']
         const body = req.body
         if (!WebHelper.checkRequired(body, requredKeys, res)) return
 
@@ -32,7 +33,7 @@ function routes(app: tinyhttp) {
 
         const time = Math.round(new Date().getTime() / 1000)
         // робтоп сука ну нахера так делать
-        if (levelID == "-1") {
+        if (levelID == '-1') {
             let daily = await DailyModel.find({
                 timestamp: {
                     $lt: time,
@@ -44,7 +45,7 @@ function routes(app: tinyhttp) {
             var feaID = daily[0].feaID
         }
         // можно же было просто после getGJDailyLevel скачивать уровени с id который тебе вернули, а не -1 и -2
-        else if (levelID == "-2") {
+        else if (levelID == '-2') {
             let daily = await DailyModel.find({
                 timestamp: {
                     $lt: time,
@@ -62,28 +63,28 @@ function routes(app: tinyhttp) {
             fc.error(
                 `Скачивание уровня ${levelID} не выполнено: уровень не найден в бд`
             )
-            return res.send("-1")
+            return res.send('-1')
         }
 
-        let levelString = ""
+        let levelString = ''
         try {
             levelString = await nodefs.promises.readFile(
                 `data/levels/${levelID}`,
-                "utf8"
+                'utf8'
             )
         } catch (e) {
             fc.error(
                 `Скачивание уровня ${levelID} не выполнено: ошибка скачивания`
             )
             fc.error(e)
-            return res.send("-1")
+            return res.send('-1')
         }
 
         if (!levelString) {
             fc.error(
                 `Скачивание уровня ${levelID} не выполнено: файл уровня не найден`
             )
-            return res.send("-1")
+            return res.send('-1')
         }
 
         let dlAction = await ActionModel.findOne({
@@ -116,53 +117,53 @@ function routes(app: tinyhttp) {
             var xorPass = Buffer.from(
                 XOR.cipher(
                     pass.toString(), 26364)
-            ).toString("base64")
+            ).toString('base64')
         } else var xorPass = pass.toString()
 
-        if (levelString.substr(0, 3) == "kS1") {
+        if (levelString.substr(0, 3) == 'kS1') {
             levelString = Buffer.from(
                 await zlib.gzip(levelString)
-            ).toString("base64")
-            levelString = levelString.replace("/", "_").replace("+", "-")
+            ).toString('base64')
+            levelString = levelString.replace('/', '_').replace('+', '-')
         }
 
         let response = GJHelpers.jsonToRobtop([
             {
-                "1": level.levelID,
-                "2": level.levelName,
-                "3": level.levelDesc,
-                "4": levelString,
-                "5": level.levelVersion,
-                "6": level.accountID,
-                "8": 10,
-                "9": level.starDifficulty,
-                "10": level.downloads,
-                "11": 1,
-                "12": level.audioTrack,
-                "13": 21,
-                "14": level.likes,
-                "15": level.levelLength,
-                "17": +level.starDemon,
-                "18": level.starStars,
-                "19": +level.starFeatured,
-                "25": +level.starAuto,
-                "27": xorPass,
-                "28": level.uploadDate,
-                "29": level.updateDate,
-                "30": level.original,
-                "31": 1,
-                "35": level.songID,
-                "36": level.extraString,
-                "37": level.coins,
-                "38": +level.starCoins,
-                "39": level.requestedStars,
-                "40": level.ldm,
-                "42": +level.starEpic,
-                "43": level.starDemonDiff,
-                "45": level.objects,
-                "46": 1,
-                "47": 2,
-                "48": 1,
+                '1': level.levelID,
+                '2': level.levelName,
+                '3': level.levelDesc,
+                '4': levelString,
+                '5': level.levelVersion,
+                '6': level.accountID,
+                '8': 10,
+                '9': level.starDifficulty,
+                '10': level.downloads,
+                '11': 1,
+                '12': level.audioTrack,
+                '13': 21,
+                '14': level.likes,
+                '15': level.levelLength,
+                '17': +level.starDemon,
+                '18': level.starStars,
+                '19': +level.starFeatured,
+                '25': +level.starAuto,
+                '27': xorPass,
+                '28': level.uploadDate,
+                '29': level.updateDate,
+                '30': level.original,
+                '31': 1,
+                '35': level.songID,
+                '36': level.extraString,
+                '37': level.coins,
+                '38': +level.starCoins,
+                '39': level.requestedStars,
+                '40': level.ldm,
+                '42': +level.starEpic,
+                '43': level.starDemonDiff,
+                '45': level.objects,
+                '46': 1,
+                '47': 2,
+                '48': 1,
             },
         ])
 
@@ -228,9 +229,9 @@ function routes(app: tinyhttp) {
 
         if (!daily) {
             fc.error(
-                "Получение ежедневных уровней не выполнено: ежедневный уровень не найден"
+                'Получение ежедневных уровней не выполнено: ежедневный уровень не найден'
             )
-            return res.send("-1")
+            return res.send('-1')
         }
 
         let dailyID = daily[0].levelID
@@ -244,7 +245,7 @@ function routes(app: tinyhttp) {
 
         // робтоп ты под чем писал это, ты получаешь айди дейли и потом качаешь уровень -1 или -2
         let result = `${dailyID}|${timeleft}`
-        fc.success("Получение ежедневных уровней выполнено")
+        fc.success('Получение ежедневных уровней выполнено')
         console.log(result)
         return res.send(result)
     })
@@ -255,22 +256,22 @@ function routes(app: tinyhttp) {
         const page = parseInt(body.page)
 
         let levelsList = []
-        let levelsMultiString = ""
+        let levelsMultiString = ''
         let usersList = []
         let songsList = []
 
         let params: any = {}
         let orderBy: any = {}
 
-        let diff = body.diff || "-"
+        let diff = body.diff || '-'
 
-        if (!parseInt(body.str)) params.levelName = new RegExp(body.str, "i")
+        if (!parseInt(body.str)) params.levelName = new RegExp(body.str, 'i')
         else params.levelID = body.str // search one by ID
 
         // search levels by IDs like '4,5,6' = [4, 5, 6]
         if (body.str)
-            if (body.str.includes(","))
-                params = { levelID: { $in: body.str.split(",").map(Number) } }
+            if (body.str.includes(','))
+                params = { levelID: { $in: body.str.split(',').map(Number) } }
 
         if (body.featured == 1) params.starFeatured = true
         // if (body.original == 1) params.original = true;
@@ -282,11 +283,11 @@ function routes(app: tinyhttp) {
         if (body.star == 1) params.starStars = { $gt: 0 }
 
         if (body.uncompleted == 1 && body.completedLevels) {
-            let completed = body.completedLevels.replace(/[^0-9,]/g, "").split(",")
+            let completed = body.completedLevels.replace(/[^0-9,]/g, '').split(',')
             params.levelID = { $nin: completed }
         }
         if (body.onlyCompleted == 1 && body.completedLevels) {
-            let completed = body.completedLevels.replace(/[^0-9,]/g, "").split(",")
+            let completed = body.completedLevels.replace(/[^0-9,]/g, '').split(',')
             params.levelID = { $in: completed }
         }
 
@@ -321,12 +322,12 @@ function routes(app: tinyhttp) {
             orderBy = { rateDate: -1, uploadDate: -1 }
         } else if (body.type == 12) {
             // followed
-            params.accountID = { $in: body.followed.split(",") }
+            params.accountID = { $in: body.followed.split(',') }
         } else if (body.type == 13) {
             // friends
             if (await GJCrypto.gjpCheck(body.gjp, body.accountID)) {
                 const friends = await FriendModel.find({ accountID1: body.accountID })
-                const friendsIDs = friends.map((f) => f.accountID2)
+                const friendsIDs = friends.map((f: IFriend) => f.accountID2)
 
                 params.accountID = { $in: friendsIDs }
             }
@@ -350,8 +351,8 @@ function routes(app: tinyhttp) {
         if (body.star) params.starStars != 0
         if (body.noStar) params.starStars = 0
 
-        if (body.len && body.len != "-") {
-            params.levelLength = { $in: parseInt(body.len.split(",")) }
+        if (body.len && body.len != '-') {
+            params.levelLength = { $in: parseInt(body.len.split(',')) }
         }
 
         if (body.gauntlet) {
@@ -385,9 +386,9 @@ function routes(app: tinyhttp) {
             if (filter == 4) params.starDemonDiff = 5
             if (filter == 5) params.starDemonDiff = 6
         } else {
-            if (body.diff && body.diff != "-") {
-                body.diff = body.diff.replace(",", "0,") + "0"
-                body.diff = body.diff.split(",")
+            if (body.diff && body.diff != '-') {
+                body.diff = body.diff.replace(',', '0,') + '0'
+                body.diff = body.diff.split(',')
                 params.starDifficulty = { $in: body.diff }
             }
         }
@@ -404,12 +405,12 @@ function routes(app: tinyhttp) {
 
         if (!levels.length) {
             fc.error(`Получение уровней не выполнено: уровни не найдены`)
-            return res.send("-1")
+            return res.send('-1')
         } else {
             for (const level of levels) {
-                if (level.unlisted == 1 && !params.levelID) continue
+                if (level.unlisted == true && !params.levelID) continue
 
-                levelsMultiString += level.levelID + ","
+                levelsMultiString += level.levelID + ','
 
                 if (level.songID != 0) {
                     const song = await GJHelpers.getSongString(level.songID)
@@ -421,34 +422,34 @@ function routes(app: tinyhttp) {
 
                 const levelString = GJHelpers.jsonToRobtop([
                     {
-                        "1": level.levelID,
-                        "2": level.levelName,
-                        "3": level.levelDesc,
-                        "5": level.levelVersion || 0,
-                        "6": level.accountID,
-                        "8": 10,
-                        "9": level.starDifficulty,
-                        "10": level.downloads,
-                        "12": level.audioTrack,
-                        "13": 21,
-                        "14": level.likes,
-                        "15": level.levelLength,
-                        "17": +level.starDemon,
-                        "18": +level.starStars,
-                        "19": +level.starFeatured,
-                        "25": +level.starAuto,
-                        "30": level.original,
-                        "31": "0",
-                        "35": level.songID,
-                        "37": level.coins,
-                        "38": +level.starCoins,
-                        "39": level.requestedStars,
-                        "40": level.ldm,
-                        "42": +level.starEpic,
-                        "43": level.starDemonDiff,
-                        "45": level.objects,
-                        "46": "1",
-                        "47": "2",
+                        '1': level.levelID,
+                        '2': level.levelName,
+                        '3': level.levelDesc,
+                        '5': level.levelVersion || 0,
+                        '6': level.accountID,
+                        '8': 10,
+                        '9': level.starDifficulty,
+                        '10': level.downloads,
+                        '12': level.audioTrack,
+                        '13': 21,
+                        '14': level.likes,
+                        '15': level.levelLength,
+                        '17': +level.starDemon,
+                        '18': +level.starStars,
+                        '19': +level.starFeatured,
+                        '25': +level.starAuto,
+                        '30': level.original,
+                        '31': '0',
+                        '35': level.songID,
+                        '37': level.coins,
+                        '38': +level.starCoins,
+                        '39': level.requestedStars,
+                        '40': level.ldm,
+                        '42': +level.starEpic,
+                        '43': level.starDemonDiff,
+                        '45': level.objects,
+                        '46': '1',
+                        '47': '2',
                     },
                 ])
 
@@ -460,12 +461,12 @@ function routes(app: tinyhttp) {
             let hash = await GJCrypto.genMulti(levelsMultiString)
             if (!hash) {
                 fc.success(`Получение уровней не выполнено: hash пустой`)
-                return res.send("-1")
+                return res.send('-1')
             }
 
-            const result = `${levelsList.join("|")}#${usersList.join(
-                "|"
-            )}#${songsList.join("~:~")}#${levelsCount}:${page * 10}:10#${hash}`
+            const result = `${levelsList.join('|')}#${usersList.join(
+                '|'
+            )}#${songsList.join('~:~')}#${levelsCount}:${page * 10}:10#${hash}`
 
             fc.success(`Получение уровней выполнено`)
             return res.send(result)
@@ -474,11 +475,11 @@ function routes(app: tinyhttp) {
 
     app.all(`/${config.basePath}/uploadGJLevel21`, async (req: any, res: any) => {
         const requredKeys = [
-            "accountID",
-            "levelName",
-            "levelDesc",
-            "audioTrack",
-            "gjp",
+            'accountID',
+            'levelName',
+            'levelDesc',
+            'audioTrack',
+            'gjp',
         ]
         const body = req.body
         if (!WebHelper.checkRequired(body, requredKeys, res)) return
@@ -504,29 +505,24 @@ function routes(app: tinyhttp) {
         const coins = body.coins || 0
         const requestedStars = body.requestedStars || 0
         const extraString =
-            body.extraString || "29_29_29_40_29_29_29_29_29_29_29_29_29_29_29_29"
-        const unlisted = body.unlisted || 0
+            body.extraString || '29_29_29_40_29_29_29_29_29_29_29_29_29_29_29_29'
+        const unlisted = !!parseInt(body.unlisted || 0)
         const ldm = body.ldm || 0
 
         if (await GJCrypto.gjpCheck(gjp, accountID)) {
             if (!levelString || !levelName) {
-                fc.error(
-                    `Уровень на аккаунте ${body.userName} не опубликован: имя или уровень пустой`
-                )
-                return res.send("-1")
+                log.info(`Cannot upload level ${levelID}: empty level or name`)
+                return res.send('-1')
             }
 
-            if (levelID == 0) {
-                // unreadable
-                levelID =
-                    (await LevelModel.find({}).sort({ _id: -1 }).limit(1))[0].levelID + 1
-            } else {
+            if (levelID != 0) {
                 let level = await LevelModel.findOne({ levelID: levelID })
+                if (!level) {
+                    log.info(`Cannot upload level ${levelID}`)
+                }
                 if (level && level.accountID != accountID) {
-                    fc.error(
-                        `Уровень на аккаунте ${body.userName} не опубликован: уровень ${levelID} уже есть от другого автора`
-                    )
-                    return res.send("-1")
+                    log.info(`Cannot upload level ${levelID}: level already exists on another account`)
+                    return res.send('-1')
                 }
             }
 
@@ -568,7 +564,7 @@ function routes(app: tinyhttp) {
                     `Уровень на аккаунте ${body.userName} не опубликован: неизвестная ошибка`,
                     e.stack
                 )
-                return res.send("-1")
+                return res.send('-1')
             }
 
             if (!await API.sendDiscordLog('Uploaded Level', `${accountID} uploaded a level ${levelID}`, `Song: ${songID}`)) {
@@ -581,12 +577,12 @@ function routes(app: tinyhttp) {
             fc.error(
                 `Уровень на аккаунте ${body.userName} не опубликован: ошибка авторизации`
             )
-            return res.send("-1")
+            return res.send('-1')
         }
     })
 
     app.all(`/${config.basePath}/deleteGJLevelUser20`, async (req: any, res: any) => {
-        const requredKeys = ["accountID", "levelID", "gjp"]
+        const requredKeys = ['accountID', 'levelID', 'gjp']
         const body = req.body
         if (!WebHelper.checkRequired(body, requredKeys, res)) return
 
@@ -604,7 +600,7 @@ function routes(app: tinyhttp) {
                     `Уровень с аккаунта ${accountID} не удалён: неизвестная ошибка`,
                     e.stack
                 )
-                return res.send("-1")
+                return res.send('-1')
             }
 
             await LevelModel.deleteOne({ levelID: levelID })
@@ -629,7 +625,7 @@ function routes(app: tinyhttp) {
             fc.error(
                 `Уровень с аккаунта ${accountID} не удалён: ошибка авторизации`
             )
-            return res.send("-1")
+            return res.send('-1')
         }
     }
     )

@@ -1,6 +1,6 @@
-import tinyhttp from '@opengalaxium/tinyhttp'
+import polka from 'polka'
 
-import fc from 'fancy-console'
+import log from './logger'
 import moment from 'moment'
 import config from '../config'
 

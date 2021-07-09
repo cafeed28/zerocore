@@ -1,4 +1,5 @@
 export default {
+	debug: true, // debug mode
 	secret: 'secret', // secret for validating client
 	tokenSecret: 'tokenSecret', // secret for generating auth tokens
 	basePath: 'zerocore', // host.com/basePath/api/roles

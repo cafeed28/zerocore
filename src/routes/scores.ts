@@ -1,6 +1,6 @@
-import tinyhttp from '@opengalaxium/tinyhttp'
+import polka from 'polka'
 
-import fc from 'fancy-console'
+import log from './logger'
 import config from '../config'
 
 import bcrypt from 'bcrypt'
@@ -8,8 +8,8 @@ import bcrypt from 'bcrypt'
 import WebHelper from '../helpers/classes/WebHelper'
 import GJCrypto from '../helpers/classes/GJCrypto'
 import GJHelpers from '../helpers/classes/GJHelpers'
-import { FriendModel } from '../helpers/models/friend'
-import { IUser, UserModel } from '../helpers/models/user'
+import { FriendModel } from '../mongodb/models/friend'
+import { IUser, UserModel } from '../mongodb/models/user'
 
 function routes(app: tinyhttp) {
 	app.all(`/${config.basePath}/getGJScores20`, async (req: any, res: any) => {
