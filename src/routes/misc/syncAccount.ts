@@ -28,7 +28,7 @@ let callback = async (req: Request, res: Response) => {
     }
     catch (err) {
         if (err.code == 'ENOENT') {
-            log.error(`Account ${userName} sync error: backup not found`)
+            log.info(`Account ${userName} sync error: backup not found`)
             return '-1'
         }
 

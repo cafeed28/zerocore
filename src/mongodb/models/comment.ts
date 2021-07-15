@@ -24,7 +24,7 @@ const CommentSchema: Schema = new Schema({
 	uploadDate: Number,
 	likes: { type: Number, default: 0 },
 	isSpam: { type: Number, default: 0 },
-	commentID: Number
+	commentID: { type: Number, unique: true }
 })
 
 CommentSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'commentID' })

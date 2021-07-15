@@ -15,7 +15,7 @@ export interface IMessage {
 interface IMessageModel extends IMessage, Document { }
 
 const MessageSchema: Schema = new Schema({
-	messageID: Number,
+	messageID: { type: Number, unique: true },
 	userName: String,
 	senderID: Number,
 	recipientID: Number,

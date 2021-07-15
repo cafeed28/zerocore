@@ -15,7 +15,7 @@ export interface IMapPack {
 interface IMapPackModel extends IMapPack, Document { }
 
 const MapPackSchema: Schema = new Schema({
-	packID: Number,
+	packID: { type: Number, unique: true },
 	packName: String,
 	levels: String,
 	stars: Number,
@@ -25,6 +25,6 @@ const MapPackSchema: Schema = new Schema({
 	colors2: { type: String, default: 'none' }
 })
 
-MapPackSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'packID' })
+MapPackSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'packID', exclusive: false })
 
 export const MapPackModel = mongoose.model<IMapPackModel>('mappacks', MapPackSchema)

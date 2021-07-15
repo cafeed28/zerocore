@@ -56,7 +56,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mongodb@^3.5.27":
+"@types/mongodb@*", "@types/mongodb@^3.5.27":
   version "3.6.20"
   resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.6.20.tgz#b7c5c580644f6364002b649af1c06c3c0454e1d2"
   integrity sha512-WcdpPJCakFzcWWD9juKoZbRtQxKIMYF/JIAM4JrNHrMcnJL6/a2NWjXxW7fo9hxboxxkg+icff8d7+WIEvKgYQ==
@@ -64,19 +64,20 @@
     "@types/bson" "*"
     "@types/node" "*"
 
-"@types/mongoose-sequence@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@types/mongoose-sequence/-/mongoose-sequence-3.0.6.tgz#5a3e715fc0e95ef94aaf25184990e2b8b9dcea99"
-  integrity sha512-S6DD4rSlSnUI9BQvR/ACtekpylSIm0pEKayG9NqOlkUo3Q/AZLBmdi0IozSGPQ8JcB2ZSm81nLdZPhTqyOqrQg==
+"@types/mongoose-unique-validator@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/mongoose-unique-validator/-/mongoose-unique-validator-1.0.5.tgz#2896dfb85d72b06fccde5cec3fd920b4b9dc1bbe"
+  integrity sha512-i7U0L+xrTSwaDfi18cEpC1N549yZVKTKQMzBRJpXvdPMR0BgDO6sjZ/nOoOa3ekhJTNo37DSzrPCbHeY+pd7ng==
   dependencies:
-    "@types/mongoose" "^5.10.5"
+    "@types/mongoose" "5.10.5"
 
-"@types/mongoose@^5.10.5":
-  version "5.11.97"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.11.97.tgz#80b0357f3de6807eb597262f52e49c3e13ee14d8"
-  integrity sha512-cqwOVYT3qXyLiGw7ueU2kX9noE8DPGRY6z8eUxudhXY8NZ7DMKYAxyZkLSevGfhCX3dO/AoX5/SO9lAzfjon0Q==
+"@types/mongoose@5.10.5":
+  version "5.10.5"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.10.5.tgz#0f4fb0440e8cf0213caec1e5c7b163dbd9847c56"
+  integrity sha512-37QMIA954T3n+HSksSNLlxZsqF8fMJu5S4dyPBod6gRxGtsXlQ9jUtL8BE8Seimv99u79eLXI3bggoCnSQ/fxQ==
   dependencies:
-    mongoose "*"
+    "@types/mongodb" "*"
+    "@types/node" "*"
 
 "@types/node-gzip@^1.1.0":
   version "1.1.0"
@@ -622,6 +623,16 @@ leven@2.1.0:
   resolved "https://registry.yarnpkg.com/leven/-/leven-2.1.0.tgz#c2e7a9f772094dee9d34202ae8acce4687875580"
   integrity sha1-wuep93IJTe6dNCAq6KzORoeHVYA=
 
+lodash.foreach@^4.1.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
+  integrity sha1-Gmo16s5AEoDH8G3d7DUWWrJ+PlM=
+
+lodash.get@^4.0.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+
 lodash.includes@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.includes/-/lodash.includes-4.3.0.tgz#60bb98a87cb923c68ca1e51325483314849f553f"
@@ -751,7 +762,15 @@ mongoose-sequence@^5.3.1:
     async "^2.5.0"
     lodash "^4.17.20"
 
-mongoose@*, mongoose@^5.12.14:
+mongoose-unique-validator@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/mongoose-unique-validator/-/mongoose-unique-validator-2.0.3.tgz#247adbcda391bf5bc63fc3dcd43286a9ec833fa4"
+  integrity sha512-3/8pmvAC1acBZS6eWKAWQUiZBlARE1wyWtjga4iQ2wDJeOfRlIKmAvTNHSZXKaAf7RCRUd7wh7as6yWAOrjpQg==
+  dependencies:
+    lodash.foreach "^4.1.0"
+    lodash.get "^4.0.2"
+
+mongoose@^5.12.14:
   version "5.13.2"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.13.2.tgz#1b9095fc6bbbb015ea3bc2a79d6f56025406c769"
   integrity sha512-sBUKJGpdwZCq9102Lj6ZOaLcW4z/T4TI9aGWrNX5ZlICwChKWG4Wo5qriLImdww3H7bETPW9vYtSiADNlA4wSQ==

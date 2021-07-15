@@ -12,7 +12,7 @@ interface IDailyModel extends IDaily, Document { }
 
 const DailySchema: Schema = new Schema({
 	levelID: Number,
-	feaID: Number,
+	feaID: { type: Number, unique: true },
 	timestamp: Number,
 	type: Number
 })

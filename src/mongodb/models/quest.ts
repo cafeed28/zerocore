@@ -12,7 +12,7 @@ export interface IQuest {
 interface IQuestModel extends IQuest, Document { }
 
 const QuestSchema: Schema = new Schema({
-	questID: Number,
+	questID: { type: Number, unique: true },
 	questName: String,
 	type: Number,
 	amount: Number,

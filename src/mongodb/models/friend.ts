@@ -12,7 +12,7 @@ export interface IFriend {
 interface IFriendModel extends IFriend, Document { }
 
 const FriendSchema: Schema = new Schema({
-	ID: Number,
+	ID: { type: Number, unique: true },
 	accountID1: Number,
 	accountID2: Number,
 	isUnread1: { type: Boolean, default: true },

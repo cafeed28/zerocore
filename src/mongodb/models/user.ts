@@ -48,7 +48,7 @@ export interface IUser {
 interface IUserModel extends IUser, Document { }
 
 const UserSchema: Schema = new Schema({
-	userName: String,
+	userName: { type: String, unique: true },
 	accountID: Number,
 	coins: Number,
 	userCoins: Number,
@@ -85,7 +85,7 @@ const UserSchema: Schema = new Schema({
 	cS: { type: Number, default: 0 },
 	youtube: { type: String, default: '' },
 	twitter: { type: String, default: '' },
-	twitch: { type: String, default: '' }, // поменяю на discord когда выйдет blackTea от партура
+	twitch: { type: String, default: '' },
 
 	IP: String,
 	lastPlayed: Number,

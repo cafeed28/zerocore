@@ -59,8 +59,7 @@ const start = async () => {
     try {
         // MongoDB
         log.info('Connecting to MongoDB...')
-        // await connect(`mongodb://${config.mongodbUser}:${config.mongodbPassword}@${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`)
-        await connect(`mongodb://${config.mongodbAddress}/${config.mongodbCollection}?authSource=admin`)
+        await connect(config.mongodbUri)
 
         // server
         await app.listen(config.port, '0.0.0.0')

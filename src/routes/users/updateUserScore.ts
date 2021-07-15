@@ -39,7 +39,7 @@ let callback = async (req: Request, res: Response) => {
 
     if (body.udid) {
         if (!isNaN(body.udid)) {
-            log.info(`cannot update ${body.userName} user stats: udid is numeric`)
+            log.info(`Cannot update user ${body.userName} stats: udid is numeric`)
             return '-1'
         }
     }
@@ -47,12 +47,12 @@ let callback = async (req: Request, res: Response) => {
     const id = body.accountID
 
     if (!await AccountModel.findOne({ accountID: id })) {
-        log.info(`cannot update ${body.userName} user stats: account not found`)
+        log.info(`Cannot update user ${body.userName} stats: account not found`)
         return '-1'
     }
 
     if (!await GJCrypto.gjpCheck(body.gjp, id)) {
-        log.info(`cannot update ${body.userName} user stats: incorrect GJP`)
+        log.info(`Cannot update user ${body.userName} stats: incorrect GJP`)
         return '-1'
     }
 
@@ -92,7 +92,7 @@ let callback = async (req: Request, res: Response) => {
         timestamp: Date.now()
     })
 
-    log.info(`updating ${body.userName} user stats success`)
+    log.info(`User ${body.userName} stats updated`)
     return id
 }
 

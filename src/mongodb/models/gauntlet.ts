@@ -13,7 +13,7 @@ export interface IGauntlet {
 interface IGauntletModel extends IGauntlet, Document { }
 
 const GauntletSchema: Schema = new Schema({
-	packID: Number,
+	packID: { type: Number, unique: true },
 	levelID1: Number,
 	levelID2: Number,
 	levelID3: Number,
@@ -21,6 +21,6 @@ const GauntletSchema: Schema = new Schema({
 	levelID5: Number
 })
 
-GauntletSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'packID' })
+GauntletSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'packID', exclusive: false })
 
 export const GauntletModel = mongoose.model<IGauntletModel>('gauntlets', GauntletSchema)

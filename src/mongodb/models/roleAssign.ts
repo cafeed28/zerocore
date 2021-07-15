@@ -10,9 +10,9 @@ export interface IRoleAssign {
 interface IRoleAssignModel extends IRoleAssign, Document { }
 
 const RoleAssignSchema: Schema = new Schema({
-	assignID: Number,
-	accountID: Number,
-	roleID: Number
+	roleID: { type: Number, unique: true },
+	assignID: { type: Number, unique: true },
+	accountID: Number
 })
 
 RoleAssignSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'assignID' })

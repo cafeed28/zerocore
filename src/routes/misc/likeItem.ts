@@ -47,7 +47,7 @@ let callback = async (req: Request, res: Response) => {
     if (body.like == 1) likes++
     else likes--
 
-    await item.updateOne({ likes: likes })
+    await item.updateOne({ likes })
 
     await ActionModel.create({
         actionType: EActions.itemLike,

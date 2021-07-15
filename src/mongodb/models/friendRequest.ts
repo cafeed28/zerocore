@@ -13,7 +13,7 @@ export interface IFriendRequest {
 interface IFriendRequestModel extends IFriendRequest, Document { }
 
 const FriendRequestSchema: Schema = new Schema({
-	requestID: Number,
+	requestID: { type: Number, unique: true },
 	isUnread: { type: Number, default: 1 },
 	fromAccountID: Number,
 	toAccountID: Number,

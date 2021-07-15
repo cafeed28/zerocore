@@ -14,13 +14,13 @@ export interface IPost {
 interface IPostModel extends IPost, Document { }
 
 const PostSchema: Schema = new Schema({
+	postID: { type: Number, unique: true },
 	userName: String,
 	post: String,
 	accountID: Number,
 	uploadDate: Number,
 	likes: { type: Number, default: 0 },
-	isSpam: { type: Boolean, default: false },
-	postID: Number
+	isSpam: { type: Boolean, default: false }
 })
 
 PostSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'postID' })

@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import AutoIncrementFactory from 'mongoose-sequence'
+import UniqueValidator from 'mongoose-unique-validator'
 
 export interface IAccount {
 	accountID: number,
@@ -19,6 +20,7 @@ const AccountSchema: Schema = new Schema({
 	isBanned: { type: Boolean, default: false }
 })
 
-AccountSchema.plugin(AutoIncrementFactory(AccountModel), { inc_field: 'accountID' })
+AccountSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'accountID' })
+AccountSchema.plugin(UniqueValidator, { message: '{PATH}' })
 
 export const AccountModel = mongoose.model<IAccountModel>('accounts', AccountSchema)

@@ -167,7 +167,7 @@ export default class GJHelpers {
 	static async updateCreatorPoints(levelID: number): Promise<void> {
 		const level = await LevelModel.findOne({ levelID })
 		let accountID = level.accountID
-		const userLevels = await LevelModel.find({ accountID, unlisted: 0 })
+		const userLevels = await LevelModel.find({ accountID, unlisted: false })
 
 		let cp = 0
 
@@ -189,7 +189,6 @@ export default class GJHelpers {
 
 			const ngSong = await axios.post('http://www.boomlings.com/database/getGJSongInfo.php', params)
 			return ngSong.data + '~|~8~|~1'
-			return
 		}
 
 		let download = song.download
@@ -197,7 +196,18 @@ export default class GJHelpers {
 			download = encodeURIComponent(download)
 		}
 
-		const result = `1~|~${song.songID}~|~2~|~${song.name.replace('#', '')}~|~3~|~${song.authorID}~|~4~|~${song.authorName}~|~5~|~${song.size}~|~6~|~~|~10~|~${download}~|~7~|~~|~8~|~1`
+		const result = this.jsonToRobtop({
+			1: song.songID,
+			2: song.name.replace(/#/g, ''),
+			3: song.authorID,
+			4: song.authorName,
+			5: song.size,
+			6: '',
+			7: '',
+			8: 1,
+			10: download,
+		}, '~|~')
+
 		return result
 	}
 }

@@ -2,7 +2,7 @@ import config from '../../config'
 import log from '../../logger'
 
 import { Request, Response } from 'polka'
-import { createAccount } from '../../mongodb/models/account'
+import { AccountModel } from '../../mongodb/models/account'
 
 import bcrypt from 'bcrypt'
 
@@ -11,20 +11,32 @@ let required = ['userName', 'password', 'email']
 let callback = async (req: Request, res: Response) => {
     const body = req.body
 
-    let result = await createAccount(body.userName, body.password, body.email)
+    const userName = body.userName
+    const password = body.password
+    const email = body.email
 
-    if (result.code == 0) {
-        log.info(`Account ${body.userName} created`)
-        return '1'
+    try {
+        await AccountModel.create({ userName, password, email })
     }
-    else if (result.code == 1) {
-        log.info(`Unknown error while creating account ${body.userName}`)
+    catch (err) {
+        if (err.name === 'ValidationError') {
+            if (err.message.includes('userName')) {
+                log.info(`Account ${body.userName} already exist`)
+                return '-2'
+            }
+            if (err.message.includes('email')) {
+                log.info(`Email ${body.email} already registred`)
+                return '-2'
+            }
+        }
+
+        log.error(`Unknown error while creating account ${body.userName}`)
+        log.error(err)
         return '-1'
     }
-    else if (result.code == 2) {
-        log.info(`Account ${body.userName} already exist`)
-        return '-2'
-    }
+
+    log.info(`Account ${body.userName} created`)
+    return '1'
 }
 
 export { path, required, callback }

@@ -10,7 +10,7 @@ interface IAuthModel extends IAuth, Document { }
 
 const AuthSchema: Schema = new Schema({
     accountID: Number,
-    token: String,
+    token: { type: String, unique: true },
     expiresAt: Number
 })
 

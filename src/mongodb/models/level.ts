@@ -44,7 +44,7 @@ interface ILevelModel extends ILevel, Document { }
 
 const LevelSchema: Schema = new Schema({
 	accountID: Number,
-	levelID: Number,
+	levelID: { type: Number, unique: true },
 	levelName: String,
 	levelLength: { type: Number, default: 0 },
 	levelVersion: { type: Number, default: 0 },

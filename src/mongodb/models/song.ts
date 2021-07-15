@@ -13,7 +13,7 @@ export interface ISong {
 interface ISongModel extends ISong, Document { }
 
 const SongSchema: Schema = new Schema({
-	songID: Number,
+	songID: { type: Number, unique: true },
 	name: String,
 	authorID: Number,
 	authorName: String,

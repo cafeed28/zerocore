@@ -24,8 +24,8 @@ export interface IRole {
 interface IRoleModel extends IRole, Document { }
 
 const RoleSchema: Schema = new Schema({
-	roleName: String,
-	roleID: Number,
+	roleName: { type: String, unique: true },
+	roleID: { type: Number, unique: true },
 
 	freeCopy: { type: Boolean, default: false },
 	rateLevelDiff: { type: Boolean, default: false },
