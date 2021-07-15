@@ -50,7 +50,7 @@ let callback = async (req: Request, res: Response) => {
 
     if (count == 0) {
         log.info(`Messages to account ${accountID} recieved`)
-        return res.send('-2')
+        return '-2'
     }
 
     for (const message of messages) {
@@ -61,14 +61,14 @@ let callback = async (req: Request, res: Response) => {
 
         let user = await UserModel.findOne({ accountID: accountID })
 
-        let uploadDate = moment(message.uploadDate * 1000).fromNow(true)
+        let uploadDate = dayjs(message.uploadDate * 1000).fromNow(true)
 
         // todo: use helper (i am too lzay now)
         messagesList.push(`6:${user.userName}:3:${user.accountID}:2:${user.accountID}:1:${message.messageID}:4:${message.subject}:8:${!+message.isUnread}:9:${getSent}:7:${uploadDate}`)
     }
 
     log.info(`Messages to account ${accountID} recieved`)
-    return res.send(`${messagesList.join('|')}#${count}:${offset}:10`)
+    return `${messagesList.join('|')}#${count}:${offset}:10`
 }
 
 export { path, required, callback }

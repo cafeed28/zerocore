@@ -41,7 +41,7 @@ for (const routePath of routesFiles) {
         // }
         try {
             let response = await route.callback(req, res)
-            res.end(response)
+            res.end(response.toString())
             if (config.debug) console.log(response)
             console.log()
         }

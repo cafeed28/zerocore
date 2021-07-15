@@ -20,8 +20,8 @@ let callback = async (req: Request, res: Response) => {
     const page = body.page
     const mode = body.mode || 0
 
-    let orderBy: any = { commentID: 1 }
-    if (mode == 1) orderBy = { likes: 1 }
+    let orderBy: any = { commentID: -1 }
+    if (mode == 1) orderBy = { likes: -1 }
 
     let commentsList = []
     let usersList = []
