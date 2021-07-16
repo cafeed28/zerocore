@@ -16,7 +16,7 @@ let callback = async (req: Request, res: Response) => {
     const email = body.email
 
     try {
-        await AccountModel.create({ userName, password, email })
+        await AccountModel.create({ userName, password: await bcrypt.hash(password, 10), email })
     }
     catch (err) {
         if (err.name === 'ValidationError') {

@@ -10,7 +10,7 @@ export interface IRoleAssign {
 interface IRoleAssignModel extends IRoleAssign, Document { }
 
 const RoleAssignSchema: Schema = new Schema({
-	roleID: { type: Number, unique: true },
+	roleID: { type: Number, unique: false },
 	assignID: { type: Number, unique: true },
 	accountID: Number
 })

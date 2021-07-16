@@ -9,7 +9,7 @@ import GJCrypto from '../../helpers/GJCrypto'
 import { BlockModel } from '../../mongodb/models/block'
 import { FriendModel } from '../../mongodb/models/friend'
 
-let path = `/${config.basePath}/getGJMessages20.php`
+let path = `/${config.basePath}/uploadGJMessage20.php`
 let required = ['secret', 'accountID', 'gjp', 'subject', 'toAccountID', 'body']
 let callback = async (req: Request, res: Response) => {
     const body = req.body

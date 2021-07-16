@@ -1,6 +1,6 @@
 {
 	"name": "zerocore",
-	"version": "1.3.0-beta",
+	"version": "1.3.1-beta",
 	"main": "dist/app.js",
 	"author": "cafeed28",
 	"license": "MIT",

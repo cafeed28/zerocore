@@ -8,7 +8,7 @@ import { UserModel } from '../../mongodb/models/user'
 
 import GJCrypto from '../../helpers/GJCrypto'
 
-let path = `/${config.basePath}/blockGJUser20.php`
+let path = `/${config.basePath}/uploadFriendRequest20.php`
 let required = ['gjp', 'accountID', 'toAccountID', 'secret']
 let callback = async (req: Request, res: Response) => {
     const body = req.body
@@ -32,7 +32,6 @@ let callback = async (req: Request, res: Response) => {
     }
 
     FriendRequestModel.create({
-        requestID: (await FriendRequestModel.find({}).sort({ _id: -1 }).limit(1))[0].requestID + 1,
         fromAccountID: accountID,
         toAccountID: toAccountID,
         message: message,

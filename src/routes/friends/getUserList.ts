@@ -18,7 +18,7 @@ let callback = async (req: Request, res: Response) => {
     const accountID = body.accountID
     const type = body.type
 
-    if (await GJCrypto.gjpCheck(gjp, accountID)) {
+    if (!await GJCrypto.gjpCheck(gjp, accountID)) {
         log.info(`Cannot recieve userlist of type ${type}: incorrect GJP`)
         return '-1'
     }
