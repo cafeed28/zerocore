@@ -109,7 +109,7 @@ dist
 # Data
 src/data/levels/*
 src/data/saves/*
-start.bat
+*.bat
 config.ts
 
 .vscode/
