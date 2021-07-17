@@ -23,8 +23,8 @@ export default class API {
         try {
             res = await axios.get(url)
         }
-        catch (e) {
-            throw e
+        catch (err) {
+            return false
         }
 
         if (res.status == 200) {

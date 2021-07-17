@@ -41,6 +41,9 @@ for (const routePath of routesFiles) {
         // }
         try {
             let response = await route.callback(req, res)
+            if (typeof response == 'object')
+                response = JSON.stringify(response, null, 2)
+
             res.end(response.toString())
             if (config.debug) console.log(response)
             console.log()

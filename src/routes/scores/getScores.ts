@@ -89,7 +89,7 @@ let callback = async (req: Request, res: Response) => {
         }
         else if (type == 'creators') {
             var users = await UserModel.find({
-                isBanned: false
+                isBanned: false, creatorPoints: { $gt: 1 }
             }).sort({ creatorPoints: -1 }).limit(100)
         }
         else if (type == 'relative') {

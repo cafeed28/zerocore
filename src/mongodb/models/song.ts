@@ -21,6 +21,6 @@ const SongSchema: Schema = new Schema({
 	download: String
 })
 
-SongSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'songID' })
+SongSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'songID', start_seq: 500000 })
 
 export const SongModel = mongoose.model<ISongModel>('songs', SongSchema)
