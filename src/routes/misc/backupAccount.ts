@@ -36,7 +36,7 @@ let callback = async (req: Request, res: Response) => {
     saveData = saveData + ';' + saveDataArr[1]
 
     try {
-        await fs.mkdir(`data/levels`, { recursive: true })
+        await fs.mkdir(`data/saves`, { recursive: true })
         await fs.writeFile(`data/saves/${accountID}`, saveData)
     }
     catch (err) {
