@@ -164,6 +164,11 @@ export default class GJHelpers {
 		return true
 	}
 
+	static async deleteLevel(levelID: number): Promise<boolean> {
+		await LevelModel.deleteOne({ levelID })
+		return true
+	}
+
 	static async updateCreatorPoints(levelID: number): Promise<void> {
 		const level = await LevelModel.findOne({ levelID })
 		let accountID = level.accountID

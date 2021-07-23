@@ -92,4 +92,14 @@ const daily: ICommand = { // set daily
 }
 commands.set(daily.name, daily)
 
+const del: ICommand = { // delete level
+    name: 'delete',
+    requiredPerms: [EPermissions.moveLevelAcc],
+    execute: async (accountID, levelID, args) => {
+        await GJHelpers.deleteLevel(levelID)
+        return true
+    }
+}
+commands.set(del.name, del)
+
 export default commands

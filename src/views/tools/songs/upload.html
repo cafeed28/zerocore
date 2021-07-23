@@ -28,7 +28,7 @@
             const status = document.getElementById('status')
             status.innerText = `Loading...`
             const http = new XMLHttpRequest()
-            const url = '../../api/songs'
+            const apiUrl = '../../api/songs/upload'
             const songName = document.getElementById('songName').value
             const authorName = document.getElementById('authorName').value
             const url = document.getElementById('url').value
@@ -36,7 +36,7 @@
             params.append('songName', songName)
             params.append('authorName', authorName)
             params.append('url', url)
-            http.open('POST', url, true)
+            http.open('POST', apiUrl, true)
             http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
             http.send(params)
             http.onload = () => {

@@ -41,6 +41,16 @@ let callback = async (req: Request, res: Response) => {
             log.info(`Cannot upload level ${levelName}: empty level`)
             return '-1'
         }
+		
+		if (levelName.length > 20){
+			log.info(`Cannot upload level ${levelName}: too long name`)
+			return -1
+		}
+		
+		if (levelDesc.length > 150){
+			log.info(`Cannot upload level ${levelName}: too long description`)
+			return -1
+		}
 
         if (levelID != 0) {
             let level = await LevelModel.findOne({ levelID: levelID })
