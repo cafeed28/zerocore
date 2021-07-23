@@ -47,13 +47,32 @@ let callback = async (req: Request, res: Response) => {
         }
     }
 
-    song = await SongModel.create({
-        name: songName,
-        authorID: 9,
-        authorName: authorName,
-        size: 0,
-        download: url
-    })
+    try {
+        song = await SongModel.create({
+            name: songName,
+            authorID: 9,
+            authorName: authorName,
+            size: 0,
+            download: url
+        })
+    }
+    catch (err) {
+        if (err.name == 'ValidationError') {
+            if (err.kind == 'required') {
+                return {
+                    'status': 'error',
+                    'code': 'requiredError'
+                }
+            }
+        }
+
+        log.error(`Unknown error while uploading song ${authorName} - ${songName}`)
+        log.error(err)
+        return {
+            'status': 'error',
+            'code': 'unknownError'
+        }
+    }
 
     log.info(`Song ${authorName} - ${songName} uploaded`)
     return {

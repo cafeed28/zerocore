@@ -14,11 +14,11 @@ interface ISongModel extends ISong, Document { }
 
 const SongSchema: Schema = new Schema({
 	songID: { type: Number, unique: true },
-	name: String,
 	authorID: Number,
-	authorName: String,
 	size: Number,
-	download: String
+	name: { type: String, required: true },
+	authorName: { type: String, required: true },
+	download: { type: String, required: true }
 })
 
 SongSchema.plugin(AutoIncrementFactory(mongoose), { inc_field: 'songID', start_seq: 500000 })
