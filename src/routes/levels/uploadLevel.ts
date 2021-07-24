@@ -41,19 +41,21 @@ let callback = async (req: Request, res: Response) => {
             log.info(`Cannot upload level ${levelName}: empty level`)
             return '-1'
         }
-		
-		if (levelName.length > 20){
-			log.info(`Cannot upload level ${levelName}: too long name`)
-			return -1
-		}
-		
-		if (levelDesc.length > 150){
-			log.info(`Cannot upload level ${levelName}: too long description`)
-			return -1
-		}
+
+        if (levelName.length > 20) {
+            log.info(`Cannot upload level ${levelName}: too long name`)
+            return -1
+        }
+
+        if (levelDesc.length > 150) {
+            log.info(`Cannot upload level ${levelName}: too long description`)
+            return -1
+        }
+
+        let level;
 
         if (levelID != 0) {
-            let level = await LevelModel.findOne({ levelID: levelID })
+            level = await LevelModel.findOne({ levelID })
             if (!level) {
                 log.info(`Cannot update level ${levelName}: level not found`)
                 return '-1'
@@ -87,31 +89,32 @@ let callback = async (req: Request, res: Response) => {
                 IP: req.socket.remoteAddress
             })
         }
+        else {
+            level = await LevelModel.create({
+                accountID: accountID,
+                levelName: levelName,
+                levelDesc: levelDesc,
+                levelLength: levelLength,
+                levelVersion: levelVersion,
+                audioTrack: audioTrack,
+                auto: auto,
+                password: password,
+                original: original,
+                twoPlayer: twoPlayer,
 
-        let level = await LevelModel.create({
-            accountID: accountID,
-            levelName: levelName,
-            levelDesc: levelDesc,
-            levelLength: levelLength,
-            levelVersion: levelVersion,
-            audioTrack: audioTrack,
-            auto: auto,
-            password: password,
-            original: original,
-            twoPlayer: twoPlayer,
+                songID: songID,
+                objects: objects,
+                coins: coins,
+                requestedStars: requestedStars,
+                extraString: extraString,
+                unlisted: unlisted,
+                ldm: ldm,
 
-            songID: songID,
-            objects: objects,
-            coins: coins,
-            requestedStars: requestedStars,
-            extraString: extraString,
-            unlisted: unlisted,
-            ldm: ldm,
-
-            uploadDate: Math.round(Date.now() / 1000),
-            updateDate: Math.round(Date.now() / 1000),
-            IP: req.socket.remoteAddress
-        })
+                uploadDate: Math.round(Date.now() / 1000),
+                updateDate: Math.round(Date.now() / 1000),
+                IP: req.socket.remoteAddress
+            })
+        }
 
         try {
             await fs.mkdir(`data/levels`, { recursive: true })
