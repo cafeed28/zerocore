@@ -77,6 +77,7 @@ let callback = async (req: Request, res: Response) => {
     let dlAction = await ActionModel.findOne({
         actionType: EActions.levelDownload,
         itemID: levelID,
+        IP: req.socket.remoteAddress
     })
     if (!dlAction) {
         await LevelModel.findOneAndUpdate(

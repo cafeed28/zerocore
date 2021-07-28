@@ -8,7 +8,7 @@ export default class API {
     static generateToken(account: IAccount) {
         return jwt.sign(
             { account },
-            config.tokenSecret, { expiresIn: '48h' }
+            config.apiKey, { expiresIn: '48h' }
         )
     }
 

@@ -7,6 +7,7 @@ import { ActionModel } from '../../mongodb/models/action'
 import { LevelModel } from '../../mongodb/models/level'
 
 import GJCrypto from '../../helpers/GJCrypto'
+import GJHelpers from '../../helpers/GJHelpers'
 import API from '../../helpers/API'
 import EActions from '../../helpers/EActions'
 
@@ -48,6 +49,8 @@ let callback = async (req: Request, res: Response) => {
         accountID: accountID,
         itemID: levelID,
     })
+
+    await GJHelpers.updateCreatorPoints(levelID)
 
     if (!await API.sendDiscordLog('Deleted Level', `${accountID} deleted a level`, levelID)) {
         log.info(`Discord Webhook error`)

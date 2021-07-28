@@ -18,7 +18,7 @@ let callback = async (req: Request, res: Response) => {
 
     if (!users.length) {
         log.info('No users')
-        return `#0:${body.page}:10`
+        return '-1'
     }
     users.map(user => {
         usersList.push(GJHelpers.jsonToRobtop({

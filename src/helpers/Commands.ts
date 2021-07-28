@@ -14,6 +14,7 @@ const unrate: ICommand = { // unrate and save diff
 
         await GJHelpers.rateLevel(accountID, levelID, 0, diff['diff'], false, false)
         await GJHelpers.featureLevel(accountID, levelID, false)
+        await GJHelpers.epicLevel(accountID, levelID, false)
         await GJHelpers.verifyCoinsLevel(accountID, levelID, false)
         return true
     }
@@ -25,7 +26,9 @@ const rate: ICommand = { // rate stars
     requiredPerms: [EPermissions.rateLevelStar],
     execute: async (accountID, levelID, args) => {
         let stars = parseInt(args.shift())
-        let level = await LevelModel.findOne({ levelID: levelID })
+        if (stars <= 0)
+            return false
+
         let diff: any = GJHelpers.getDiffFromStars(stars)
 
         await GJHelpers.rateLevel(accountID, levelID, stars, diff['diff'], diff['auto'], diff['demon'])
@@ -57,7 +60,6 @@ const feature: ICommand = { // set feature if rated
             return false
         }
 
-        await GJHelpers.updateCreatorPoints(levelID)
         await GJHelpers.featureLevel(accountID, levelID, !!parseInt(args[0]))
         await GJHelpers.verifyCoinsLevel(accountID, levelID, true)
         return true
@@ -70,11 +72,10 @@ const epic: ICommand = { // set epic if rated
     requiredPerms: [EPermissions.rateLevelFeatureEpic],
     execute: async (accountID, levelID, args) => {
         let level = await LevelModel.findOne({ levelID: levelID })
-        if (level.starStars == 0) {
+        if (level.starStars == 0 || level.starFeatured == false) {
             return false
         }
 
-        await GJHelpers.updateCreatorPoints(levelID)
         await GJHelpers.epicLevel(accountID, levelID, !!parseInt(args[0]))
         await GJHelpers.verifyCoinsLevel(accountID, levelID, true)
         return true

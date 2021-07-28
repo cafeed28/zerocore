@@ -40,9 +40,11 @@ export default class GJHelpers {
 
 	static async getAccountPermission(accountID: number, permission: EPermissions): Promise<number> {
 		const accRoles = await RoleAssignModel.find({ accountID: accountID })
+		console.log(accRoles)
 		let accRolesList: number[] = []
 
 		accRoles.forEach(role => { accRolesList.push(role.roleID) })
+		console.log(accRolesList)
 
 		let perm = EPermissions[permission]
 		let maxPerm = 0
@@ -131,6 +133,7 @@ export default class GJHelpers {
 		await LevelModel.updateOne({ levelID: levelID }, {
 			starFeatured: feature
 		})
+		await this.updateCreatorPoints(levelID)
 		return true
 	}
 
@@ -138,6 +141,7 @@ export default class GJHelpers {
 		await LevelModel.updateOne({ levelID: levelID }, {
 			starEpic: epic
 		})
+		await this.updateCreatorPoints(levelID)
 		return true
 	}
 
@@ -166,6 +170,7 @@ export default class GJHelpers {
 
 	static async deleteLevel(levelID: number): Promise<boolean> {
 		await LevelModel.deleteOne({ levelID })
+		await this.updateCreatorPoints(levelID)
 		return true
 	}
 
@@ -178,8 +183,12 @@ export default class GJHelpers {
 
 		for await (let level of userLevels) {
 			if (level.starStars) cp += 1
-			if (level.starFeatured) cp += 2
-			else if (level.starEpic) cp += 3
+			if (level.starEpic) cp += 3
+			else if (level.starFeatured) cp += 2
+
+			console.log(level.starStars)
+			console.log(level.starEpic)
+			console.log(level.starFeatured)
 		}
 
 		await UserModel.updateOne({ accountID: accountID }, { creatorPoints: cp })

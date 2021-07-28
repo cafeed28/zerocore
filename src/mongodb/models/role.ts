@@ -30,7 +30,8 @@ const RoleSchema: Schema = new Schema({
 	freeCopy: { type: Boolean, default: false },
 	rateLevelDiff: { type: Boolean, default: false },
 	rateLevelStar: { type: Boolean, default: false },
-	sendLevelRate: { type: Boolean, default: false },
+	rateLevelFeature: { type: Boolean, default: false },
+	rateLevelEpic: { type: Boolean, default: false },
 
 	moveLevelAcc: { type: Boolean, default: false },
 	changeLevelDesc: { type: Boolean, default: false },

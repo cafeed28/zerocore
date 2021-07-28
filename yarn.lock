@@ -96,13 +96,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.1.tgz#4f9d3689532499fdda1c898e19f4593718655e36"
   integrity sha512-wF6hazbsnwaW3GhK4jFuw5NaLDQVRQ6pWQUGAUrJzxixFkTaODSiAKMPXuHwPEPkAKQWHAzj6uJ5h+3zU9gQxg==
 
-"@types/pino-multi-stream@^5.1.1":
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/@types/pino-multi-stream/-/pino-multi-stream-5.1.2.tgz#5a06847803bbde484d6117229f8be96626a2a5a6"
-  integrity sha512-z52gOj8uq+W/wCPpsUeMzHDt2VRFF9WMtTvk/wnx4q+/4DuIG1qU3TNdac1dlWYBuqdwXriTWGjcVcaSG5WsIA==
-  dependencies:
-    "@types/pino" "*"
-
 "@types/pino-pretty@*":
   version "4.7.1"
   resolved "https://registry.yarnpkg.com/@types/pino-pretty/-/pino-pretty-4.7.1.tgz#2ce3f56f3cf4f9632374419d616ae2e6c933b935"
@@ -891,13 +884,6 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-pino-multi-stream@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/pino-multi-stream/-/pino-multi-stream-5.3.0.tgz#2816ec4422c7e37e676a210a1705c7155506afd4"
-  integrity sha512-4fAGCRll18I+JmoAbxDvU9zc5sera/3c+VgTtUdoNMOZ/VSHB+HMAYtixKpeRmZTDHDDdE2rtwjVkuwWB8mYQA==
-  dependencies:
-    pino "^6.0.0"
-
 pino-pretty@^5.0.2:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/pino-pretty/-/pino-pretty-5.1.1.tgz#387aebbe0c4504b9e3f6f51148e36d1b336cb16d"
@@ -921,7 +907,7 @@ pino-std-serializers@^3.1.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-3.2.0.tgz#b56487c402d882eb96cd67c257868016b61ad671"
   integrity sha512-EqX4pwDPrt3MuOAAUBMU0Tk5kR/YcCM5fNPEzgCO2zJ5HfX0vbiH9HbJglnyeQsN96Kznae6MWD47pZB5avTrg==
 
-pino@^6.0.0, pino@^6.11.3:
+pino@^6.11.3:
   version "6.11.3"
   resolved "https://registry.yarnpkg.com/pino/-/pino-6.11.3.tgz#0c02eec6029d25e6794fdb6bbea367247d74bc29"
   integrity sha512-drPtqkkSf0ufx2gaea3TryFiBHdNIdXKf5LN0hTM82SXI4xVIve2wLwNg92e1MT6m3jASLu6VO7eGY6+mmGeyw==

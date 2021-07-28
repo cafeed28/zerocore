@@ -19,7 +19,7 @@ let callback = async (req: Request, res: Response) => {
     let levelsMultiString = ''
     let usersList = []
     let songsList = []
-    let orderBy: any = { uploadDate: -1 }
+    let orderBy: any = { likes: -1 }
     let params: any = {}
 
     let diff = body.diff || '-'
@@ -99,12 +99,15 @@ let callback = async (req: Request, res: Response) => {
         }
     }
 
-    // type
+    if (!parseInt(body.str)) params.levelName = new RegExp(body.str, "i")
+    else params.levelID = body.str // search one by ID
+
     // search levels by IDs like '4,5,6' = [4, 5, 6]
     if (body.str)
         if (body.str.includes(','))
             params = { levelID: { $in: body.str.split(',').map(Number) } }
 
+    // type
     if (body.type == 0 || body.type == 15) {
         // 15 in gdw, idk for what
         orderBy = { likes: -1 }
@@ -127,6 +130,12 @@ let callback = async (req: Request, res: Response) => {
     } else if (body.type == 5) {
         params = { accountID: parseInt(body.str) }
         orderBy = { levelID: -1 }
+    } else if (body.type == 6 || body.type == 17) { // featured
+        params.starFeatured = true
+        orderBy = { rateDate: -1, uploadDate: -1 }
+    } else if (body.type == 16) { // hall of fame
+        params.starEpic = true
+        orderBy = { rateDate: -1, uploadDate: -1 }
     } else if (body.type == 7) {
         // magic
         params.objects = { $gt: 9999 }

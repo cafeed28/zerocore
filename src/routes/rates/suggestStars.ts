@@ -19,8 +19,8 @@ let callback = async (req: Request, res: Response) => {
     const stars = body.stars
     const feature = body.feature
 
-    if (await GJCrypto.gjpCheck(gjp, accountID)) {
-        log.info(`Cannot rate level ${levelID} from accounut ${accountID}: invalid GJP`)
+    if (!await GJCrypto.gjpCheck(gjp, accountID)) {
+        log.info(`Cannot rate level ${levelID} from account ${accountID}: invalid GJP`)
         return '-2'
     }
 
@@ -36,12 +36,8 @@ let callback = async (req: Request, res: Response) => {
         log.info(`Level ${levelID} from account ${accountID} rated`)
         return '1'
     }
-    else if (await GJHelpers.checkPermission(accountID, EPermissions.sendLevelRate)) {
-        log.info(`rate suggestions not implemented yet`)
-        return '-2'
-    }
     else {
-        log.info(`Cannot rate level ${levelID} from accounut ${accountID}: access denied`)
+        log.info(`Cannot rate level ${levelID} from account ${accountID}: access denied`)
         return '-2'
     }
 }
