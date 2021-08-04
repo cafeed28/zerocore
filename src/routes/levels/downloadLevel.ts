@@ -19,9 +19,6 @@ let required = ['levelID']
 let callback = async (req: Request, res: Response) => {
     const body = req.body
 
-    const accountID = body.accountID
-    const gjp = body.gjp
-
     let levelID = body.levelID
 
     const time = Math.round(new Date().getTime() / 1000)
@@ -59,10 +56,7 @@ let callback = async (req: Request, res: Response) => {
 
     let levelString = ''
     try {
-        levelString = await fs.readFile(
-            `data/levels/${levelID}`,
-            'utf8'
-        )
+        levelString = await fs.readFile(`data/levels/${levelID}`, 'utf8')
     } catch (err) {
         if (err.code == 'ENOENT') {
             log.error(`Downloading level ${levelID} error: level not found`)
@@ -79,6 +73,7 @@ let callback = async (req: Request, res: Response) => {
         itemID: levelID,
         IP: req.socket.remoteAddress
     })
+
     if (!dlAction) {
         await LevelModel.findOneAndUpdate(
             { levelID: levelID },
@@ -93,13 +88,9 @@ let callback = async (req: Request, res: Response) => {
     }
 
     let pass = level.password
-    if (
-        (await GJHelpers.getAccountPermission(
-            body.accountID,
-            EPermissions.freeCopy
-        )) == 1
-    )
+    if (await GJHelpers.checkPermission(body.accountID, EPermissions.freeCopy))
         pass = 1
+
     if (pass != 0) {
         var xorPass = Buffer.from(
             XOR.cipher(

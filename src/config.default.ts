@@ -6,6 +6,7 @@ export default {
 	port: 80, // port
 	mongodbUri: 'mongodb://user:password@localhost:27017/zerocore?authSource=admin', // mongodb connection uri
 	webhook: 'discord webhook', // discord webhook for logging some events
+	publicWebhook: 'discord webhook', // discord webhook for logging some PUBLIC events (rate/unrate level, daily, etc.)
 	bannedIps: [ // ip's that blocked (remove content if you don't need it)
 		'1.2.3.4'
 	],

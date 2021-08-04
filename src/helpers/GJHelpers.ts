@@ -181,8 +181,8 @@ export default class GJHelpers {
 
 		for await (let level of userLevels) {
 			if (level.starStars) cp += 1
-			if (level.starEpic) cp += 3
-			else if (level.starFeatured) cp += 2
+			if (level.starFeatured) cp += 1
+			if (level.starEpic) cp += 2
 
 			console.log(level.starStars)
 			console.log(level.starEpic)

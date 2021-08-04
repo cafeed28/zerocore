@@ -53,7 +53,7 @@ commands.set(diff.name, diff)
 
 const feature: ICommand = { // set feature if rated
     name: 'feature',
-    requiredPerms: [EPermissions.rateLevelFeatureEpic],
+    requiredPerms: [EPermissions.rateLevelFeature],
     execute: async (accountID, levelID, args) => {
         let level = await LevelModel.findOne({ levelID: levelID })
         if (level.starStars == 0) {
@@ -69,7 +69,7 @@ commands.set(feature.name, feature)
 
 const epic: ICommand = { // set epic if rated
     name: 'epic',
-    requiredPerms: [EPermissions.rateLevelFeatureEpic],
+    requiredPerms: [EPermissions.rateLevelEpic],
     execute: async (accountID, levelID, args) => {
         let level = await LevelModel.findOne({ levelID: levelID })
         if (level.starStars == 0 || level.starFeatured == false) {

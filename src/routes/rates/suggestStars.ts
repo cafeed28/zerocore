@@ -30,7 +30,7 @@ let callback = async (req: Request, res: Response) => {
         await GJHelpers.rateLevel(accountID, levelID, stars, diff['diff'], diff['auto'], diff['demon'])
         await GJHelpers.verifyCoinsLevel(accountID, levelID, true)
 
-        if (await GJHelpers.checkPermission(accountID, EPermissions.rateLevelFeatureEpic))
+        if (await GJHelpers.checkPermission(accountID, EPermissions.rateLevelFeature))
             await GJHelpers.featureLevel(accountID, levelID, feature)
 
         log.info(`Level ${levelID} from account ${accountID} rated`)

@@ -13,6 +13,7 @@ let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     const accountID = body.accountID
+
     const gjp = body.gjp
 
     if (!await GJCrypto.gjpCheck(gjp, accountID)) {
@@ -23,7 +24,7 @@ let callback = async (req: Request, res: Response) => {
     if (await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel) > 0) {
         const permission = await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel)
         log.info(`User access for account ${accountID} allowed`)
-        return permission.toString()
+        return Math.min(Math.max(permission, 0), 2).toString()
     }
     else {
         log.info(`User access for account ${accountID} not allowed: access denied`)

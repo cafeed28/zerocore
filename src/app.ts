@@ -14,8 +14,8 @@ const options: IOptions = {
 
 const app = polka(options)
 
-app.use(bodyParser.json({ limit: '2mb' }))
-app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }))
+app.use(bodyParser.json({ limit: '8mb' }))
+app.use(bodyParser.urlencoded({ extended: true, limit: '8mb' }))
 
 app.use((req, res, next) => {
     log.info(`${req.method} ${req.socket.remoteAddress} ${req.url}`)

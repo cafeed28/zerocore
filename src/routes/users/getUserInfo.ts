@@ -3,6 +3,7 @@ import log from '../../logger'
 
 import { Request, Response } from 'polka'
 
+import { AccountModel } from '../../mongodb/models/account'
 import { BlockModel } from '../../mongodb/models/block'
 import { UserModel } from '../../mongodb/models/user'
 import { FriendRequestModel } from '../../mongodb/models/friendRequest'
@@ -36,19 +37,27 @@ let callback = async (req: Request, res: Response) => {
         return -1
     }
 
-    const user = await UserModel.findOne({ accountID: body.targetAccountID })
+    const user = await UserModel.findOne({ accountID: targetAccountID })
 
     if (!user) {
         log.info(`${targetAccountID}: user not found`)
         return -1
     }
 
-    let badge = await GJHelpers.getAccountPermission(accountID, EPermissions.badgeLevel)
+    const account = await AccountModel.findOne({ accountID: targetAccountID })
+
+    let badge = await GJHelpers.getAccountPermission(targetAccountID, EPermissions.badgeLevel)
+    if (account.isBanned) {
+        badge = 9999 // shitcode but works
+    }
+
     let reqsState = user.frS
     let msgState = user.mS
     let commentState = user.cS
 
     let friendState = 0
+
+    let state = ''
 
     if (accountID == targetAccountID) {
         let newFriendRequests = await FriendRequestModel.countDocuments({ toAccountID: accountID })
@@ -60,7 +69,7 @@ let callback = async (req: Request, res: Response) => {
             ]
         })
 
-        var state = ':' + GJHelpers.jsonToRobtop({
+        state = ':' + GJHelpers.jsonToRobtop({
             38: newMessages,
             39: newFriendRequests,
             40: newFriends
@@ -72,7 +81,7 @@ let callback = async (req: Request, res: Response) => {
         })
         if (incomingRequests) {
             friendState = 3
-            var state = ':' + GJHelpers.jsonToRobtop({
+            state = ':' + GJHelpers.jsonToRobtop({
                 32: incomingRequests.requestID,
                 35: incomingRequests.message,
                 37: incomingRequests.uploadDate
