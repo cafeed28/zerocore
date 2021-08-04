@@ -20,6 +20,7 @@ let callback = async (req: Request, res: Response) => {
     const body = req.body
 
     let levelID = body.levelID
+    let feaID = 0
 
     const time = Math.round(new Date().getTime() / 1000)
     // genious robtop thanks
@@ -32,7 +33,7 @@ let callback = async (req: Request, res: Response) => {
         }).sort({ timestamp: -1 })
 
         levelID = daily[0].levelID
-        var feaID = daily[0].feaID
+        feaID = daily[0].feaID
     }
     // why -1/-2 when you can download id that returned getGJDailyLevel
     else if (levelID == '-2') {
@@ -44,7 +45,7 @@ let callback = async (req: Request, res: Response) => {
         }).sort({ timestamp: -1 })
 
         levelID = daily[0].levelID
-        var feaID = daily[0].feaID + 100001
+        feaID = daily[0].feaID + 100001
     }
 
     const level = await LevelModel.findOne({ levelID: levelID })
@@ -143,7 +144,7 @@ let callback = async (req: Request, res: Response) => {
         48: 1,
     })
 
-    if (feaID) response += `:41:${feaID}`
+    if (feaID != 0) response += `:41:${feaID}`
 
     response += `#${GJCrypto.genSolo(levelString)}#`
 
@@ -155,7 +156,7 @@ let callback = async (req: Request, res: Response) => {
         +level.starCoins,
         +level.starFeatured,
         pass,
-        0,
+        0
     ]
     // if (feaID) someString[someString.length] = feaID
     // someString = someString.join(',')

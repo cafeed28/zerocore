@@ -93,6 +93,16 @@ const daily: ICommand = { // set daily
 }
 commands.set(daily.name, daily)
 
+const weekly: ICommand = { // set weekly
+    name: 'weekly',
+    requiredPerms: [EPermissions.setDailyWeeklyLevel],
+    execute: async (accountID, levelID, args) => {
+        await GJHelpers.setDailyLevel(levelID, true)
+        return true
+    }
+}
+commands.set(weekly.name, weekly)
+
 const del: ICommand = { // delete level
     name: 'delete',
     requiredPerms: [EPermissions.moveLevelAcc],

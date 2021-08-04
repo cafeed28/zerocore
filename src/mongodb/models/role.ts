@@ -33,6 +33,8 @@ const RoleSchema: Schema = new Schema({
 	rateLevelFeature: { type: Boolean, default: false },
 	rateLevelEpic: { type: Boolean, default: false },
 
+	setDailyWeeklyLevel: { type: Boolean, default: false },
+
 	moveLevelAcc: { type: Boolean, default: false },
 	changeLevelDesc: { type: Boolean, default: false },
 
