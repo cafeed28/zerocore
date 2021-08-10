@@ -6,8 +6,10 @@
 </head>
 
 <body>
-    <h1>Only Direct Links or Dropbox Links</h1>
-    <h1>Только прямые ссылки и ссылки с Dropbox</h1>
+    <h1>Supports Direct Links, Dropbox Links and SoundCloud Links</h1>
+    <h1>Поддерживает прямые ссылки, ссылки с Dropbox и ссылки с SoundCloud</h1>
+
+    <h3>Если это ссылка с SoundCloud, указывать Song Name и Song Author не нужно</h3>
 
     <label for="song_name">Song Name</label>
     <input type="text" id="songName">
@@ -45,13 +47,16 @@
                     if (res.code == 'alreadyUploaded') {
                         status.innerText = `Song already uploaded, ID: ${res.value}`
                     }
-                    if (res.code == 'incorrectUrl') {
+                    else if (res.code == 'incorrectUrl') {
                         status.innerText = `Song URL is invalid`
                     }
-                    if (res.code == 'requiredError') {
+                    else if (res.code == 'requiredError') {
                         status.innerText = `Song name and Author name is required`
                     }
-                    if (res.code == 'unknownError') {
+                    else if (res.code == 'notDownloadableSong') {
+                        status.innerText = `This is SoundCloud Song that not downloadable :crying_cat_face:`
+                    }
+                    else {
                         status.innerText = `Unknown Error`
                     }
                 }

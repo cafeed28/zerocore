@@ -89,11 +89,13 @@ let callback = async (req: Request, res: Response) => {
         }
         else if (type == 'creators') {
             var users = await UserModel.find({
-                isBanned: false, creatorPoints: { $gt: 1 }
+                isBanned: false,
+                creatorPoints: { $gt: 0 }
             }).sort({ creatorPoints: -1 }).limit(100)
         }
         else if (type == 'relative') {
             var user = await UserModel.findOne({
+                isBanned: false,
                 accountID: accountID
             })
             let stars = user.stars
@@ -101,7 +103,7 @@ let callback = async (req: Request, res: Response) => {
             if (body.count) var count = Math.floor(parseInt(body.count) / 2)
             else var count = Math.floor(25)
 
-            // Mongose Union :xd: :overdrive_ebalo:
+            // Mongoose Union :overdrive_ebalo:
             let users1 = await UserModel.find({
                 stars: { $lte: stars },
                 isBanned: false

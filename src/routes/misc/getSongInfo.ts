@@ -40,7 +40,7 @@ let callback = async (req: Request, res: Response) => {
         return result
     }
 
-    let songString = ''
+    let songString
 
     let params = new URLSearchParams()
     params.append('songID', songID)

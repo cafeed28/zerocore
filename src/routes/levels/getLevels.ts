@@ -122,7 +122,7 @@ let callback = async (req: Request, res: Response) => {
         orderBy = { likes: -1 }
     } else if (body.type == 3) {
         // trending
-        orderBy = {
+        params = {
             uploadDate: { $lt: Math.round(Date.now() / 1000) - 7 * 24 * 60 * 60 },
         }
     } else if (body.type == 4) {
