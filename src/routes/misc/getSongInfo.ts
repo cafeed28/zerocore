@@ -40,19 +40,7 @@ let callback = async (req: Request, res: Response) => {
         return result
     }
 
-    let songString
-
-    let params = new URLSearchParams()
-    params.append('songID', songID)
-    params.append('secret', body.secret)
-
-    const bRes = await axios.post('http://www.boomlings.com/database/getGJSongInfo.php', params)
-    songString = bRes.data
-
-    if (bRes.data == '-2' || bRes.data == '-1' || bRes.data == '') {
-        log.info(`Song ${songID} not found`)
-        return '-1'
-    }
+    const songString = await GJHelpers.getNgSongString(songID)
 
     log.info(`Song ${songID} info recieved`)
     return songString

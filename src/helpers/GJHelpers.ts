@@ -192,15 +192,30 @@ export default class GJHelpers {
 		await UserModel.updateOne({ accountID: accountID }, { creatorPoints: cp })
 	}
 
+	static async getNgSongString(songID: number): Promise<string> {
+		// https://github.com/Altir-Team/gd-emulator-nodejs/blob/a0cc2a463f76b677ad5b5094b23873532ea3f262/routes/misc.js#L7
+		const songRes = await axios.get('http://www.newgrounds.com/audio/listen/' + songID)
+		const songInfo = songRes.data
+
+		const songName = songInfo.match(/<title>(.*)<\/title>/)[1]
+		if (songName == "Whoops, that's a swing and a miss!") return '-1'
+
+		let downloadLink = songInfo.match(/(?:\w+:)?\/\/[^/]+([^?#]+)/g).filter(c => c.includes("audio.ngfiles.com"))[0]
+		downloadLink = downloadLink.slice(67).replace(/\\/g, "")
+
+		let author = songInfo.match(/"artist":"(.*?)"/g)[0].slice(10, -1)
+
+		const downloadRes = await axios.get(downloadLink)
+		let size = (downloadRes.headers["Content-Length"] / 1048576).toFixed(2)
+
+		return `1~|~${songID}~|~2~|~${songName}~|~3~|~1~|~4~|~${author}~|~5~|~${size}~|~6~|~~|~10~|~${downloadLink}~|~7~|~`
+	}
+
 	static async getSongString(songID: number): Promise<string> {
 		const song = await SongModel.findOne({ songID: songID })
 		if (!song) {
-			let params = new URLSearchParams()
-			params.append('songID', songID.toString())
-			params.append('secret', 'Wmfd2893gb7')
-
-			const ngSong = await axios.post('http://www.boomlings.com/database/getGJSongInfo.php', params)
-			return ngSong.data + '~|~8~|~1'
+			const songString = await this.getNgSongString(songID)
+			return songString + '~|~8~|~1'
 		}
 
 		let download = song.download
