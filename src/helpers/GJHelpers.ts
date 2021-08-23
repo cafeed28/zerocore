@@ -9,6 +9,7 @@ import { SongModel } from '../mongodb/models/song'
 import EPermissions from './EPermissions'
 import { UserModel } from '../mongodb/models/user'
 import { DailyModel } from '../mongodb/models/daily'
+import log from '../logger'
 
 export default class GJHelpers {
 	static async isValid(userName: string, password: string): Promise<boolean> {
@@ -193,22 +194,34 @@ export default class GJHelpers {
 	}
 
 	static async getNgSongString(songID: number): Promise<string> {
-		// https://github.com/Altir-Team/gd-emulator-nodejs/blob/a0cc2a463f76b677ad5b5094b23873532ea3f262/routes/misc.js#L7
 		const songRes = await axios.get('http://www.newgrounds.com/audio/listen/' + songID)
 		const songInfo = songRes.data
 
-		const songName = songInfo.match(/<title>(.*)<\/title>/)[1]
+		// https://stackoverflow.com/questions/44195322/a-plain-javascript-way-to-decode-html-entities-works-on-both-browsers-and-node
+		let decodeEntities = (encodedString) => {
+			var translate_re = /&(nbsp|amp|quot|lt|gt);/g
+			var translate = {
+				"nbsp": " ",
+				"amp": "&",
+				"quot": "\"",
+				"lt": "<",
+				"gt": ">"
+			}
+			return encodedString.replace(translate_re, function (match, entity) {
+				return translate[entity]
+			}).replace(/&#(\d+);/gi, function (match, numStr) {
+				var num = parseInt(numStr, 10)
+				return String.fromCharCode(num)
+			})
+		}
+
+		const songName = decodeEntities(songInfo.split('</title>')[0].split('<title>')[1])
 		if (songName == "Whoops, that's a swing and a miss!") return '-1'
 
-		let downloadLink = songInfo.match(/(?:\w+:)?\/\/[^/]+([^?#]+)/g).filter(c => c.includes("audio.ngfiles.com"))[0]
-		downloadLink = downloadLink.slice(67).replace(/\\/g, "")
+		let author = decodeEntities(songInfo.split('artist":"')[1].split('","')[0])
+		let downloadLink = songInfo.split('"url":"')[1].split('","')[0].replace(/\\/g, '')
 
-		let author = songInfo.match(/"artist":"(.*?)"/g)[0].slice(10, -1)
-
-		const downloadRes = await axios.get(downloadLink)
-		let size = (downloadRes.headers["Content-Length"] / 1048576).toFixed(2)
-
-		return `1~|~${songID}~|~2~|~${songName}~|~3~|~1~|~4~|~${author}~|~5~|~${size}~|~6~|~~|~10~|~${downloadLink}~|~7~|~`
+		return `1~|~${songID}~|~2~|~${songName}~|~3~|~1~|~4~|~${author}~|~5~|~0~|~6~|~~|~10~|~${downloadLink}~|~7~|~`
 	}
 
 	static async getSongString(songID: number): Promise<string> {

@@ -164,7 +164,6 @@ let callback = async (req: Request, res: Response) => {
     console.log(params)
     console.log(orderBy)
 
-    console.log(Date.now())
     const levels = await LevelModel.find(params)
         .sort(orderBy)
         .skip(page * 10)
