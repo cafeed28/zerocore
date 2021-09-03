@@ -1,15 +1,20 @@
+import log from '../logger'
+import config from '../config'
+
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
-import config from '../config'
+
 import { IAccount } from '../mongodb/models/account'
+import { ILevel } from '../mongodb/models/level'
 import { AuthModel } from '../mongodb/models/auth'
 
+import GJHelpers from './GJHelpers'
+
 export default class API {
-    static generateToken(account: IAccount) {
-        return jwt.sign(
-            { account },
-            config.apiKey, { expiresIn: '48h' }
-        )
+    static async generateToken(account: IAccount) {
+        let token = await jwt.sign({ account }, config.apiKey)
+
+        return token
     }
 
     static async checkToken(token: string) {
@@ -52,7 +57,7 @@ export default class API {
                             },
                         ],
                         footer: {
-                            text: "ZeroCore Webhook",
+                            text: 'ZeroCore Webhook',
                         },
                         timestamp: new Date().toISOString(),
                     },
@@ -62,7 +67,42 @@ export default class API {
             return true
         }
         catch (e) {
-            throw e
+            log.error(e)
+        }
+    }
+
+    static async sendDiscordLevel(title: any, level: ILevel) {
+        try {
+            let coin = '<:user_coin:879794944343146546>'
+            let coinUnverifed = '<:user_coin_unverified:879801716881629224>'
+
+            let coinString = level.starCoins ? coin.repeat(level.coins) : coinUnverifed.repeat(level.coins)
+
+            await axios.post(config.publicWebhook, {
+                content: null,
+                embeds: [
+                    {
+                        title: title,
+                        color: null,
+                        fields: [
+                            {
+                                name: `${level.levelName} by ${level}`,
+                                value: `**Description:** ${Buffer.from(level.levelDesc, 'base64').toString('ascii')}`
+                            },
+                            {
+                                name: GJHelpers.getDiffFromStars(level.starDifficulty),
+
+                                value: `${coinString}\n<:downloads:879795146194055218> ${level.downloads}\n<:like:879795181703016508> ${level.likes}\n<:length:879795256692973599> ${GJHelpers.getLengthString(level.levelLength)}`
+                            }
+                        ]
+                    }
+                ]
+            })
+
+            return true
+        }
+        catch (e) {
+            log.error(e)
         }
     }
 

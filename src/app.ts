@@ -35,10 +35,6 @@ for (const routePath of routesFiles) {
                 .writeHead(400, http.STATUS_CODES[400])
                 .end(http.STATUS_CODES[400])
         }
-        // if (route.required.includes('secret') && req.body.secret != config.secret) {
-        //     log.info('secret mismatch')
-        //     return res.send('secret mismatch', 403)
-        // }
         try {
             let response = await route.callback(req, res)
             if (typeof response == 'object')

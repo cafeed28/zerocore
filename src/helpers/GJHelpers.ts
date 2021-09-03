@@ -10,6 +10,8 @@ import EPermissions from './EPermissions'
 import { UserModel } from '../mongodb/models/user'
 import { DailyModel } from '../mongodb/models/daily'
 import log from '../logger'
+import config from '../config'
+import API from './API'
 
 export default class GJHelpers {
 	static async isValid(userName: string, password: string): Promise<boolean> {
@@ -117,14 +119,45 @@ export default class GJHelpers {
 		}
 	}
 
+	static getLengthString(length: any): any {
+		length = parseInt(length)
+
+		let lengthName = 'N/A'
+
+		switch (length) {
+			case 0:
+				lengthName = 'Tiny'
+				break
+			case 1:
+				lengthName = 'Short'
+				break
+			case 2:
+				lengthName = 'Medium'
+				break
+			case 3:
+				lengthName = 'Long'
+				break
+			case 4:
+				lengthName = 'XL'
+				break
+		}
+
+		return lengthName
+	}
+
 	static async rateLevel(accountID: number, levelID: number, stars: number, diff: number, auto: boolean, demon: boolean): Promise<boolean> {
-		await LevelModel.updateOne({ levelID: levelID }, {
+		await LevelModel.updateOne({ levelID }, {
 			starDifficulty: diff,
 			starDemon: demon,
 			starAuto: auto,
 			starStars: stars
 		})
+
+		let level = await LevelModel.findOne({ levelID })
+
 		await this.updateCreatorPoints(levelID)
+		await API.sendDiscordLevel('Level rated', level)
+
 		return true
 	}
 

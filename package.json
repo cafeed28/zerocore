@@ -1,6 +1,6 @@
 {
 	"name": "zerocore",
-	"version": "1.4.0-beta",
+	"version": "1.5.0-beta",
 	"main": "dist/app.js",
 	"author": "cafeed28",
 	"license": "MIT",
@@ -9,6 +9,7 @@
 		"start": "cd dist & forever --colors -c \"node --trace-warnings --inspect=0.0.0.0:9229\" app.js"
 	},
 	"dependencies": {
+		"@types/jsonwebtoken": "^8.5.5",
 		"axios": "^0.21.1",
 		"bcrypt": "^5.0.1",
 		"body-parser": "^1.19.0",
